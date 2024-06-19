@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIDLib", "HIDLib\HIDLib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{FC20234C-519F-436E-AE21-03AD9CA65E8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{1960CEB3-FC46-4554-B45C-E07019DAED75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{FC20234C-519F-436E-AE21-03AD9CA65E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC20234C-519F-436E-AE21-03AD9CA65E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC20234C-519F-436E-AE21-03AD9CA65E8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1960CEB3-FC46-4554-B45C-E07019DAED75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1960CEB3-FC46-4554-B45C-E07019DAED75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1960CEB3-FC46-4554-B45C-E07019DAED75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1960CEB3-FC46-4554-B45C-E07019DAED75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
