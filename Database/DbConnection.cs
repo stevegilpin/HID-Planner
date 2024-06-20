@@ -1,5 +1,6 @@
 using Database.Objects;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database;
 
@@ -14,7 +15,9 @@ public static class DbConnection
         if (File.Exists(dbFilePath) == false)
             CreateDatabase();
 
-        return new HidDbContext();
+        var optionBuilder = new DbContextOptionsBuilder();
+        optionBuilder.UseSqlite(GetConnectionString());
+        return new HidDbContext(optionBuilder.Options);
     }
 
     private static string GetDbFilePath()
@@ -22,11 +25,13 @@ public static class DbConnection
         return Path.Combine(DB_FOLDER, DB_FILE_NAME);
     }
 
+    private static string GetConnectionString() => $"Data Source={GetDbFilePath()}";
+
     private static void CreateDatabase()
     {
-        var dbFilePath = GetDbFilePath();
+        Console.WriteLine("Creating database");
         Directory.CreateDirectory(DB_FOLDER);
-        using var connection = new SqliteConnection($"Data Source={dbFilePath}");
+        using var connection = new SqliteConnection(GetConnectionString());
         connection.Open();
         using var command = connection.CreateCommand();
         command.CommandText = CREATE_SCHEMA_SQL;
@@ -37,7 +42,7 @@ public static class DbConnection
         @"
 CREATE TABLE [Rooms] (
   [RoomCode] varchar(20) PRIMARY KEY NOT NULL,
-  [Description] nvarchar(255)
+  [Description] varchar(255)
 );
 
 CREATE TABLE [StudentInfo] (
@@ -50,7 +55,7 @@ CREATE TABLE [StudentInfo] (
 CREATE TABLE [StudentRankingInputDescription] (
   [InputId] int PRIMARY KEY NOT NULL,
   [EventId] varchar(50) NOT NULL,
-  [Description] nvarchar(255)
+  [Description] varchar(255)
 );
 
 CREATE TABLE [StudentCourseRanking] (
@@ -65,7 +70,7 @@ CREATE TABLE [CourseInfo] (
   [CourseCode] varchar(20) NOT NULL,
   [EventId] varchar(50) NOT NULL,
   [CourseName] varchar(250) NOT NULL,
-  [Description] nvarchar(255),
+  [Description] varchar(255),
   [GradesFlags] int NOT NULL,
   PRIMARY KEY ([CourseCode], [EventId])
 );
@@ -73,7 +78,7 @@ CREATE TABLE [CourseInfo] (
 CREATE TABLE [CourseScheduleInputDescription] (
   [InputId] int PRIMARY KEY NOT NULL,
   [EventId] varchar(50) NOT NULL,
-  [Description] nvarchar(255)
+  [Description] varchar(255)
 );
 
 CREATE TABLE [CourseCapacity] (
@@ -99,7 +104,7 @@ CREATE TABLE [CourseAssignmentRunInfo] (
   [RunTimeStamp] DateTime2 NOT NULL,
   [StudentRankingInputId] int NOT NULL,
   [CourseScheduleInputId] int NOT NULL,
-  [Description] nvarchar(255)
+  [Description] varchar(255)
 );
 
 CREATE TABLE [CourseAssignmentResults] (

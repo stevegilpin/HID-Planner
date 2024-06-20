@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Database.Objects;
 
 public class CourseAssignmentRunInfo
 {
+    [Key]
     public int RunId { get; set; }
     public DateTime RunTimeStamp { get; set; }
     public int StudentRankingInputId { get; set; }

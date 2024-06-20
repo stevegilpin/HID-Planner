@@ -14,4 +14,17 @@ public class HidDbContext : DbContext
     public DbSet<StudentCourseRanking> StudentCourseRanking { get; set; }
     public DbSet<StudentInfo> StudentInfo { get; set; }
     public DbSet<StudentRankingInputDescription> StudentRankingInputDescription { get; set; }
+
+    public HidDbContext(DbContextOptions options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<StudentCourseRanking>().HasKey(m => new { m.RankingInputId , m.StudentId, m.CourseCode });
+        modelBuilder.Entity<CourseInfo>().HasKey(m => new { m.CourseCode , m.EventId });
+        modelBuilder.Entity<CourseCapacity>().HasKey(m => new { m.CourseScheduleInputId , m.CourseCode });
+        modelBuilder.Entity<CourseSchedule>().HasKey(m => new { m.CourseScheduleInputId , m.CourseCode, m.SessionId });
+        modelBuilder.Entity<CourseAssignmentResult>().HasKey(m => new { m.RunId , m.StudentId, m.SessionId });
+        
+        base.OnModelCreating(modelBuilder);
+    }
 }

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Database.Objects;
 
 public class CourseSchedule
