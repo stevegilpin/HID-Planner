@@ -1,4 +1,6 @@
 ﻿using System;
 using Database;
+using Database.Objects;
+using HIDLib.DataImport;
 
-using var ctx = DbConnection.GetDbContext();
+CourseInfoImporter.ImportCourseInfoFromCsv(@"C:\sql\CourseInfoSample.csv", "2024");
