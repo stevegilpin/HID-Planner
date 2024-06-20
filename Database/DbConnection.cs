@@ -69,9 +69,9 @@ CREATE TABLE [StudentCourseRanking] (
 CREATE TABLE [CourseInfo] (
   [CourseCode] varchar(20) NOT NULL,
   [EventId] varchar(50) NOT NULL,
-  [CourseName] varchar(250) NOT NULL,
+  [CourseName] varchar(250) NULL,
   [Description] varchar(255),
-  [GradesFlags] int NOT NULL,
+  [GradesFlags] int NULL,
   PRIMARY KEY ([CourseCode], [EventId])
 );
 
