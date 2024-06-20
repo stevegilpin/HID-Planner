@@ -46,10 +46,11 @@ CREATE TABLE [Rooms] (
 );
 
 CREATE TABLE [StudentInfo] (
-  [StudentId] int PRIMARY KEY NOT NULL,
-  [Name] varchar(200) NOT NULL,
+  [StudentId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  [FirstName] varchar(200) NOT NULL,
+  [LastName] varchar(200) NOT NULL,
   [Grade] varchar(10) NOT NULL,
-  [Gender] varchar(20)
+  [Homeroom] varchar(20)
 );
 
 CREATE TABLE [StudentRankingInputDescription] (
