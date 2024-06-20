@@ -1,7 +1,5 @@
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
-using Database;
 using Database.Objects;
 
 namespace HIDLib.DataImport;
@@ -12,7 +10,7 @@ public static class CsvReader
     {
         using var reader = new StreamReader(filePath);
         using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Context.RegisterClassMap<CourseInfoMapper>();
+        csv.Context.RegisterClassMap<Mappers.CourseInfoMapper>();
 
         var records = csv.GetRecords<CourseInfo>().ToList();
         records.ForEach(x => x.EventId = eventId);
@@ -20,15 +18,38 @@ public static class CsvReader
         return records;
     }
     
-    private sealed class CourseInfoMapper : ClassMap<CourseInfo>
+    public static List<StudentInfo> ReadStudentInfo(string filePath)
     {
-        public CourseInfoMapper()
+        using var reader = new StreamReader(filePath);
+        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+        csv.Context.RegisterClassMap<Mappers.StudentInfoMapper>();
+
+        var records = csv.GetRecords<StudentInfo>().ToList();
+
+        return records;
+    }
+
+    private static class Mappers
+    {
+        public sealed class CourseInfoMapper : ClassMap<CourseInfo>
         {
-            AutoMap(CultureInfo.InvariantCulture);
-            Map(x => x.EventId).Ignore();
-            Map(x => x.CourseName).Optional();
-            Map(x => x.Description).Optional();
-            Map(x => x.GradesFlags).Optional();
+            public CourseInfoMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.EventId).Ignore();
+                Map(x => x.CourseName).Optional();
+                Map(x => x.Description).Optional();
+                Map(x => x.GradesFlags).Optional();
+            }
+        }
+
+        public sealed class StudentInfoMapper : ClassMap<StudentInfo>
+        {
+            public StudentInfoMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.StudentId).Ignore();
+            }
         }
     }
 }
