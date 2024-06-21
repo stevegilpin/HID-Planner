@@ -14,7 +14,7 @@ public static class DbProvider
     static DbProvider()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            DB_FOLDER = WINDOWS_DB_FOLDER;
+            DB_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HID Planner");
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             DB_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Application Support", "HID Planner");
         else
