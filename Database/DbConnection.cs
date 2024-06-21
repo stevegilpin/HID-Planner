@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Database.Objects;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +7,21 @@ namespace Database;
 
 public static class DbConnection
 {
-    private static readonly string DB_FOLDER = @"C:/sql/"; // TODO change to somewhere out of the way. Determine at runtime based on OS.
+  private static readonly string DB_FOLDER;
     private const string DB_FILE_NAME = "HID_Planner_db";
+    private const string WINDOWS_DB_FOLDER = "%localAppData%/HID Planner/";
+
+    static DbConnection()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            DB_FOLDER = WINDOWS_DB_FOLDER;
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            DB_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Application Support", "HID Planner");
+        else
+            throw new Exception("Unrecognized operating system");
+
+        Directory.CreateDirectory(DB_FOLDER);
+    }
     
     public static HidDbContext GetDbContext()
     {
