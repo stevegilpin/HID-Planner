@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database;
 
-public static class DbConnection
+public static class DbProvider
 {
   private static readonly string DB_FOLDER;
     private const string DB_FILE_NAME = "HID_Planner_db";
     private const string WINDOWS_DB_FOLDER = "%localAppData%/HID Planner/";
 
-    static DbConnection()
+    static DbProvider()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             DB_FOLDER = WINDOWS_DB_FOLDER;

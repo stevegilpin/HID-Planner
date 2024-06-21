@@ -9,7 +9,7 @@ public static class DataSimulator
 {
     public static void PopulateCourseInfo()
     {
-        using var db = DbConnection.GetDbContext();
+        using var db = DbProvider.GetDbContext();
         if (db.CourseInfo.Any())
             return;
 
@@ -21,7 +21,7 @@ public static class DataSimulator
 
     public static void PopulateStudentInfo()
     {
-        using var db = DbConnection.GetDbContext();
+        using var db = DbProvider.GetDbContext();
         if (db.StudentInfo.Any())
             return;
         
