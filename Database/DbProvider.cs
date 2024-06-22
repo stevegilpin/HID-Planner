@@ -53,7 +53,7 @@ CREATE TABLE [Rooms] (
 );
 
 CREATE TABLE [StudentInfo] (
-  [StudentId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  [StudentId] int PRIMARY KEY NOT NULL,
   [FirstName] varchar(200) NOT NULL,
   [LastName] varchar(200) NOT NULL,
   [Grade] varchar(10) NOT NULL,

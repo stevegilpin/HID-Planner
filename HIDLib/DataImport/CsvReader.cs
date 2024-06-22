@@ -29,6 +29,30 @@ public static class CsvReader
         return records;
     }
 
+    public static List<StudentCourseRanking> ReadStudentCourseRankings(string filePath, int rankingId)
+    {
+        using var reader = new StreamReader(filePath);
+        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+        csv.Context.RegisterClassMap<Mappers.StudentCourseRankingMapper>();
+
+        var records = csv.GetRecords<StudentCourseRanking>().ToList();
+        records.ForEach(x => x.RankingInputId = rankingId);
+
+        return records;
+    }
+
+    private static bool MissingColumn(CsvHelper.CsvReader reader, params string[] validNames)
+    {
+        if (reader.HeaderRecord == null)
+            throw new ArgumentException();
+
+        foreach (var name in validNames)
+            if (reader.HeaderRecord.Any(x => x.ToUpper().Equals(name.ToUpper())))
+                return false;
+
+        return true;
+    }
+
     private static class Mappers
     {
         public sealed class CourseInfoMapper : ClassMap<CourseInfo>
@@ -48,7 +72,15 @@ public static class CsvReader
             public StudentInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.StudentId).Ignore();
+                Map(x => x.StudentId).Optional();
+            }
+        }
+        public sealed class StudentCourseRankingMapper : ClassMap<StudentCourseRanking>
+        {
+            public StudentCourseRankingMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.RankingInputId).Optional();
             }
         }
     }
