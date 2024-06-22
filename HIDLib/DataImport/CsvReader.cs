@@ -42,40 +42,39 @@ public static class CsvReader
             return bool.TryParse((string?)val, out bool isOffered) && isOffered;
         }
     }
-    
-    public static List<StudentInfo> ReadStudentInfo(string filePath)
-    {
-        using var reader = new StreamReader(filePath);
-        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Context.RegisterClassMap<Mappers.StudentInfoMapper>();
 
-        var records = csv.GetRecords<StudentInfo>().ToList();
-
-        return records;
-    }
+    public static List<StudentInfo> ReadStudentInfo(string filePath) => ReadFile<StudentInfo, Mappers.StudentInfoMapper>(filePath);
 
     public static List<StudentCourseRanking> ReadStudentCourseRankings(string filePath, int rankingId)
     {
-        using var reader = new StreamReader(filePath);
-        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Context.RegisterClassMap<Mappers.StudentCourseRankingMapper>();
-
-        var records = csv.GetRecords<StudentCourseRanking>().ToList();
+        var records = ReadFile<StudentCourseRanking, Mappers.StudentCourseRankingMapper>(filePath);
         records.ForEach(x => x.RankingInputId = rankingId);
-
         return records;
     }
 
-    private static bool MissingColumn(CsvHelper.CsvReader reader, params string[] validNames)
+    public static List<CourseSchedule> ReadCourseSchedule(string filePath, int scheduleInputId)
     {
-        if (reader.HeaderRecord == null)
-            throw new ArgumentException();
+        var records = ReadFile<CourseSchedule, Mappers.CourseScheduleMapper>(filePath);
+        records.ForEach(x => x.CourseScheduleInputId = scheduleInputId);
+        return records;
+    }
 
-        foreach (var name in validNames)
-            if (reader.HeaderRecord.Any(x => x.ToUpper().Equals(name.ToUpper())))
-                return false;
+    public static List<CourseCapacity> ReadCourseCapacity(string filePath, int scheduleInputId)
+    {
+        var records = ReadFile<CourseCapacity, Mappers.CourseCapacityMapper>(filePath);
+        records.ForEach(x => x.CourseScheduleInputId = scheduleInputId);
+        return records;
+    }
+    
+    private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
+    {
+        using var reader = new StreamReader(filePath);
+        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+        csv.Context.RegisterClassMap<TMapper>();
 
-        return true;
+        var records = csv.GetRecords<TData>().ToList();
+
+        return records;
     }
 
     private static class Mappers
@@ -100,12 +99,35 @@ public static class CsvReader
                 Map(x => x.StudentId).Optional();
             }
         }
+
         public sealed class StudentCourseRankingMapper : ClassMap<StudentCourseRanking>
         {
             public StudentCourseRankingMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
                 Map(x => x.RankingInputId).Optional();
+            }
+        }
+        
+        public sealed class CourseScheduleMapper : ClassMap<CourseSchedule>
+        {
+            public CourseScheduleMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.CourseScheduleInputId).Optional();
+                Map(x => x.RoomCode).Optional();
+                Map(x => x.Instructor).Optional();
+                Map(x => x.Supervisor).Optional();
+            }
+        }
+
+        public sealed class CourseCapacityMapper : ClassMap<CourseCapacity>
+        {
+            public CourseCapacityMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.CourseScheduleInputId).Optional();
+                Map(x => x.MinCapacity).Optional();
             }
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Database;
+using Database.Objects;
 using HIDLib.DataImport;
 
 namespace TestApp;
@@ -58,6 +59,31 @@ public static class DataSimulator
             EventId = EVENT_ID,
         });
         db.StudentCourseRanking.AddRange(rows);
+        db.SaveChanges();
+    }
+
+    public static void PopulateCourseSchedule()
+    {
+        using var db = DbProvider.GetDbContext();
+        if (db.CourseScheduleInputDescription.Any())
+            return;
+
+        const int inputId = 1;
+        
+        var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
+        var capacityFilePath = Path.Combine(SampleDataFolder, "CourseCapacitySample.csv");
+        var scheduleRows = CsvReader.ReadCourseSchedule(scheduleFilePath, inputId);
+        var capacityRows = CsvReader.ReadCourseCapacity(capacityFilePath, inputId);
+        Console.WriteLine($"Adding {scheduleRows.Count} {nameof(CourseSchedule)} rows");
+        Console.WriteLine($"Adding {capacityRows.Count} {nameof(CourseCapacity)} rows");
+
+        db.CourseScheduleInputDescription.Add(new() {
+            InputId = inputId,
+            Description = $"Imported from {scheduleFilePath} and {capacityFilePath}",
+            EventId = EVENT_ID,
+        });
+        db.CourseSchedule.AddRange(scheduleRows);
+        db.CourseCapacity.AddRange(capacityRows);
         db.SaveChanges();
     }
 }

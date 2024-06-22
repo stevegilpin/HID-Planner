@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using TestApp;
 
 DataSimulator.PopulateCourseInfo();
-DataSimulator.PopulateStudentInfo(); // todo find sample data with student IDs included
+DataSimulator.PopulateStudentInfo();
 DataSimulator.PopulateStudentRankings();
+DataSimulator.PopulateCourseSchedule();
 
 Console.WriteLine("Done");
