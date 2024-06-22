@@ -10,6 +10,7 @@ public static class DataSimulator
 {
     public static readonly string SampleDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "sample data");
     private const string EVENT_ID = "2024";
+
     public static void PopulateCourseInfo()
     {
         using var db = DbProvider.GetDbContext();

@@ -11,11 +11,36 @@ public static class CsvReader
         using var reader = new StreamReader(filePath);
         using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
         csv.Context.RegisterClassMap<Mappers.CourseInfoMapper>();
+        
+        csv.Read();
+        csv.ReadHeader();
 
-        var records = csv.GetRecords<CourseInfo>().ToList();
-        records.ForEach(x => x.EventId = eventId);
+        var data = new List<CourseInfo>();
+        while (csv.Read()) {
+            var record = csv.GetRecord<CourseInfo>()!;
+            data.Add(record);
+            var offeredGrades = Grades.None;
+            foreach (var grade in Enum.GetValues<Grades>()) {
+                if (IsCourseOfferedToGrade(csv, grade))
+                    offeredGrades |= grade;
+            }
 
-        return records;
+            record.GradesFlags = (int)offeredGrades;
+            record.EventId = eventId;
+        }
+
+        return data;
+
+        static bool IsCourseOfferedToGrade(CsvHelper.CsvReader reader, Grades grade)
+        {
+            object? val;
+            if (reader.TryGetField(typeof(string), grade.ToString(), out val) == false) {
+                if (reader.TryGetField(typeof(string), $"{grade} Grade", out val) == false)
+                    return false;
+            }
+            
+            return bool.TryParse((string?)val, out bool isOffered) && isOffered;
+        }
     }
     
     public static List<StudentInfo> ReadStudentInfo(string filePath)
@@ -63,7 +88,7 @@ public static class CsvReader
                 Map(x => x.EventId).Ignore();
                 Map(x => x.CourseName).Optional();
                 Map(x => x.Description).Optional();
-                Map(x => x.GradesFlags).Optional();
+                Map(x => x.GradesFlags).Ignore();
             }
         }
 
