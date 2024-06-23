@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Database;
 using Database.Objects;
+using HIDLib;
 using HIDLib.DataImport;
 
 namespace TestApp;
@@ -89,6 +90,13 @@ public static class DataSimulator
 
     public static void RunScheduling()
     {
-        throw new NotImplementedException();
+        var scheduleId = DbController.Courses.GetLatestScheduleInputId();
+        var rankingId = DbController.StudentRankings.GetLatestRankingInputId();
+        var solver = new SchedulingSolver {
+            StudentRankingInputId = rankingId,
+            CourseScheduleInputId = scheduleId,
+        };
+
+        solver.RunSolve();
     }
 }
