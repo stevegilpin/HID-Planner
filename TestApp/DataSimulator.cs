@@ -86,4 +86,9 @@ public static class DataSimulator
         db.CourseCapacity.AddRange(capacityRows);
         db.SaveChanges();
     }
+
+    public static void RunScheduling()
+    {
+        throw new NotImplementedException();
+    }
 }
