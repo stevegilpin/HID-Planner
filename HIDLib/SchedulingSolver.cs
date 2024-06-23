@@ -118,6 +118,7 @@ public class SchedulingSolver
         f.SetMinimization();
     }
 
+    // TODO Review this. Plot it for 1 - 20.
     private static double GetCourseCost(int courseRank)
     {
         if (courseRank <= 5)
