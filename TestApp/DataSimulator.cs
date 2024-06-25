@@ -92,11 +92,7 @@ public static class DataSimulator
     {
         var scheduleId = DbController.Courses.GetLatestScheduleInputId();
         var rankingId = DbController.StudentRankings.GetLatestRankingInputId();
-        var solver = new SchedulingSolver {
-            StudentRankingInputId = rankingId,
-            CourseScheduleInputId = scheduleId,
-        };
-
-        solver.RunSolve();
+        var output = SchedulingSolver.RunSolve(rankingId, scheduleId);
+        DbController.Scheduling.SaveSchedulingOutput(output, "Test solve");
     }
 }

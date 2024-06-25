@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Database;
@@ -47,6 +48,45 @@ public static class DbController
                 Capacity = capacities[x.CourseCode],
                 Schedule = schedules.TryGetValue(x.CourseCode, out var sched) ? sched : [],
             }).ToList();
+        }
+    }
+
+    public static class Scheduling
+    {
+        public static int SaveSchedulingOutput(SchedulingSolver.SolveData solve, string description)
+        {
+            using var db = DbProvider.GetDbContext();
+
+            int runId = 1;
+            if (db.CourseAssignmentRunInfo.Any())
+                runId = db.CourseAssignmentRunInfo.Max(x => x.RunId) + 1;
+
+            var runInfo = new CourseAssignmentRunInfo {
+                RunId = runId,
+                RunTimeStamp = solve.Timestamp,
+                CourseScheduleInputId = solve.CourseScheduleInputId,
+                StudentRankingInputId = solve.StudentRankingInputId,
+                Description = description,
+            };
+
+            var resultRows = new List<CourseAssignmentResult>();
+            foreach (var variable in solve.Variables) {
+                if (variable.Variable.SolutionValue() == 0)
+                    continue;
+                
+                resultRows.Add(new CourseAssignmentResult {
+                    RunId = runId,
+                    CourseCode = variable.StudentRanking.CourseCode,
+                    StudentId = variable.StudentRanking.StudentId,
+                    SessionId = variable.SessionId,
+                });
+            }
+
+            db.CourseAssignmentRunInfo.Add(runInfo);
+            db.CourseAssignmentResult.AddRange(resultRows);
+            db.SaveChanges();
+
+            return runId;
         }
     }
 }

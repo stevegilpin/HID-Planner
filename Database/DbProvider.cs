@@ -117,7 +117,7 @@ CREATE TABLE [CourseAssignmentRunInfo] (
   [Description] varchar(255)
 );
 
-CREATE TABLE [CourseAssignmentResults] (
+CREATE TABLE [CourseAssignmentResult] (
   [RunId] int NOT NULL,
   [StudentId] int NOT NULL,
   [SessionId] int NOT NULL,

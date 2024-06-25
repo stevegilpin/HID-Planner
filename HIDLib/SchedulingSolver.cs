@@ -6,12 +6,9 @@ using Google.OrTools.LinearSolver;
 
 namespace HIDLib;
 
-public class SchedulingSolver
+public static class SchedulingSolver
 {
     private const string SOLVER_TYPE = "SCIP";
-    
-    public int StudentRankingInputId { get; init; }
-    public int CourseScheduleInputId { get; init; }
     
     private class InputData
     {
@@ -19,15 +16,27 @@ public class SchedulingSolver
         public List<StudentCourseRanking> StudentRankings { get; init; }
     }
 
-    private record VariableData(
+    public class SolveData
+    {
+        public int StudentRankingInputId { get; init; }
+        public int CourseScheduleInputId { get; init; }
+        public List<VariableData> Variables { get; init; }
+        public Solver.ResultStatus ResultCode { get; init; }
+        public double ObjectiveFunctionValue { get; init; }
+        public DateTime Timestamp { get; init; }
+    }
+
+    public record VariableData(
         StudentCourseRanking StudentRanking,
         CourseInfo CourseInfo,
         int SessionId,
         Variable Variable);
     
-    public void RunSolve()
+    public static SolveData RunSolve(int studentRankingId, int courseScheduleId)
     {
-        var inputs = LoadInputs();
+        var timestamp = DateTime.Now;
+        var inputs = LoadInputs(studentRankingId, courseScheduleId);
+
         var solver = Solver.CreateSolver(SOLVER_TYPE);
         var variables = CreateVariables(solver, inputs);
         AddConstraints_OneCoursePerSession(solver, variables);
@@ -36,21 +45,28 @@ public class SchedulingSolver
         SetObjectiveFunction(solver, variables);
 
         var res = solver.Solve();
-        // output sanity check
-        throw new NotImplementedException();
+
+        return new SolveData {
+            CourseScheduleInputId = courseScheduleId,
+            StudentRankingInputId = studentRankingId,
+            Variables = variables,
+            ObjectiveFunctionValue = solver.Objective().Value(),
+            ResultCode = res,
+            Timestamp = timestamp,
+        };
     }
     
-    private InputData LoadInputs()
+    private static InputData LoadInputs(int studentRankingId, int courseScheduleId)
     {
-        var courseData = DbController.Courses.GetInputData(CourseScheduleInputId);
-        var studentRankings = DbController.StudentRankings.GetStudentCourseRankingData(StudentRankingInputId);
+        var courseData = DbController.Courses.GetInputData(courseScheduleId);
+        var studentRankings = DbController.StudentRankings.GetStudentCourseRankingData(studentRankingId);
         return new InputData {
             CourseData = courseData,
             StudentRankings = studentRankings,
         };
     }
 
-    private List<VariableData> CreateVariables(Solver solver, InputData inputs)
+    private static List<VariableData> CreateVariables(Solver solver, InputData inputs)
     {
         var studentData = inputs.StudentRankings.OrderBy(x => x.StudentId).ThenBy(x => x.Rank).ToList();
 
@@ -70,7 +86,7 @@ public class SchedulingSolver
     }
 
     // a student must take exactly one course per session
-    private void AddConstraints_OneCoursePerSession(Solver solver, List<VariableData> variables)
+    private static void AddConstraints_OneCoursePerSession(Solver solver, List<VariableData> variables)
     {
         var concurrentSessions = variables.GroupBy(x => (x.StudentRanking.StudentId, x.SessionId)).ToList();
         foreach (var sessionGroup in concurrentSessions) {
@@ -79,7 +95,7 @@ public class SchedulingSolver
         }
     }
 
-    private void AddConstraints_CourseCapacity(Solver solver, InputData inputs, List<VariableData> variables)
+    private static void AddConstraints_CourseCapacity(Solver solver, InputData inputs, List<VariableData> variables)
     {
         var uniqueSessions = variables.GroupBy(x => (x.CourseInfo.CourseCode, x.SessionId)).ToList();
         var courseInfo = inputs.CourseData.ToDictionary(x => x.CourseInfo.CourseCode);
@@ -91,7 +107,7 @@ public class SchedulingSolver
     }
 
     // a student can take a course 0 or 1 times (no duplicate courses)
-    private void AddConstraints_NoDupeCourses(Solver solver, List<VariableData> variables)
+    private static void AddConstraints_NoDupeCourses(Solver solver, List<VariableData> variables)
     {
         var studentCourseGroups = variables.GroupBy(x => (x.StudentRanking.StudentId, x.StudentRanking.CourseCode)).ToList();
         foreach (var courseGroup in studentCourseGroups) {
@@ -100,14 +116,14 @@ public class SchedulingSolver
         }
     }
 
-    private void AddConstraint(Solver solver, int min, int max, List<VariableData> variables, string constraintName)
+    private static void AddConstraint(Solver solver, int min, int max, List<VariableData> variables, string constraintName)
     {
         var constraint = solver.MakeConstraint(min, max, constraintName);
         foreach (var variable in variables)
             constraint.SetCoefficient(variable.Variable, 1);
     }
 
-    private void SetObjectiveFunction(Solver solver, List<VariableData> variables)
+    private static void SetObjectiveFunction(Solver solver, List<VariableData> variables)
     {
         var f = solver.Objective();
         foreach (var variable in variables) {
