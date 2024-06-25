@@ -118,15 +118,8 @@ public class SchedulingSolver
         f.SetMinimization();
     }
 
-    // TODO Review this. Plot it for 1 - 20.
     private static double GetCourseCost(int courseRank)
     {
-        if (courseRank <= 5)
-            return courseRank;
-
-        if (courseRank <= 10)
-            return Math.Pow(courseRank, 2);
-
         return Math.Pow(courseRank, 3);
     }
 }
