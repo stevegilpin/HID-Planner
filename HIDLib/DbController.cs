@@ -45,7 +45,7 @@ public static class DbController
             return courseInfo.Select(x => new CourseInputData {
                 CourseInfo = x,
                 Capacity = capacities[x.CourseCode],
-                Schedule = schedules[x.CourseCode],
+                Schedule = schedules.TryGetValue(x.CourseCode, out var sched) ? sched : [],
             }).ToList();
         }
     }
