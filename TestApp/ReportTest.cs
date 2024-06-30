@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -20,24 +21,48 @@ public static class ReportTest
         // Create a spreadsheet document by supplying the filepath.
         // By default, AutoSave = true, Editable = true, and Type = xlsx.
         var spreadsheetDocument = SpreadsheetDocument.Create(filePath, SpreadsheetDocumentType.Workbook);
-
-        // Add a WorkbookPart to the document.
         WorkbookPart workbookPart = spreadsheetDocument.AddWorkbookPart();
         workbookPart.Workbook = new Workbook();
 
-        // Add a WorksheetPart to the WorkbookPart.
-        WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-        worksheetPart.Worksheet = new Worksheet(new SheetData());
-
-        // Add Sheets to the Workbook.
-        var sheets = workbookPart.Workbook.AppendChild(new Sheets());
-        for (int i = 0; i < sheetNames.Length; i++) {
-            // Append a new worksheet and associate it with the workbook.
-            var id = (uint)i + 1;
-            Sheet sheet = new Sheet() { Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = id, Name = sheetNames[i] };
-            sheets.Append(sheet);
-        }
+        foreach (var name in sheetNames)
+            InsertWorksheet(spreadsheetDocument, name);
 
         return spreadsheetDocument;
+    }
+    
+    // https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/how-to-insert-a-new-worksheet-into-a-spreadsheet?tabs=cs
+    // Given a document name, inserts a new worksheet.
+    private static Sheet InsertWorksheet(SpreadsheetDocument spreadSheet, string sheetName = null)
+    {
+        // Open the document for editing.
+        var workbookPart = spreadSheet.WorkbookPart;
+        if (workbookPart == null) {
+            workbookPart = spreadSheet.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+        }
+
+        // Add a blank WorksheetPart.
+        WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+        newWorksheetPart.Worksheet = new Worksheet(new SheetData());
+
+        Sheets sheets = workbookPart.Workbook.GetFirstChild<Sheets>() ??
+                        workbookPart.Workbook.AppendChild(new Sheets());
+        string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
+
+        // Get a unique ID for the new worksheet.
+        uint sheetId = 1;
+        if (sheets.Elements<Sheet>().Count() > 0) {
+            sheetId = (sheets.Elements<Sheet>().Select(s => s.SheetId?.Value).Max() + 1) ??
+                      (uint)sheets.Elements<Sheet>().Count() + 1;
+        }
+
+        // Give the new worksheet a name.
+        sheetName ??= "Sheet" + sheetId;
+
+        // Append the new worksheet and associate it with the workbook.
+        Sheet sheet = new Sheet { Id = relationshipId, SheetId = sheetId, Name = sheetName };
+        sheets.Append(sheet);
+
+        return sheet;
     }
 }
