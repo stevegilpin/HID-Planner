@@ -6,4 +6,6 @@ DataSimulator.PopulateStudentRankings();
 DataSimulator.PopulateCourseInfo();
 DataSimulator.RunScheduling();
 
+ReportTest.RunTest();
+
 Console.WriteLine("Done");
