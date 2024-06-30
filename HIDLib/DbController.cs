@@ -34,9 +34,7 @@ public static class DbController
         public static List<CourseInputData> GetInputData(int inputId)
         {
             using var db = DbProvider.GetDbContext();
-            var eventId = db.CourseScheduleInputDescription.Single(x => x.InputId == inputId).EventId;
-            var courseInfo = db.CourseInfo.Where(x => x.EventId == eventId).ToList();
-            var capacities = db.CourseCapacity.Where(x => x.CourseScheduleInputId == inputId).ToDictionary(x => x.CourseCode);
+            var courseInfo = db.CourseInfo.Where(x => x.CourseScheduleInputId == inputId).ToList();
             var schedules = db.CourseSchedule
                 .Where(x => x.CourseScheduleInputId == inputId)
                 .ToList()
@@ -45,7 +43,6 @@ public static class DbController
 
             return courseInfo.Select(x => new CourseInputData {
                 CourseInfo = x,
-                Capacity = capacities[x.CourseCode],
                 Schedule = schedules.TryGetValue(x.CourseCode, out var sched) ? sched : [],
             }).ToList();
         }
@@ -94,6 +91,5 @@ public static class DbController
 public class CourseInputData
 {
     public CourseInfo CourseInfo { get; init; }
-    public CourseCapacity Capacity { get; init; }
     public List<CourseSchedule> Schedule { get; init; }
 }

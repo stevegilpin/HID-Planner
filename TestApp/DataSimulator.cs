@@ -13,19 +13,6 @@ public static class DataSimulator
     public static readonly string SampleDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "sample data");
     private const string EVENT_ID = "2024";
 
-    public static void PopulateCourseInfo()
-    {
-        using var db = DbProvider.GetDbContext();
-        if (db.CourseInfo.Any())
-            return;
-
-        var filePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
-        var rows = CsvReader.ReadCourseInfo(filePath, EVENT_ID);
-        Console.WriteLine($"Adding {rows.Count} CourseInfo rows");
-        db.CourseInfo.AddRange(rows);
-        db.SaveChanges();
-    }
-
     public static void PopulateStudentInfo()
     {
         using var db = DbProvider.GetDbContext();
@@ -63,7 +50,7 @@ public static class DataSimulator
         db.SaveChanges();
     }
 
-    public static void PopulateCourseSchedule()
+    public static void PopulateCourseInfo()
     {
         using var db = DbProvider.GetDbContext();
         if (db.CourseScheduleInputDescription.Any())
@@ -72,19 +59,19 @@ public static class DataSimulator
         const int inputId = 1;
         
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
-        var capacityFilePath = Path.Combine(SampleDataFolder, "CourseCapacitySample.csv");
+        var infoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
+        var courseInfoRows = CsvReader.ReadCourseInfo(infoFilePath, inputId);
         var scheduleRows = CsvReader.ReadCourseSchedule(scheduleFilePath, inputId);
-        var capacityRows = CsvReader.ReadCourseCapacity(capacityFilePath, inputId);
+        Console.WriteLine($"Adding {courseInfoRows.Count} {nameof(courseInfoRows)} rows");
         Console.WriteLine($"Adding {scheduleRows.Count} {nameof(CourseSchedule)} rows");
-        Console.WriteLine($"Adding {capacityRows.Count} {nameof(CourseCapacity)} rows");
 
         db.CourseScheduleInputDescription.Add(new() {
             InputId = inputId,
-            Description = $"Imported from {scheduleFilePath} and {capacityFilePath}",
+            Description = $"Imported from {scheduleFilePath} and {infoFilePath}",
             EventId = EVENT_ID,
         });
+        db.CourseInfo.AddRange(courseInfoRows);
         db.CourseSchedule.AddRange(scheduleRows);
-        db.CourseCapacity.AddRange(capacityRows);
         db.SaveChanges();
     }
 

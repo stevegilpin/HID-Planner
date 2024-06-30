@@ -10,7 +10,7 @@ namespace HIDLib.DataImport;
 
 public static class CsvReader
 {
-    public static List<CourseInfo> ReadCourseInfo(string filePath, string eventId)
+    public static List<CourseInfo> ReadCourseInfo(string filePath, int inputId)
     {
         using var reader = new StreamReader(filePath);
         using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
@@ -30,7 +30,7 @@ public static class CsvReader
             }
 
             record.GradesFlags = (int)offeredGrades;
-            record.EventId = eventId;
+            record.CourseScheduleInputId = inputId;
         }
 
         return data;
@@ -63,13 +63,6 @@ public static class CsvReader
         return records;
     }
 
-    public static List<CourseCapacity> ReadCourseCapacity(string filePath, int scheduleInputId)
-    {
-        var records = ReadFile<CourseCapacity, Mappers.CourseCapacityMapper>(filePath);
-        records.ForEach(x => x.CourseScheduleInputId = scheduleInputId);
-        return records;
-    }
-    
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
         using var reader = new StreamReader(filePath);
@@ -88,8 +81,10 @@ public static class CsvReader
             public CourseInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.EventId).Ignore();
+                Map(x => x.CourseScheduleInputId).Ignore();
                 Map(x => x.CourseName).Optional();
+                Map(x => x.MinCapacity).Optional();
+                Map(x => x.MaxCapacity).Optional();
                 Map(x => x.Description).Optional();
                 Map(x => x.GradesFlags).Ignore();
             }
@@ -122,16 +117,6 @@ public static class CsvReader
                 Map(x => x.RoomCode).Optional();
                 Map(x => x.Instructor).Optional();
                 Map(x => x.Supervisor).Optional();
-            }
-        }
-
-        public sealed class CourseCapacityMapper : ClassMap<CourseCapacity>
-        {
-            public CourseCapacityMapper()
-            {
-                AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.CourseScheduleInputId).Optional();
-                Map(x => x.MinCapacity).Optional();
             }
         }
     }

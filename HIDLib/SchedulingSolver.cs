@@ -98,11 +98,11 @@ public static class SchedulingSolver
     private static void AddConstraints_CourseCapacity(Solver solver, InputData inputs, List<VariableData> variables)
     {
         var uniqueSessions = variables.GroupBy(x => (x.CourseInfo.CourseCode, x.SessionId)).ToList();
-        var courseInfo = inputs.CourseData.ToDictionary(x => x.CourseInfo.CourseCode);
+        var courseInfoMap = inputs.CourseData.ToDictionary(x => x.CourseInfo.CourseCode);
         foreach (var sessionGroup in uniqueSessions) {
-            var capacity = courseInfo[sessionGroup.Key.CourseCode].Capacity;
+            var courseInfo = courseInfoMap[sessionGroup.Key.CourseCode].CourseInfo;
             var name = $"{sessionGroup.Key.CourseCode}_{sessionGroup.Key.SessionId}_Const2";
-            AddConstraint(solver, capacity.MinCapacity, capacity.MaxCapacity ?? int.MaxValue, sessionGroup.ToList(), name);
+            AddConstraint(solver, courseInfo.MinCapacity ?? 0, courseInfo.MaxCapacity ?? int.MaxValue, sessionGroup.ToList(), name);
         }
     }
 
