@@ -59,7 +59,7 @@ public static class SchedulingSolver
     private static InputData LoadInputs(int studentRankingId, int courseScheduleId)
     {
         var courseData = DbController.Courses.GetInputData(courseScheduleId);
-        var studentRankings = DbController.StudentRankings.GetStudentCourseRankingData(studentRankingId);
+        var studentRankings = DbController.Students.GetStudentCourseRankingData(studentRankingId);
         return new InputData {
             CourseData = courseData,
             StudentRankings = studentRankings,

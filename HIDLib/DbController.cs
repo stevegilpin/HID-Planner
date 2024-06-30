@@ -8,8 +8,35 @@ namespace HIDLib;
 
 public static class DbController
 {
-    public static class StudentRankings
+    public static class Students
     {
+        public static void SaveStudentInfo(List<StudentInfo> dbRows)
+        {
+            using var db = DbProvider.GetDbContext();
+            db.StudentInfo.AddRange(dbRows);
+            db.SaveChanges();
+        }
+
+        public static int SaveRankingInput(List<StudentCourseRanking> rows, string eventId, string inputDescription)
+        {
+            using var db = DbProvider.GetDbContext();
+            var inputId = 1; // todo create db sequence for this
+            if (db.StudentRankingInputDescription.Any())
+                inputId = db.StudentRankingInputDescription.Max(x => x.InputId) + 1;
+
+            rows.ForEach(x => x.RankingInputId = inputId);
+
+            db.StudentRankingInputDescription.Add(new() {
+                InputId = inputId,
+                EventId = eventId,
+                Description = inputDescription,
+            });
+            db.StudentCourseRanking.AddRange(rows);
+            db.SaveChanges();
+
+            return inputId;
+        }
+
         public static int GetLatestRankingInputId()
         {
             using var db = DbProvider.GetDbContext();
@@ -25,6 +52,29 @@ public static class DbController
 
     public static class Courses
     {
+        public static int SaveCourseInfo(List<CourseInfo> infoRows, List<CourseSchedule> scheduleRows, string eventId, string inputDescription)
+        {
+            using var db = DbProvider.GetDbContext();
+            int inputId = 1;
+            if (db.CourseScheduleInputDescription.Any())
+                inputId = db.CourseScheduleInputDescription.Max(x => x.InputId) + 1;
+
+
+            infoRows.ForEach(x => x.CourseScheduleInputId = inputId);
+            scheduleRows.ForEach(x => x.CourseScheduleInputId = inputId);
+        
+            db.CourseScheduleInputDescription.Add(new() {
+                InputId = inputId,
+                Description = inputDescription,
+                EventId = eventId,
+            });
+            db.CourseInfo.AddRange(infoRows);
+            db.CourseSchedule.AddRange(scheduleRows);
+            db.SaveChanges();
+
+            return inputId;
+        }
+        
         public static int GetLatestScheduleInputId()
         {
             using var db = DbProvider.GetDbContext();

@@ -23,8 +23,7 @@ public static class DataSimulator
         var rows = CsvReader.ReadStudentInfo(filePath);
         
         Console.WriteLine($"Adding {rows.Count} StudentInfo rows");
-        db.StudentInfo.AddRange(rows);
-        db.SaveChanges();
+        DbController.Students.SaveStudentInfo(rows);
     }
 
     public static void PopulateStudentRankings()
@@ -33,21 +32,10 @@ public static class DataSimulator
         if (db.StudentCourseRanking.Any())
             return;
 
-        var inputId = 1;
-        if (db.StudentRankingInputDescription.Any())
-            inputId = db.StudentRankingInputDescription.Max(x => x.InputId) + 1;
-
         var filePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
-        var rows = CsvReader.ReadStudentCourseRankings(filePath, inputId);
+        var rows = CsvReader.ReadStudentCourseRankings(filePath);
         Console.WriteLine($"Adding {rows.Count} StudentCourseRanking rows");
-
-        db.StudentRankingInputDescription.Add(new() {
-            InputId = inputId,
-            Description = $"Imported from {filePath}",
-            EventId = EVENT_ID,
-        });
-        db.StudentCourseRanking.AddRange(rows);
-        db.SaveChanges();
+        DbController.Students.SaveRankingInput(rows, EVENT_ID, $"Imported from {filePath}");
     }
 
     public static void PopulateCourseInfo()
@@ -56,29 +44,21 @@ public static class DataSimulator
         if (db.CourseScheduleInputDescription.Any())
             return;
 
-        const int inputId = 1;
-        
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
         var infoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
-        var courseInfoRows = CsvReader.ReadCourseInfo(infoFilePath, inputId);
-        var scheduleRows = CsvReader.ReadCourseSchedule(scheduleFilePath, inputId);
+        var courseInfoRows = CsvReader.ReadCourseInfo(infoFilePath);
+        var scheduleRows = CsvReader.ReadCourseSchedule(scheduleFilePath);
         Console.WriteLine($"Adding {courseInfoRows.Count} {nameof(courseInfoRows)} rows");
         Console.WriteLine($"Adding {scheduleRows.Count} {nameof(CourseSchedule)} rows");
 
-        db.CourseScheduleInputDescription.Add(new() {
-            InputId = inputId,
-            Description = $"Imported from {scheduleFilePath} and {infoFilePath}",
-            EventId = EVENT_ID,
-        });
-        db.CourseInfo.AddRange(courseInfoRows);
-        db.CourseSchedule.AddRange(scheduleRows);
-        db.SaveChanges();
+        var inputDescription = $"Imported from {scheduleFilePath} and {infoFilePath}";
+        DbController.Courses.SaveCourseInfo(courseInfoRows, scheduleRows, EVENT_ID, inputDescription);
     }
 
     public static void RunScheduling()
     {
         var scheduleId = DbController.Courses.GetLatestScheduleInputId();
-        var rankingId = DbController.StudentRankings.GetLatestRankingInputId();
+        var rankingId = DbController.Students.GetLatestRankingInputId();
         var output = SchedulingSolver.RunSolve(rankingId, scheduleId);
         DbController.Scheduling.SaveSchedulingOutput(output, "Test solve");
     }

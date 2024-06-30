@@ -10,7 +10,7 @@ namespace HIDLib.DataImport;
 
 public static class CsvReader
 {
-    public static List<CourseInfo> ReadCourseInfo(string filePath, int inputId)
+    public static List<CourseInfo> ReadCourseInfo(string filePath)
     {
         using var reader = new StreamReader(filePath);
         using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
@@ -30,7 +30,6 @@ public static class CsvReader
             }
 
             record.GradesFlags = (int)offeredGrades;
-            record.CourseScheduleInputId = inputId;
         }
 
         return data;
@@ -49,18 +48,14 @@ public static class CsvReader
 
     public static List<StudentInfo> ReadStudentInfo(string filePath) => ReadFile<StudentInfo, Mappers.StudentInfoMapper>(filePath);
 
-    public static List<StudentCourseRanking> ReadStudentCourseRankings(string filePath, int rankingId)
+    public static List<StudentCourseRanking> ReadStudentCourseRankings(string filePath)
     {
-        var records = ReadFile<StudentCourseRanking, Mappers.StudentCourseRankingMapper>(filePath);
-        records.ForEach(x => x.RankingInputId = rankingId);
-        return records;
+        return ReadFile<StudentCourseRanking, Mappers.StudentCourseRankingMapper>(filePath);
     }
 
-    public static List<CourseSchedule> ReadCourseSchedule(string filePath, int scheduleInputId)
+    public static List<CourseSchedule> ReadCourseSchedule(string filePath)
     {
-        var records = ReadFile<CourseSchedule, Mappers.CourseScheduleMapper>(filePath);
-        records.ForEach(x => x.CourseScheduleInputId = scheduleInputId);
-        return records;
+        return ReadFile<CourseSchedule, Mappers.CourseScheduleMapper>(filePath);
     }
 
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
