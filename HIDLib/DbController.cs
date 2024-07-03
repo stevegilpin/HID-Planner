@@ -6,6 +6,7 @@ using Database.Objects;
 
 namespace HIDLib;
 
+// TODO move to a new project (DataAccess). Call this DataManager.
 public static class DbController
 {
     public static class Students
@@ -100,6 +101,7 @@ public static class DbController
 
     public static class Scheduling
     {
+        // TODO the business logic should unpack SolveData into data types that live in the data layer
         public static int SaveSchedulingOutput(SchedulingSolver.SolveData solve, string description)
         {
             using var db = DbProvider.GetDbContext();

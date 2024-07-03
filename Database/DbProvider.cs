@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database;
 
+// todo move to the new DataAccess project. Make this internal. Maybe add SqlLite to the name.
 public static class DbProvider
 {
     private static readonly string DB_FOLDER;
