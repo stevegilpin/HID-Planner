@@ -101,8 +101,7 @@ public static class DbController
 
     public static class Scheduling
     {
-        // TODO the business logic should unpack SolveData into data types that live in the data layer
-        public static int SaveSchedulingOutput(SchedulingSolver.SolveData solve, string description)
+        public static int SaveSchedulingOutput(CourseAssignmentRunInfo runInfo, List<CourseAssignmentResult> results)
         {
             using var db = DbProvider.GetDbContext();
 
@@ -110,29 +109,11 @@ public static class DbController
             if (db.CourseAssignmentRunInfo.Any())
                 runId = db.CourseAssignmentRunInfo.Max(x => x.RunId) + 1;
 
-            var runInfo = new CourseAssignmentRunInfo {
-                RunId = runId,
-                RunTimeStamp = solve.Timestamp,
-                CourseScheduleInputId = solve.CourseScheduleInputId,
-                StudentRankingInputId = solve.StudentRankingInputId,
-                Description = description,
-            };
-
-            var resultRows = new List<CourseAssignmentResult>();
-            foreach (var variable in solve.Variables) {
-                if (variable.Variable.SolutionValue() == 0)
-                    continue;
-                
-                resultRows.Add(new CourseAssignmentResult {
-                    RunId = runId,
-                    CourseCode = variable.StudentRanking.CourseCode,
-                    StudentId = variable.StudentRanking.StudentId,
-                    SessionId = variable.SessionId,
-                });
-            }
+            runInfo.RunId = runId;
+            results.ForEach(x => x.RunId = runId);
 
             db.CourseAssignmentRunInfo.Add(runInfo);
-            db.CourseAssignmentResult.AddRange(resultRows);
+            db.CourseAssignmentResult.AddRange(results);
             db.SaveChanges();
 
             return runId;

@@ -24,6 +24,33 @@ public static class SchedulingSolver
         public Solver.ResultStatus ResultCode { get; init; }
         public double ObjectiveFunctionValue { get; init; }
         public DateTime Timestamp { get; init; }
+
+        public List<CourseAssignmentResult> ToDbResultRows()
+        {
+            var resultRows = new List<CourseAssignmentResult>();
+            foreach (var variable in Variables) {
+                if (variable.Variable.SolutionValue() == 0)
+                    continue;
+                
+                resultRows.Add(new CourseAssignmentResult {
+                    CourseCode = variable.StudentRanking.CourseCode,
+                    StudentId = variable.StudentRanking.StudentId,
+                    SessionId = variable.SessionId,
+                });
+            }
+
+            return resultRows;
+        }
+
+        public CourseAssignmentRunInfo ToDbRunRow(string description)
+        {
+            return new CourseAssignmentRunInfo {
+                RunTimeStamp = Timestamp,
+                CourseScheduleInputId = CourseScheduleInputId,
+                StudentRankingInputId = StudentRankingInputId,
+                Description = description,
+            };
+        }
     }
 
     public record VariableData(
