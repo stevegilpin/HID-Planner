@@ -118,6 +118,7 @@ public static class DataManager
     }
 }
 
+// todo move to Data project?
 public class CourseInputData
 {
     public CourseInfo CourseInfo { get; init; }
