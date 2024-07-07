@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Database;
-using Database.Objects;
+using Data;
 
 namespace HIDLib;
 

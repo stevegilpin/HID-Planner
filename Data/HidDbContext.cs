@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.Objects;
+namespace Data;
 
 public class HidDbContext : DbContext
 {

@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIDLib", "HIDLib\HIDLib.csproj", "{FFA7E7F7-B72B-4FFF-9082-E24E8F6C5BB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{FC20234C-519F-436E-AE21-03AD9CA65E8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{FC20234C-519F-436E-AE21-03AD9CA65E8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{1960CEB3-FC46-4554-B45C-E07019DAED75}"
 EndProject

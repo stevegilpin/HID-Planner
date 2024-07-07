@@ -1,11 +1,9 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using Database.Objects;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database;
+namespace Data;
 
 // todo move to the new DataAccess project. Make this internal. Maybe add SqlLite to the name.
 public static class DbProvider

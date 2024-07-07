@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Database.Objects;
+namespace Data;
 
 public class StudentInfo
 {

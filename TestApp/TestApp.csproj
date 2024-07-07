@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Database\Database.csproj" />
+      <ProjectReference Include="..\Data\Data.csproj" />
       <ProjectReference Include="..\HIDLib\HIDLib.csproj" />
     </ItemGroup>
 
