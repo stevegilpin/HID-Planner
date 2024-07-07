@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Data;
-using HIDLib;
-using HIDLib.DataImport;
+using DataAccess;
+using Controllers;
 
 namespace TestApp;
 
@@ -22,7 +22,7 @@ public static class DataSimulator
         var rows = CsvReader.ReadStudentInfo(filePath);
         
         Console.WriteLine($"Adding {rows.Count} StudentInfo rows");
-        DbController.Students.SaveStudentInfo(rows);
+        DataManager.Students.SaveStudentInfo(rows);
     }
 
     public static void PopulateStudentRankings()
@@ -34,7 +34,7 @@ public static class DataSimulator
         var filePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
         var rows = CsvReader.ReadStudentCourseRankings(filePath);
         Console.WriteLine($"Adding {rows.Count} StudentCourseRanking rows");
-        DbController.Students.SaveRankingInput(rows, EVENT_ID, $"Imported from {filePath}");
+        DataManager.Students.SaveRankingInput(rows, EVENT_ID, $"Imported from {filePath}");
     }
 
     public static void PopulateCourseInfo()
@@ -51,14 +51,14 @@ public static class DataSimulator
         Console.WriteLine($"Adding {scheduleRows.Count} {nameof(CourseSchedule)} rows");
 
         var inputDescription = $"Imported from {scheduleFilePath} and {infoFilePath}";
-        DbController.Courses.SaveCourseInfo(courseInfoRows, scheduleRows, EVENT_ID, inputDescription);
+        DataManager.Courses.SaveCourseInfo(courseInfoRows, scheduleRows, EVENT_ID, inputDescription);
     }
 
     public static void RunScheduling()
     {
-        var scheduleId = DbController.Courses.GetLatestScheduleInputId();
-        var rankingId = DbController.Students.GetLatestRankingInputId();
+        var scheduleId = DataManager.Courses.GetLatestScheduleInputId();
+        var rankingId = DataManager.Students.GetLatestRankingInputId();
         var output = SchedulingSolver.RunSolve(rankingId, scheduleId);
-        DbController.Scheduling.SaveSchedulingOutput(output.ToDbRunRow("Test solve"), output.ToDbResultRows());
+        DataManager.Scheduling.SaveSchedulingOutput(output.ToDbRunRow("Test solve"), output.ToDbResultRows());
     }
 }

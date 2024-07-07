@@ -7,7 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
-      <ProjectReference Include="..\HIDLib\HIDLib.csproj" />
+      <ProjectReference Include="..\Controllers\Controllers.csproj" />
     </ItemGroup>
 
 </Project>

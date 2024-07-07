@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
 
-namespace HIDLib;
+namespace DataAccess;
 
-// TODO move to a new project (DataAccess). Call this DataManager.
-public static class DbController
+public static class DataManager
 {
     public static class Students
     {

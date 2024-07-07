@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
 using Data;
+using HIDLib;
 
-namespace HIDLib.DataImport;
+namespace DataAccess;
 
 public static class CsvReader
 {

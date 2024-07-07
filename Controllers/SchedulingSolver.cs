@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using DataAccess;
 using Google.OrTools.LinearSolver;
 
-namespace HIDLib;
+namespace Controllers;
 
 public static class SchedulingSolver
 {
@@ -85,8 +86,8 @@ public static class SchedulingSolver
     
     private static InputData LoadInputs(int studentRankingId, int courseScheduleId)
     {
-        var courseData = DbController.Courses.GetInputData(courseScheduleId);
-        var studentRankings = DbController.Students.GetStudentCourseRankingData(studentRankingId);
+        var courseData = DataManager.Courses.GetInputData(courseScheduleId);
+        var studentRankings = DataManager.Students.GetStudentCourseRankingData(studentRankingId);
         return new InputData {
             CourseData = courseData,
             StudentRankings = studentRankings,
