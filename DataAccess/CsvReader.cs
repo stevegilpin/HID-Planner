@@ -91,6 +91,7 @@ public static class CsvReader
             public StudentInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.RankingInputId).Optional();
                 Map(x => x.StudentId).Optional();
             }
         }

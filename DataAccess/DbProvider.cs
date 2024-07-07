@@ -53,18 +53,20 @@ CREATE TABLE [Rooms] (
     [Description] varchar(1024)
 );
 
-CREATE TABLE [StudentInfo] (
-    [StudentId] int PRIMARY KEY NOT NULL,
-    [FirstName] varchar(200) NOT NULL,
-    [LastName] varchar(200) NOT NULL,
-    [Grade] varchar(10) NOT NULL,
-    [Homeroom] varchar(20)
-);
-
 CREATE TABLE [StudentRankingInputDescription] (
     [InputId] int PRIMARY KEY NOT NULL,
     [EventId] varchar(50) NOT NULL,
     [Description] varchar(1024)
+);
+
+CREATE TABLE [StudentInfo] (
+    [RankingInputId] int NOT NULL,
+    [StudentId] int NOT NULL,
+    [FirstName] varchar(200) NOT NULL,
+    [LastName] varchar(200) NOT NULL,
+    [Grade] varchar(10) NOT NULL,
+    [Homeroom] varchar(20),
+    PRIMARY KEY ([RankingInputId], [StudentId])
 );
 
 CREATE TABLE [StudentCourseRanking] (
@@ -73,6 +75,12 @@ CREATE TABLE [StudentCourseRanking] (
     [CourseCode] varchar(20) NOT NULL,
     [Rank] int NOT NULL,
     PRIMARY KEY ([RankingInputId], [StudentId], [CourseCode])
+);
+
+CREATE TABLE [CourseScheduleInputDescription] (
+    [InputId] int PRIMARY KEY NOT NULL,
+    [EventId] varchar(50) NOT NULL,
+    [Description] varchar(1024)
 );
 
 CREATE TABLE [CourseInfo] (
@@ -84,12 +92,6 @@ CREATE TABLE [CourseInfo] (
     [Description] varchar(1024),
     [GradesFlags] int,
     PRIMARY KEY ([CourseScheduleInputId], [CourseCode])
-);
-
-CREATE TABLE [CourseScheduleInputDescription] (
-    [InputId] int PRIMARY KEY NOT NULL,
-    [EventId] varchar(50) NOT NULL,
-    [Description] varchar(1024)
 );
 
 CREATE TABLE [CourseSchedule] (

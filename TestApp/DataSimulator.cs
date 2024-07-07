@@ -14,19 +14,15 @@ public static class DataSimulator
 
     public static void PopulateStudentInfo()
     {
-        var filePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
-        var rows = CsvReader.ReadStudentInfo(filePath);
+        var infoFilePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
+        var infoRows = CsvReader.ReadStudentInfo(infoFilePath);
+        var rankingFilePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
+        var rankingRows = CsvReader.ReadStudentCourseRankings(rankingFilePath);
         
-        Console.WriteLine($"Adding {rows.Count} StudentInfo rows");
-        DataManager.Students.SaveStudentInfo(rows);
-    }
-
-    public static void PopulateStudentRankings()
-    {
-        var filePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
-        var rows = CsvReader.ReadStudentCourseRankings(filePath);
-        Console.WriteLine($"Adding {rows.Count} StudentCourseRanking rows");
-        DataManager.Students.SaveRankingInput(rows, EVENT_ID, $"Imported from {filePath}");
+        Console.WriteLine($"Adding {infoRows.Count} StudentInfo rows");
+        Console.WriteLine($"Adding {rankingRows.Count} StudentCourseRanking rows");
+        DataManager.Students.SaveStudentInfo(infoRows);
+        DataManager.Students.SaveRankingInput(rankingRows, EVENT_ID, $"Imported from {rankingFilePath}");
     }
 
     public static void PopulateCourseInfo()

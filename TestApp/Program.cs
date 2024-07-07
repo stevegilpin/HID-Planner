@@ -2,7 +2,6 @@
 using TestApp;
 
 DataSimulator.PopulateStudentInfo();
-DataSimulator.PopulateStudentRankings();
 DataSimulator.PopulateCourseInfo();
 DataSimulator.RunScheduling();
 

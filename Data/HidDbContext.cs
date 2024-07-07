@@ -18,6 +18,7 @@ public class HidDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<StudentInfo>().HasKey(m => new { m.RankingInputId , m.StudentId });
         modelBuilder.Entity<StudentCourseRanking>().HasKey(m => new { m.RankingInputId , m.StudentId, m.CourseCode });
         modelBuilder.Entity<CourseInfo>().HasKey(m => new { m.CourseScheduleInputId, m.CourseCode });
         modelBuilder.Entity<CourseSchedule>().HasKey(m => new { m.CourseScheduleInputId , m.CourseCode, m.SessionId });
