@@ -6,8 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
-// todo move to the new DataAccess project. Make this internal. Maybe add SqlLite to the name.
-public static class DbProvider
+internal static class DbProvider
 {
     private static readonly string DB_FOLDER;
     private const string DB_FILE_NAME = "HID_Planner_db";

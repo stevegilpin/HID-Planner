@@ -14,10 +14,6 @@ public static class DataSimulator
 
     public static void PopulateStudentInfo()
     {
-        using var db = DbProvider.GetDbContext();
-        if (db.StudentInfo.Any())
-            return;
-        
         var filePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
         var rows = CsvReader.ReadStudentInfo(filePath);
         
@@ -27,10 +23,6 @@ public static class DataSimulator
 
     public static void PopulateStudentRankings()
     {
-        using var db = DbProvider.GetDbContext();
-        if (db.StudentCourseRanking.Any())
-            return;
-
         var filePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
         var rows = CsvReader.ReadStudentCourseRankings(filePath);
         Console.WriteLine($"Adding {rows.Count} StudentCourseRanking rows");
@@ -39,10 +31,6 @@ public static class DataSimulator
 
     public static void PopulateCourseInfo()
     {
-        using var db = DbProvider.GetDbContext();
-        if (db.CourseScheduleInputDescription.Any())
-            return;
-
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
         var infoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
         var courseInfoRows = CsvReader.ReadCourseInfo(infoFilePath);
