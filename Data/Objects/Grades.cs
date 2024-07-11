@@ -1,6 +1,6 @@
 using System;
 
-namespace HIDLib;
+namespace Data.Objects;
 
 [Flags]
 public enum Grades

@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Data;
-using DataAccess;
-using Controllers;
+using HIDLib;
+using Data.Objects;
 
 namespace TestApp;
 
@@ -21,8 +21,7 @@ public static class DataSimulator
         
         Console.WriteLine($"Adding {infoRows.Count} StudentInfo rows");
         Console.WriteLine($"Adding {rankingRows.Count} StudentCourseRanking rows");
-        DataManager.Students.SaveStudentInfo(infoRows);
-        DataManager.Students.SaveRankingInput(rankingRows, EVENT_ID, $"Imported from {rankingFilePath}");
+        DataManager.Students.SaveStudentInfo(infoRows, rankingRows, EVENT_ID, $"Imported from {rankingFilePath}");
     }
 
     public static void PopulateCourseInfo()

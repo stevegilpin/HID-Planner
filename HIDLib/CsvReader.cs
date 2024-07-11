@@ -4,10 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
-using Data;
-using HIDLib;
+using Data.Objects;
 
-namespace DataAccess;
+namespace HIDLib;
 
 public static class CsvReader
 {

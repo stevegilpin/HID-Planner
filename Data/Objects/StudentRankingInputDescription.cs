@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Data;
+namespace Data.Objects;
 
 public class StudentRankingInputDescription
 {

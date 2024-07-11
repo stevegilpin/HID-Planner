@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
-using DataAccess;
+using Data.Objects;
 using Google.OrTools.LinearSolver;
 
-namespace Controllers;
+namespace HIDLib;
 
 public static class SchedulingSolver
 {

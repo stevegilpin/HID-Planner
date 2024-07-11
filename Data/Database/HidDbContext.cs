@@ -1,8 +1,9 @@
+using Data.Objects;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data;
+namespace Data.Database;
 
-public class HidDbContext : DbContext
+internal class HidDbContext : DbContext
 {
     public DbSet<CourseAssignmentResult> CourseAssignmentResult { get; set; }
     public DbSet<CourseAssignmentRunInfo> CourseAssignmentRunInfo { get; set; }

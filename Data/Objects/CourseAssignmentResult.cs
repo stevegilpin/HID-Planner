@@ -1,4 +1,4 @@
-namespace Data;
+namespace Data.Objects;
 
 public class CourseAssignmentResult
 {

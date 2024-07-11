@@ -1,10 +1,9 @@
 using System;
 using System.IO;
-using Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess;
+namespace Data.Database;
 
 internal static class DbProvider
 {

@@ -1,35 +1,30 @@
 using System.Collections.Generic;
 using System.Linq;
-using Data;
+using Data.Database;
+using Data.Objects;
 
-namespace DataAccess;
+namespace Data;
 
 public static class DataManager
 {
     public static class Students
     {
-        public static void SaveStudentInfo(List<StudentInfo> dbRows)
-        {
-            using var db = DbProvider.GetDbContext();
-            db.StudentInfo.AddRange(dbRows);
-            db.SaveChanges();
-        }
-
-        public static int SaveRankingInput(List<StudentCourseRanking> rows, string eventId, string inputDescription)
+        public static int SaveStudentInfo(List<StudentInfo> infoRows, List<StudentCourseRanking> rankingRows, string eventId, string inputDescription)
         {
             using var db = DbProvider.GetDbContext();
             var inputId = 1; // todo create db sequence for this
             if (db.StudentRankingInputDescription.Any())
                 inputId = db.StudentRankingInputDescription.Max(x => x.InputId) + 1;
 
-            rows.ForEach(x => x.RankingInputId = inputId);
+            infoRows.ForEach(x => x.RankingInputId = inputId);
+            rankingRows.ForEach(x => x.RankingInputId = inputId);
 
             db.StudentRankingInputDescription.Add(new() {
                 InputId = inputId,
                 EventId = eventId,
                 Description = inputDescription,
             });
-            db.StudentCourseRanking.AddRange(rows);
+            db.StudentCourseRanking.AddRange(rankingRows);
             db.SaveChanges();
 
             return inputId;
@@ -116,11 +111,4 @@ public static class DataManager
             return runId;
         }
     }
-}
-
-// todo move to Data project?
-public class CourseInputData
-{
-    public CourseInfo CourseInfo { get; init; }
-    public List<CourseSchedule> Schedule { get; init; }
 }
