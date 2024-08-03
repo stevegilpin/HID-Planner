@@ -24,6 +24,7 @@ public static class DataManager
                 EventId = eventId,
                 Description = inputDescription,
             });
+            db.StudentInfo.AddRange(infoRows);
             db.StudentCourseRanking.AddRange(rankingRows);
             db.SaveChanges();
 
