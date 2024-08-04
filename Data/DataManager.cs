@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
@@ -41,6 +42,22 @@ public static class DataManager
         {
             using var db = DbProvider.GetDbContext();
             return db.StudentCourseRanking.Where(x => x.RankingInputId == inputId).ToList();
+        }
+
+        public static List<StudentInputData> GetInputData(int inputId)
+        {
+            using var db = DbProvider.GetDbContext();
+            var studentInfo = db.StudentInfo.Where(x => x.RankingInputId == inputId).ToList();
+            var courseRanking = db.StudentCourseRanking
+                .Where(x => x.RankingInputId == inputId)
+                .ToList()
+                .GroupBy(x => x.StudentId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            return studentInfo.Select(x => new StudentInputData {
+                StudentInfo = x,
+                CourseRankings = courseRanking[x.StudentId],
+            }).ToList();
         }
     }
 
@@ -110,6 +127,29 @@ public static class DataManager
             db.SaveChanges();
 
             return runId;
+        }
+
+        public static SchedulingOutputData LoadSavedData(int assignmentRunId)
+        {
+            using var db = DbProvider.GetDbContext();
+            var run = db.CourseAssignmentRunInfo.Single(x => x.RunId == assignmentRunId);
+            var results = db.CourseAssignmentResult.Where(x => x.RunId == assignmentRunId).ToList();
+            var courseInputs = Courses.GetInputData(run.CourseScheduleInputId).ToDictionary(x => x.CourseInfo.CourseCode);
+            var studentInputs = Students.GetInputData(run.StudentRankingInputId).ToDictionary(x => x.StudentInfo.StudentId);
+
+            return new SchedulingOutputData {
+                StudentInputs = studentInputs,
+                CourseInputs = courseInputs,
+                AssignmentResults = results,
+                AssignmentRun = run
+            };
+        }
+
+        public static CourseAssignmentRunInfo LatestRun()
+        {
+            using var db = DbProvider.GetDbContext();
+            var runId = db.CourseAssignmentRunInfo.Max(x => x.RunId);
+            return db.CourseAssignmentRunInfo.Single(x => x.RunId == runId);
         }
     }
 }
