@@ -11,7 +11,9 @@ public class ClassRosterReport
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
         var doc = new HtmlDoc("Class Roster");
+        doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlUtil.CSS.PageBreak());
+        doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
 
         var courseAssignments = outputData.AssignmentResults
             .GroupBy(x => x.CourseCode)
@@ -37,13 +39,15 @@ public class ClassRosterReport
 
         foreach (var group in sessionGroups) {
             root.Add(HtmlUtil.Header($"Session {group.Key}", 3));
-            var list = HtmlUtil.List();
-            root.Add(list);
-            foreach (var assignment in group.OrderBy(x => x.StudentId)) {
-                var student = outputData.StudentInputs[assignment.StudentId].StudentInfo;
-                var studentName = $"{student.FirstName} {student.LastName}, Grade {student.Grade}";
-                list.Add(HtmlUtil.ListItem(studentName));
+            var table = new HtmlTable([1]);
+            table.AddColumnHeaders(["Student Name", "Grade"]);
+            var students = group.OrderBy(x => x.StudentId).ToList();
+            for (int i = 0; i < students.Count; i++) {
+                var student = outputData.StudentInputs[students[i].StudentId].StudentInfo;
+                table.AddData(i + 1, 0, $"{student.FirstName} {student.LastName}");
+                table.AddData(i + 1, 1, student.Grade);
             }
+            root.Add(table.ToXmlNode());
         }
 
         root.Add(HtmlUtil.Break());

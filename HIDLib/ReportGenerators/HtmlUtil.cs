@@ -21,6 +21,7 @@ public static class HtmlUtil
 
     public static class CSS
     {
+        public const string NumericCellClass = "numericCell";
         public static string PageBreak()
         {
             return """
@@ -28,6 +29,40 @@ public static class HtmlUtil
                        .pagebreak { page-break-after: always; }
                    }
                    """;
+        }
+
+        public static string BodyPadding()
+        {
+            return """
+                   body {
+                       padding: 20px;
+                   }
+                   """;
+        }
+
+        public static string TableStyles()
+        {
+            return
+        @$"
+        table {{
+           width: 80%;
+        }}
+        table, tr, td, th {{
+           border-bottom: 1px solid;
+           border-collapse: collapse;
+        }}
+        td, th {{
+           width: 50%;
+           padding: 4px;
+           text-align: left;
+        }}
+        tr .{NumericCellClass} {{
+           text-align: center;
+        }}
+        tr:hover {{
+           background-color: lightgray;
+        }}
+        ";
         }
     }
 }
