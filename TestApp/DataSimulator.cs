@@ -49,14 +49,11 @@ public static class DataSimulator
 
     public static HtmlDoc CreateReport()
     {
+        Console.WriteLine($"Saving the class roster report to {ReportsFolder}");
         var latestRun = DataManager.Scheduling.LatestRun();
         var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
-        return ClassRosterReport.Create(data);
-    }
-
-    public static void WriteReport()
-    {
-        var report = CreateReport();
+        var report = ClassRosterReport.Create(data);
         report.WriteToFile(ReportsFolder);
+        return report;
     }
 }
