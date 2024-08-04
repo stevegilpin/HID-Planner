@@ -4,12 +4,14 @@ using System.Linq;
 using Data;
 using HIDLib;
 using Data.Objects;
+using HIDLib.ReportGenerators;
 
 namespace TestApp;
 
 public static class DataSimulator
 {
     public static readonly string SampleDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "sample data");
+    public static readonly string ReportsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "reports");
     private const string EVENT_ID = "2024";
 
     public static void PopulateStudentInfo()
@@ -43,5 +45,18 @@ public static class DataSimulator
         var rankingId = DataManager.Students.GetLatestRankingInputId();
         var output = SchedulingSolver.RunSolve(rankingId, scheduleId);
         DataManager.Scheduling.SaveSchedulingOutput(output.ToDbRunRow("Test solve"), output.ToDbResultRows());
+    }
+
+    public static HtmlDoc CreateReport()
+    {
+        var latestRun = DataManager.Scheduling.LatestRun();
+        var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
+        return ClassRosterReport.Create(data);
+    }
+
+    public static void WriteReport()
+    {
+        var report = CreateReport();
+        report.WriteToFile(ReportsFolder);
     }
 }
