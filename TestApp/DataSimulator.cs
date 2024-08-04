@@ -52,7 +52,7 @@ public static class DataSimulator
         Console.WriteLine($"Saving the class roster report to {ReportsFolder}");
         var latestRun = DataManager.Scheduling.LatestRun();
         var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
-        var report = ClassRosterReport.Create(data);
+        var report = StudentScheduleReport.Create(data);
         report.WriteToFile(ReportsFolder);
         return report;
     }

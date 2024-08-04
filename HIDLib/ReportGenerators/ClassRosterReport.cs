@@ -42,10 +42,9 @@ public class ClassRosterReport
             var table = new HtmlTable([1]);
             table.AddColumnHeaders(["Student Name", "Grade"]);
             var students = group.OrderBy(x => x.StudentId).ToList();
-            for (int i = 0; i < students.Count; i++) {
-                var student = outputData.StudentInputs[students[i].StudentId].StudentInfo;
-                table.AddData(i + 1, 0, $"{student.FirstName} {student.LastName}");
-                table.AddData(i + 1, 1, student.Grade);
+            foreach (var student in students) {
+                var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
+                table.AddRow([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
             }
             root.Add(table.ToXmlNode());
         }

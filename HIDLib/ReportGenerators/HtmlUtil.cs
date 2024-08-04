@@ -16,7 +16,7 @@ public static class HtmlUtil
     public static XElement Header(object content, int level = 1) => new($"h{level}", content);
     public static XElement Break() => new("br");
     public static XElement PageBreak() => new("div", new XAttribute("class", "pagebreak"));
-    public static XElement List() => new("ul");
+    public static XElement OrderedList() => new("ol");
     public static XElement ListItem(object itemContent) => new("li", itemContent);
 
     public static class CSS
@@ -46,13 +46,13 @@ public static class HtmlUtil
         @$"
         table {{
            width: 80%;
+           table-layout: fixed;
         }}
         table, tr, td, th {{
            border-bottom: 1px solid;
            border-collapse: collapse;
         }}
         td, th {{
-           width: 50%;
            padding: 4px;
            text-align: left;
         }}
