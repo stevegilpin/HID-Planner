@@ -15,8 +15,8 @@ public static class HtmlUtil
 
     public static XElement Header(object content, int level = 1) => new($"h{level}", content);
     public static XElement Break() => new("br");
-    public static XElement PageBreak() => new("div", new XAttribute("class", "pagebreak"));
-    public static XElement OrderedList() => new("ol");
+    public static XElement PageBreak() => new("div", new XAttribute("class", "pagebreak"), string.Empty);
+    public static XElement OrderedList() => new("ol", string.Empty);
     public static XElement ListItem(object itemContent) => new("li", itemContent);
 
     public static class CSS
