@@ -41,6 +41,7 @@ public class ClassRosterReport
             root.Add(HtmlUtil.Header($"Session {group.Key}", 3));
             var table = new HtmlTable([1]);
             table.AddColumnHeaders(["Student Name", "Grade"]);
+            table.CaptionBelowTable = $"{group.Count()} students";
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
                 var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;

@@ -8,6 +8,8 @@ public class HtmlTable
 {
     private HashSet<int> NumericColumns = new();
     private List<List<XElement>> Data = new();
+    public string CaptionAboveTable;
+    public string CaptionBelowTable;
 
     public HtmlTable(int[] numericColumns = null)
     {
@@ -35,6 +37,11 @@ public class HtmlTable
     public XElement ToXmlNode()
     {
         var table = new XElement("table");
+        if (string.IsNullOrEmpty(CaptionAboveTable) == false)
+            table.Add(new XElement("caption", CaptionAboveTable));
+        if (string.IsNullOrEmpty(CaptionBelowTable) == false)
+            table.Add(new XElement("caption", CaptionBelowTable, new XAttribute("style", "caption-side: bottom; text-align: right; padding: 5px;")));
+        
         foreach (var rowData in Data) {
             var row = new XElement("tr");
             table.Add(row);
