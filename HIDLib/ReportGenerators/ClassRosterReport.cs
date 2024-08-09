@@ -45,7 +45,7 @@ public class ClassRosterReport
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
                 var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
-                table.AddRow([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
+                table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
             }
             root.Add(table.ToXmlNode());
         }

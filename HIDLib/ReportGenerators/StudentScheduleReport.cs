@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -47,7 +48,42 @@ public class StudentScheduleReport
 
     private static HtmlTable GetRankedCourseOfferingTable(int studentId, SchedulingOutputData outputData)
     {
-        throw new NotImplementedException();
+        const int numChoicesShown = 12;
+        var rankings = outputData.StudentInputs[studentId].CourseRankings
+            .Where(x => x.Rank <= numChoicesShown)
+            .OrderBy(x => x.Rank).ToList();
+
+        var availableCourses = new Dictionary<string, HashSet<int>>();
+        foreach (var course in rankings) {
+            var foo = outputData.CourseInputs[course.CourseCode].Schedule.Select(x => x.SessionId).ToHashSet();
+            availableCourses.Add(course.CourseCode, foo);
+        }
+
+        var table = new HtmlTable();
+        table.CaptionBelowTable = $"Top {numChoicesShown} choices shown";
+        var colHeaders = new List<object> { "Session" };
+        colHeaders.AddRange(rankings.Select(x => x.Rank.ToString()));
+        table.AddColumnHeaders(colHeaders);
+        
+        var assignedCourses = outputData.AssignmentResults
+            .Where(x => x.StudentId == studentId)
+            .Select(x => (x.CourseCode, x.SessionId))
+            .ToHashSet();
+
+        var sessions = assignedCourses.Select(x => x.SessionId).OrderBy(x => x).ToList();
+        foreach (var s in sessions) {
+            var rowData = new List<XElement> { new("th", s) };
+            foreach (var course in rankings) {
+                var cellData = new XElement("td", availableCourses[course.CourseCode].Contains(s) ? course.CourseCode : string.Empty);
+                rowData.Add(cellData);
+                if (assignedCourses.Contains((course.CourseCode, s)))
+                    cellData.Add(new XAttribute("style", "color: red; font-weight: bold;"));
+            }
+
+            table.AddRow(rowData);
+        }
+
+        return table;
     }
 
     private static HtmlTable GetAssignedClassesTable(int studentId, SchedulingOutputData outputData)
@@ -65,7 +101,7 @@ public class StudentScheduleReport
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
             var ranking = courseRankings[course.CourseCode];
-            table.AddRow([i + 1, course.CourseCode, ranking.Rank]);
+            table.AddRowData([i + 1, course.CourseCode, ranking.Rank]);
         }
 
         return table;

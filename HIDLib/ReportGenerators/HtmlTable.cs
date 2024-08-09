@@ -17,7 +17,11 @@ public class HtmlTable
     }
 
     public List<XElement> AddColumnHeaders(List<object> headers) => AddRow(headers, "th");
-    public List<XElement> AddRow(List<object> rowData) => AddRow(rowData, "td");
+    public List<XElement> AddRowData(List<object> rowData) => AddRow(rowData, "td");
+    public void AddRow(List<XElement> rowData)
+    {
+        Data.Add(rowData);
+    }
 
     private List<XElement> AddRow(List<object> content, string cellType)
     {
