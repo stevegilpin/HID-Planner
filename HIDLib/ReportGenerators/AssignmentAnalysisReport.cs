@@ -31,17 +31,17 @@ public static class AssignmentAnalysisReport
 
         var table = new HtmlTable();
         table.AddColumnHeaders(columnHeaders);
-        table.AddColGroup(2);
-        table.AddColGroup(1, ("style", "border-right: 1px solid black;"));
-        table.AddColGroup(1);
-        table.AddColGroup(1, ("style", "border-right: 1px solid black;"));
+        table.AddColGroup(2, ("style", "width: 10%;"));
+        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
+        table.AddColGroup(1, ("style", "width: 10%;"));
+        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
         table.AddColGroup(1, ("style", "width: 5%;"));
         table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
         table.AddColGroup(grades.Count, ("style", "width: 5%;"));
 
         foreach (var course in courseData) {
             foreach (var session in course.Schedule) {
-                table.AddRowData(GetRowData(session, outputData));
+                table.AddRow(GetRowData(session, outputData));
             }
         }
 
@@ -50,38 +50,52 @@ public static class AssignmentAnalysisReport
         return doc;
     }
 
-    private static List<object> GetRowData(CourseSchedule session, SchedulingOutputData outputData)
+    private static List<XElement> GetRowData(CourseSchedule session, SchedulingOutputData outputData)
     {
         var assigned = outputData.AssignmentResults
             .Where(x => x.CourseCode == session.CourseCode)
             .Where(x => x.SessionId == session.SessionId)
             .ToList();
 
-        var numAssigned = assigned.Count;
         var courseInfo = outputData.CourseInputs[session.CourseCode].CourseInfo;
         var capacity = courseInfo.MaxCapacity;
 
-        var boys = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
-        var girls = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
+        var rowData = new List<XElement>();
+        AddCell(rowData, courseInfo.CourseName);
+        AddCell(rowData, courseInfo.CourseCode);
+        AddCell(rowData, session.SessionId);
+        AddCell(rowData, capacity);
 
-        var rowData = new List<object> {
-            courseInfo.CourseName,
-            courseInfo.CourseCode,
-            session.SessionId,
-            capacity,
-            numAssigned,
-            boys,
-            girls,
-        };
+        var numAssignedCell = AddCell(rowData, assigned.Count);
+        if (assigned.Count <= 5)
+            HighlightCell(numAssignedCell);
+
+        var boys = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
+        var boysCell = AddCell(rowData, boys == 0 ? string.Empty : boys);
+        if (boys == 1)
+            HighlightCell(boysCell);
+        
+        var girls = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
+        var girlsCell = AddCell(rowData, girls == 0 ? string.Empty : girls);
+        if (girls == 1)
+            HighlightCell(girlsCell);
 
         var grades = DistinctGrades(outputData);
-        var gradeData = new List<int>();
-        foreach (var grade in grades)
-            gradeData.Add(assigned.Count(s => outputData.StudentInputs[s.StudentId].StudentInfo.Grade == grade));
-
-        rowData.AddRange(gradeData.Select(x => x == 0 ? string.Empty : x.ToString()));
+        foreach (var grade in grades) {
+            var gradeCount = assigned.Count(s => outputData.StudentInputs[s.StudentId].StudentInfo.Grade == grade);
+            AddCell(rowData, gradeCount == 0 ? string.Empty : gradeCount);
+        }
 
         return rowData;
+
+        static XElement AddCell(List<XElement> data, object content)
+        {
+            var cell = new XElement("td", content);
+            data.Add(cell);
+            return cell;
+        }
+
+        static void HighlightCell(XElement cell) => cell.Add(new XAttribute("style", "background-color: yellow;"));
     }
 
     private static List<string> DistinctGrades(SchedulingOutputData outputData)
