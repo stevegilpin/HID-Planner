@@ -26,10 +26,18 @@ public static class AssignmentAnalysisReport
 
         // todo change width of some columns. I think i can use something like a colspan child element in the table?
         var columnHeaders = new List<object> { "Class", "Code", "Session", "Capacity", "# Assigned", "boys", "girls" };
-        columnHeaders.AddRange(DistinctGrades(outputData));
+        var grades = DistinctGrades(outputData);
+        columnHeaders.AddRange(grades);
 
         var table = new HtmlTable();
         table.AddColumnHeaders(columnHeaders);
+        table.AddColGroup(2);
+        table.AddColGroup(1, ("style", "border-right: 1px solid black;"));
+        table.AddColGroup(1);
+        table.AddColGroup(1, ("style", "border-right: 1px solid black;"));
+        table.AddColGroup(1, ("style", "width: 5%;"));
+        table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+        table.AddColGroup(grades.Count, ("style", "width: 5%;"));
 
         foreach (var course in courseData) {
             foreach (var session in course.Schedule) {
