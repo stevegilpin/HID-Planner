@@ -7,8 +7,8 @@ namespace HIDLib.ReportGenerators;
 
 public class HtmlTable
 {
-    private HashSet<int> NumericColumns = new();
-    private List<List<XElement>> Data = new();
+    private HashSet<int> NumericColumns = new(); // todo replace with colgroup
+    private List<RowData> Data = new();
     private List<XElement> ColGroups = new();
     public string CaptionAboveTable;
     public string CaptionBelowTable;
@@ -18,7 +18,7 @@ public class HtmlTable
         NumericColumns = (numericColumns ?? []).ToHashSet();
     }
 
-    public List<XElement> AddColumnHeaders(List<object> headers) => AddRow(headers, "th");
+    public RowData AddColumnHeaders(List<object> headers) => AddRow(headers, "th");
 
     public XElement AddColGroup(int span, params (string name, string value)[] attributes)
     {
@@ -29,25 +29,22 @@ public class HtmlTable
         ColGroups.Add(group);
         return group;
     }
-    public List<XElement> AddRowData(List<object> rowData) => AddRow(rowData, "td");
-    public void AddRow(List<XElement> rowData)
-    {
-        Data.Add(rowData);
-    }
+    public RowData AddRowData(List<object> rowData) => AddRow(rowData, "td");
+    public void AddRow(List<XElement> rowData) => Data.Add(new RowData(rowData));
 
-    private List<XElement> AddRow(List<object> content, string cellType)
+    private RowData AddRow(List<object> content, string cellType)
     {
-        var row = new List<XElement>();
-        Data.Add(row);
-        var elements = new List<XElement>();
+        var cells = new List<XElement>();
         for (int i = 0; i < content.Count; i++) {
             var cell = new XElement(cellType, content[i]);
-            row.Add(cell);
+            cells.Add(cell);
             if (NumericColumns.Contains(i))
                 cell.Add(new XAttribute("class", HtmlUtil.CSS.NumericCellClass));
         }
 
-        return elements;
+        var row = new RowData(cells);
+        Data.Add(row);
+        return row;
     }
 
     public XElement ToXmlNode()
@@ -62,13 +59,22 @@ public class HtmlTable
         if (ColGroups.Count != 0)
             table.Add(new XElement("colgroup", ColGroups));
 
-        foreach (var rowData in Data) {
-            var row = new XElement("tr");
-            table.Add(row);
-            foreach (var cell in rowData)
-                row.Add(cell);
-        }
+        foreach (var row in Data)
+            table.Add(row.RowContainer);
 
         return table;
+    }
+}
+
+public class RowData
+{
+    public XElement RowContainer { get; init; }
+    public List<XElement> Data { get; init; }
+
+    public RowData(List<object> data, string cellType = "td") : this(data.Select(x => new XElement(cellType, x)).ToList()) { }    
+    public RowData(List<XElement> data)
+    {
+        Data = data.ToList();
+        RowContainer = new XElement("tr", Data);
     }
 }
