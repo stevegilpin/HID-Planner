@@ -64,6 +64,7 @@ CREATE TABLE [StudentInfo] (
     [FirstName] varchar(200) NOT NULL,
     [LastName] varchar(200) NOT NULL,
     [Grade] varchar(10) NOT NULL,
+    [Gender] varchar(10) NOT NULL,
     [Homeroom] varchar(20),
     PRIMARY KEY ([RankingInputId], [StudentId])
 );

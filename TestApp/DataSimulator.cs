@@ -47,13 +47,14 @@ public static class DataSimulator
         DataManager.Scheduling.SaveSchedulingOutput(output.ToDbRunRow("Test solve"), output.ToDbResultRows());
     }
 
-    public static HtmlDoc CreateReport()
+    public static void CreateReports()
     {
-        Console.WriteLine($"Saving the class roster report to {ReportsFolder}");
+        Console.WriteLine($"Saving reports to {ReportsFolder}");
         var latestRun = DataManager.Scheduling.LatestRun();
         var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
-        var report = AssignmentAnalysisReport.Create(data);
-        report.WriteToFile(ReportsFolder);
-        return report;
+
+        ClassRosterReport.Create(data).WriteToFile(ReportsFolder);
+        StudentScheduleReport.Create(data).WriteToFile(ReportsFolder);
+        AssignmentAnalysisReport.Create(data).WriteToFile(ReportsFolder);
     }
 }

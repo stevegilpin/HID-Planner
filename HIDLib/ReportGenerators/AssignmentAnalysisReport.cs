@@ -61,16 +61,17 @@ public static class AssignmentAnalysisReport
         var courseInfo = outputData.CourseInputs[session.CourseCode].CourseInfo;
         var capacity = courseInfo.MaxCapacity;
 
+        var boys = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
+        var girls = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
+
         var rowData = new List<object> {
             courseInfo.CourseName,
             courseInfo.CourseCode,
             session.SessionId,
             capacity,
             numAssigned,
-            
-            // todo gender data
-            string.Empty,
-            string.Empty
+            boys,
+            girls,
         };
 
         var grades = DistinctGrades(outputData);
