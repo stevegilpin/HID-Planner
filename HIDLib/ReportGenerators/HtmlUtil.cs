@@ -45,7 +45,7 @@ public static class HtmlUtil
             return
         @$"
         table {{
-           width: 80%;
+           width: 100%;
            table-layout: fixed;
         }}
         table, tr, td, th {{
