@@ -6,7 +6,7 @@ using Data.Objects;
 
 namespace HIDLib.ReportGenerators;
 
-public class StudentScheduleReport
+public static class StudentScheduleAnalysisReport
 {
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
