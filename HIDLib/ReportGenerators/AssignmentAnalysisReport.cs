@@ -13,6 +13,8 @@ public static class AssignmentAnalysisReport
         var doc = new HtmlDoc("Assignment Analysis");
         doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
+        
+        doc.Add(HtmlUtil.Header("Analysis of Class Assignments"));
 
         var courses = outputData.AssignmentResults
             .Select(x => x.CourseCode)
