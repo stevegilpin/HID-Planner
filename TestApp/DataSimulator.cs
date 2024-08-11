@@ -56,5 +56,6 @@ public static class DataSimulator
         ClassRosterReport.Create(data).WriteToFile(ReportsFolder);
         StudentScheduleAnalysisReport.Create(data).WriteToFile(ReportsFolder);
         AssignmentAnalysisReport.Create(data).WriteToFile(ReportsFolder);
+        StudentScheduleOverviewReport.Create(data).WriteToFile(ReportsFolder);
     }
 }

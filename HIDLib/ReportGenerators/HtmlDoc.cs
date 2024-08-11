@@ -22,7 +22,11 @@ public sealed class HtmlDoc
         AddToHead(new XElement("title", docTitle));
     }
 
-    public void Add(XElement element) => Body.Add(element);
+    public T Add<T>(T element) where T : XElement
+    {
+        Body.Add(element);
+        return element;
+    }
     public void AddToHead(XElement element) => Head.Add(element);
 
     public void AddCssRuleSet(string selector, List<string> styleRules)
