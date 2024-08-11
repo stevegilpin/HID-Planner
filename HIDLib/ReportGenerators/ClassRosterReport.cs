@@ -37,8 +37,11 @@ public class ClassRosterReport
         var root = new XElement("div");
         root.Add(HtmlUtil.Header($"Class Roster: {courseData.CourseInfo.CourseName}", 2));
 
+        var grid = new HtmlGridLayout(2);
+        root.Add(grid);
+
         foreach (var group in sessionGroups) {
-            root.Add(HtmlUtil.Header($"Session {group.Key}", 3));
+            var header = HtmlUtil.Header($"Session {group.Key}", 3);
             var table = new HtmlTable([1]);
             table.AddColumnHeaders(["Student Name", "Grade"]);
             table.CaptionBelowTable = $"{group.Count()} students";
@@ -47,7 +50,8 @@ public class ClassRosterReport
                 var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
                 table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
             }
-            root.Add(table.ToXmlNode());
+
+            grid.AddCell(header, table.ToXmlNode());
         }
 
         root.Add(HtmlUtil.Break());

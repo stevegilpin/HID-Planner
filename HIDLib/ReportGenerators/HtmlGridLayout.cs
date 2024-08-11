@@ -5,7 +5,12 @@ namespace HIDLib.ReportGenerators;
 
 public class HtmlGridLayout(int numColumns) : XElement("div", GetContainerStyle(numColumns))
 {
-    public void AddCell(XElement cellContent) => Add(new XElement("div", cellContent, GetCellStyle()));
+    public void AddCell(params object[] cellContent)
+    {
+        var div = new XElement("div", cellContent);
+        div.Add(GetCellStyle());
+        Add(div);
+    }
 
     private static XAttribute GetContainerStyle(int numColumns)
     {
