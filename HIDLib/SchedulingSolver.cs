@@ -162,7 +162,7 @@ public static class SchedulingSolver
         f.SetMinimization();
     }
 
-    private static double GetCourseCost(int courseRank)
+    public static double GetCourseCost(int courseRank)
     {
         return Math.Pow(courseRank, 3);
     }

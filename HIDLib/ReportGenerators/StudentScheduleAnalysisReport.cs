@@ -95,8 +95,10 @@ public static class StudentScheduleAnalysisReport
 
         var studentData = outputData.StudentInputs[studentId];
         var courseRankings = studentData.CourseRankings.ToDictionary(x => x.CourseCode);
+        var objectiveScore = assigned.Sum(x => SchedulingSolver.GetCourseCost(courseRankings[x.CourseCode].Rank));
 
         var table = new HtmlTable();
+        table.CaptionBelowTable = $"Objective score: {objectiveScore:N0}";
         table.AddColumnHeaders(["Session", "Course", "Course Ranking"]);
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
