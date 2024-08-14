@@ -20,7 +20,6 @@ public static class HtmlUtil
 
     public static class CSS
     {
-        public const string NumericCellClass = "numericCell";
         public static string PageBreak()
         {
             return """
@@ -54,9 +53,6 @@ public static class HtmlUtil
         td, th {{
            padding: 4px;
            text-align: left;
-        }}
-        tr .{NumericCellClass} {{
-           text-align: center;
         }}
         tr:hover {{
            background-color: lightgray;

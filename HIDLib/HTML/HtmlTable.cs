@@ -7,16 +7,10 @@ namespace HIDLib.HTML;
 
 public class HtmlTable
 {
-    private HashSet<int> NumericColumns = new(); // todo replace with colgroup
-    private List<RowData> Data = new();
-    private List<XElement> ColGroups = new();
+    public List<RowData> Data = new();
+    public List<XElement> ColGroups = new();
     public string CaptionAboveTable;
     public string CaptionBelowTable;
-
-    public HtmlTable(int[] numericColumns = null)
-    {
-        NumericColumns = (numericColumns ?? []).ToHashSet();
-    }
 
     public RowData AddColumnHeaders(List<object> headers) => AddRow(headers, "th");
 
@@ -34,14 +28,7 @@ public class HtmlTable
 
     private RowData AddRow(List<object> content, string cellType)
     {
-        var cells = new List<XElement>();
-        for (int i = 0; i < content.Count; i++) {
-            var cell = new XElement(cellType, content[i]);
-            cells.Add(cell);
-            if (NumericColumns.Contains(i))
-                cell.Add(new XAttribute("class", HtmlUtil.CSS.NumericCellClass));
-        }
-
+        var cells = content.Select(x => new XElement(cellType, x)).ToList();
         var row = new RowData(cells);
         Data.Add(row);
         return row;

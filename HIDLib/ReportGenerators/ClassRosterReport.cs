@@ -43,7 +43,7 @@ public class ClassRosterReport
 
         foreach (var group in sessionGroups) {
             var header = HtmlUtil.Header($"Session {group.Key}", 3);
-            var table = new HtmlTable([1]);
+            var table = new HtmlTable();
             table.AddColumnHeaders(["Student Name", "Grade"]);
             table.CaptionBelowTable = $"{group.Count()} students";
             var students = group.OrderBy(x => x.StudentId).ToList();
@@ -51,6 +51,9 @@ public class ClassRosterReport
                 var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
                 table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
             }
+            
+            foreach (var row in table.Data)
+                row.Data[1].Add(new XAttribute("style", "text-align: center;"));
 
             grid.AddCell(header, table.ToXmlNode());
         }
