@@ -12,10 +12,10 @@ public static class AssignmentAnalysisReport
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
         var doc = new HtmlDoc("Assignment Analysis");
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(CSS.TableStyles());
         
-        doc.Add(HtmlUtil.Header("Analysis of Class Assignments"));
+        doc.Add(new HtmlHeader("Analysis of Class Assignments"));
 
         var courses = outputData.AssignmentResults
             .Select(x => x.CourseCode)

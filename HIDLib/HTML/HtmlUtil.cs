@@ -11,37 +11,38 @@ public static class HtmlUtil
         using var f = new StreamWriter(filePath);
         f.Write(content.ToString());
     }
+}
 
-    public static XElement Header(object content, int level = 1) => new($"h{level}", content);
-    public static XElement Break() => new("br");
-    public static XElement PageBreak() => new("div", new XAttribute("class", "pagebreak"), string.Empty);
-    public static XElement OrderedList() => new("ol", string.Empty);
-    public static XElement ListItem(object itemContent) => new("li", itemContent);
+public class HtmlHeader(object content, int level = 1) : XElement($"h{level}", content);
+public class HtmlBreak() : XElement("br");
+public class HtmlPageBreak() : XElement("div", new XAttribute("class", "pagebreak"), string.Empty);
+public class HtmlOrderedList() : XElement("ol", string.Empty);
+public class HtmlListItem(object itemContent) : XElement("li", itemContent);
 
-    public static class CSS
+public static class CSS
+{
+    public static string PageBreak()
     {
-        public static string PageBreak()
-        {
-            return """
-                   @media print {
-                       .pagebreak { page-break-after: always; }
-                   }
-                   """;
-        }
+        return """
+               @media print {
+                   .pagebreak { page-break-after: always; }
+               }
+               """;
+    }
 
-        public static string BodyPadding()
-        {
-            return """
-                   body {
-                       padding: 20px;
-                   }
-                   """;
-        }
+    public static string BodyPadding()
+    {
+        return """
+               body {
+                   padding: 20px;
+               }
+               """;
+    }
 
-        public static string TableStyles()
-        {
-            return
-        @$"
+    public static string TableStyles()
+    {
+        return
+            @$"
         table {{
            width: 100%;
            table-layout: fixed;
@@ -58,6 +59,5 @@ public static class HtmlUtil
            background-color: lightgray;
         }}
         ";
-        }
     }
 }

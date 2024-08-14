@@ -11,11 +11,11 @@ public static class StudentScheduleOverviewReport
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
         var doc = new HtmlDoc("Student Schedule Overview");
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.PageBreak());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(CSS.PageBreak());
+        doc.StyleRuleSets.Add(CSS.TableStyles());
 
-        doc.Add(HtmlUtil.Header("Student Schedules"));
+        doc.Add(new HtmlHeader("Student Schedules"));
 
         var studentIds = outputData.StudentInputs
             .OrderBy(x => x.Value.StudentInfo.LastName)
@@ -26,7 +26,7 @@ public static class StudentScheduleOverviewReport
         var grid = doc.Add(new HtmlGridLayout(2));
         foreach (var id in studentIds) {
             var student = outputData.StudentInputs[id].StudentInfo;
-            var header = HtmlUtil.Header($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
+            var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
             var table = GetStudentTable(id, outputData).ToXmlNode();
             var cell = new XElement("div", header, table);
             grid.AddCell(cell);

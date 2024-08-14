@@ -12,14 +12,14 @@ public static class StudentScheduleAnalysisReport
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
         var doc = new HtmlDoc("Student Schedules");
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.PageBreak());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(CSS.PageBreak());
+        doc.StyleRuleSets.Add(CSS.TableStyles());
 
         var studentIds = outputData.StudentInputs.Keys.OrderBy(x => x).ToList();
         foreach (var id in studentIds) {
             doc.Add(GetStudentSchedule(id, outputData));
-            doc.Add(HtmlUtil.PageBreak());
+            doc.Add(new HtmlPageBreak());
         }
 
         return doc;
@@ -34,13 +34,13 @@ public static class StudentScheduleAnalysisReport
         var name = $"{studentData.StudentInfo.FirstName} {studentData.StudentInfo.LastName}";
         var grade = $"Grade {studentData.StudentInfo.Grade}";
         var homeroom = $"Room {studentData.StudentInfo.Homeroom}";
-        root.Add(HtmlUtil.Header($"{name} - {grade} - {homeroom}", 2));
+        root.Add(new HtmlHeader($"{name} - {grade} - {homeroom}", 2));
         
-        root.Add(HtmlUtil.Header("Choices by Session", 3));
+        root.Add(new HtmlHeader("Choices by Session", 3));
         var courseOptions = GetRankedCourseOfferingTable(studentId, outputData);
         root.Add(courseOptions.ToXmlNode());
 
-        root.Add(HtmlUtil.Header("Assigned Classes", 3));
+        root.Add(new HtmlHeader("Assigned Classes", 3));
         var assigned = GetAssignedClassesTable(studentId, outputData);
         root.Add(assigned.ToXmlNode());
 

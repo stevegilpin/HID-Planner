@@ -12,9 +12,9 @@ public class ClassRosterReport
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
         var doc = new HtmlDoc("Class Roster");
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.BodyPadding());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.PageBreak());
-        doc.StyleRuleSets.Add(HtmlUtil.CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(CSS.PageBreak());
+        doc.StyleRuleSets.Add(CSS.TableStyles());
 
         var courseAssignments = outputData.AssignmentResults
             .GroupBy(x => x.CourseCode)
@@ -36,13 +36,13 @@ public class ClassRosterReport
             .ToList();
 
         var root = new XElement("div");
-        root.Add(HtmlUtil.Header($"Class Roster: {courseData.CourseInfo.CourseName}", 2));
+        root.Add(new HtmlHeader($"Class Roster: {courseData.CourseInfo.CourseName}", 2));
 
         var grid = new HtmlGridLayout(2);
         root.Add(grid);
 
         foreach (var group in sessionGroups) {
-            var header = HtmlUtil.Header($"Session {group.Key}", 3);
+            var header = new HtmlHeader($"Session {group.Key}", 3);
             var table = new HtmlTable();
             table.AddColumnHeaders(["Student Name", "Grade"]);
             table.CaptionBelowTable = $"{group.Count()} students";
@@ -58,8 +58,8 @@ public class ClassRosterReport
             grid.AddCell(header, table.ToXmlNode());
         }
 
-        root.Add(HtmlUtil.Break());
-        root.Add(HtmlUtil.PageBreak());
+        root.Add(new HtmlBreak());
+        root.Add(new HtmlPageBreak());
 
         return root;
     }
