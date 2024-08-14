@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Linq;
 
-namespace HIDLib.ReportGenerators;
+namespace HIDLib.HTML;
 
 public sealed class HtmlDoc
 {

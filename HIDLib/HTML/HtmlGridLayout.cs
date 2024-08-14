@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace HIDLib.ReportGenerators;
+namespace HIDLib.HTML;
 
 public class HtmlGridLayout(int numColumns) : XElement("div", GetContainerStyle(numColumns))
 {

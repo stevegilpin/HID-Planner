@@ -1,8 +1,7 @@
-using System;
 using System.IO;
 using System.Xml.Linq;
 
-namespace HIDLib.ReportGenerators;
+namespace HIDLib.HTML;
 
 public static class HtmlUtil
 {

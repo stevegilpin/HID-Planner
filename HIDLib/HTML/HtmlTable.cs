@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using HIDLib.ReportGenerators;
 
-namespace HIDLib.ReportGenerators;
+namespace HIDLib.HTML;
 
 public class HtmlTable
 {

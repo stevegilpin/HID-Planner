@@ -4,6 +4,7 @@ using System.Linq;
 using Data;
 using HIDLib;
 using Data.Objects;
+using HIDLib.HTML;
 using HIDLib.ReportGenerators;
 
 namespace TestApp;
