@@ -13,7 +13,8 @@ public static class AssignmentAnalysisReport
     {
         var doc = new HtmlDoc("Assignment Analysis");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
-        doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.TableStyles("center"));
+        doc.StyleRuleSets.Add(CSS.BodyBackgroundColorInPrint());
         
         doc.Add(new HtmlHeader("Analysis of Class Assignments"));
 
@@ -24,24 +25,13 @@ public static class AssignmentAnalysisReport
 
         var courseData = courses
             .Select(x => outputData.CourseInputs[x])
-            .OrderBy(x => x.CourseInfo.CourseName)
+            .OrderBy(x => x.CourseInfo.CourseCode)
             .ToList();
 
-        // todo change width of some columns. I think i can use something like a colspan child element in the table?
-        var columnHeaders = new List<object> { "Class", "Code", "Session", "Capacity", "# Assigned", "boys", "girls" };
-        var grades = DistinctGrades(outputData);
-        columnHeaders.AddRange(grades);
-
         var table = new HtmlTable();
-        table.AddColumnHeaders(columnHeaders);
-        table.AddColGroup(2, ("style", "width: 10%;"));
-        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
-        table.AddColGroup(1, ("style", "width: 10%;"));
-        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
-        table.AddColGroup(1, ("style", "width: 5%;"));
-        table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
-        table.AddColGroup(grades.Count, ("style", "width: 5%;"));
-
+        var grades = DistinctGrades(outputData);
+        AddColumnFormatting(table, grades);
+        
         foreach (var course in courseData) {
             foreach (var session in course.Schedule) {
                 table.AddRow(GetRowData(session, outputData));
@@ -51,6 +41,46 @@ public static class AssignmentAnalysisReport
         doc.Add(table.ToXmlNode());
 
         return doc;
+    }
+
+    private static void AddColumnFormatting(HtmlTable table, List<string> grades)
+    {
+        var columnHeaders = new List<object> { "Class", "Code", "Session", "Capacity", "# Assigned", "boys", "girls" };
+        columnHeaders.AddRange(grades);
+
+        var headers = table.AddColumnHeaders(columnHeaders);
+        headers.Data[0].AddStyle("text-align: left");
+        headers.Data[1].AddStyle("text-align: left");
+
+        table.AddColGroup(2, ("style", "width: 10%;"));
+        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
+        table.AddColGroup(1, ("style", "width: 10%;"));
+        table.AddColGroup(1, ("style", "width: 10%; border-right: 1px solid black;"));
+        table.AddColGroup(1, ("style", "width: 5%;"));
+        table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+
+        // special formatting to separate middle school
+        if (grades.Last() == "8") {
+            // 1 and 2
+            table.AddColGroup(1, ("style", "width: 5%;"));
+            table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+            
+            // 3, 4, 5
+            table.AddColGroup(2, ("style", "width: 5%;"));
+            table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+
+            // 6, 7, 8
+            table.AddColGroup(3, ("style", "width: 5%;"));
+        } else {
+            for (int i = 0; i < grades.Count; i += 2) {
+                table.AddColGroup(1, ("style", "width: 5%;"));
+                if (i >= grades.Count - 2)
+                    table.AddColGroup(1, ("style", "width: 5%;"));
+                else
+                    table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+            }
+        }
+
     }
 
     private static List<XElement> GetRowData(CourseSchedule session, SchedulingOutputData outputData)
@@ -66,6 +96,8 @@ public static class AssignmentAnalysisReport
         var rowData = new List<XElement>();
         AddCell(rowData, courseInfo.CourseName);
         AddCell(rowData, courseInfo.CourseCode);
+        rowData.ForEach(x => x.AddStyle("text-align: left"));
+
         AddCell(rowData, session.SessionId);
         AddCell(rowData, capacity);
 
@@ -98,7 +130,7 @@ public static class AssignmentAnalysisReport
             return cell;
         }
 
-        static void HighlightCell(XElement cell) => cell.Add(new XAttribute("style", "background-color: yellow;"));
+        static void HighlightCell(XElement cell) => cell.AddStyle("background-color: yellow");
     }
 
     private static List<string> DistinctGrades(SchedulingOutputData outputData)

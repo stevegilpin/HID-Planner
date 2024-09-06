@@ -11,6 +11,17 @@ public static class HtmlUtil
         using var f = new StreamWriter(filePath);
         f.Write(content.ToString());
     }
+
+    public static void AddAttribute(this XElement element, string name, string value)
+    {
+        var attr = element.Attribute(name);
+        if (attr == null)
+            element.Add(new XAttribute(name, value));
+        else
+            attr.Value += $" {value};";
+    }
+
+    public static void AddStyle(this XElement element, string value) => element.AddAttribute("style", value);
 }
 
 public class HtmlHeader(object content, int level = 1) : XElement($"h{level}", content);
@@ -39,7 +50,7 @@ public static class CSS
                """;
     }
 
-    public static string TableStyles()
+    public static string TableStyles(string textAlign = "left")
     {
         return
             @$"
@@ -53,11 +64,22 @@ public static class CSS
         }}
         td, th {{
            padding: 4px;
-           text-align: left;
+           text-align: {textAlign};
         }}
         tr:hover {{
            background-color: lightgray;
         }}
         ";
+    }
+
+    public static string BodyBackgroundColorInPrint()
+    {
+        return
+            """
+            body{
+              -webkit-print-color-adjust:exact !important;
+              print-color-adjust:exact !important;
+            }
+            """;
     }
 }
