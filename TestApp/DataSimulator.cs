@@ -54,6 +54,7 @@ public static class DataSimulator
         var latestRun = DataManager.Scheduling.LatestRun();
         var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
 
+        ProblematicAssignmentsReport.Create(data).WriteToFile(ReportsFolder);
         ClassRosterReport.Create(data).WriteToFile(ReportsFolder);
         StudentScheduleGridReport.Create(data).WriteToFile(ReportsFolder);
         AssignmentAnalysisReport.Create(data).WriteToFile(ReportsFolder);

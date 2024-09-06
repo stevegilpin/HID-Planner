@@ -39,6 +39,7 @@ public class HtmlList() : XElement("ul", string.Empty)
     }
 }
 public class HtmlListItem(object itemContent) : XElement("li", itemContent);
+public class HtmlParagraph(string text) : XElement("p", text);
 
 public static class CSS
 {
