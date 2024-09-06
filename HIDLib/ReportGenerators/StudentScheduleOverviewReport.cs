@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -12,8 +13,7 @@ public static class StudentScheduleOverviewReport
     {
         var doc = new HtmlDoc("Student Schedule Overview");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
-        doc.StyleRuleSets.Add(CSS.PageBreak());
-        doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(HtmlTableGrid.Css());
 
         doc.Add(new HtmlHeader("Student Schedules"));
 
@@ -23,13 +23,19 @@ public static class StudentScheduleOverviewReport
             .Select(x => x.Key)
             .ToList();
 
-        var grid = doc.Add(new HtmlGridLayout(2));
+        var grid = doc.Add(new HtmlTableGrid());
+        const int numColumns = 2;
+        var rowData = new List<XElement>();
         foreach (var id in studentIds) {
             var student = outputData.StudentInputs[id].StudentInfo;
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
             var table = GetStudentTable(id, outputData).ToXmlNode();
             var cell = new XElement("div", header, table);
-            grid.AddCell(cell);
+            rowData.Add(cell);
+            if (rowData.Count == numColumns) {
+                grid.AddRow(rowData);
+                rowData.Clear();
+            }
         }
 
         return doc;
