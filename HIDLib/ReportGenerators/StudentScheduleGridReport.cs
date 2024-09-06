@@ -7,11 +7,11 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public static class StudentScheduleAnalysisReport
+public static class StudentScheduleGridReport
 {
     public static HtmlDoc Create(SchedulingOutputData outputData)
     {
-        var doc = new HtmlDoc("Student Schedules");
+        var doc = new HtmlDoc("Student Schedule Grid");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(CSS.PageBreak());
         doc.StyleRuleSets.Add(CSS.TableStyles());
@@ -32,9 +32,13 @@ public static class StudentScheduleAnalysisReport
 
         // page header
         var name = $"{studentData.StudentInfo.FirstName} {studentData.StudentInfo.LastName}";
-        var grade = $"Grade {studentData.StudentInfo.Grade}";
-        var homeroom = $"Room {studentData.StudentInfo.Homeroom}";
-        root.Add(new HtmlHeader($"{name} - {grade} - {homeroom}", 2));
+        root.Add(new HtmlHeader(name, 2));
+        root.Add(new XElement("span", $"Grade: {studentData.StudentInfo.Grade}"));
+        root.Add(new HtmlBreak());
+        root.Add(new XElement("span", $"Room: {studentData.StudentInfo.Homeroom}"));
+        root.Add(new HtmlBreak());
+        root.Add(new XElement("span", $"ID: {studentData.StudentInfo.StudentId}"));
+        root.Add(new HtmlBreak());
         
         root.Add(new HtmlHeader("Choices by Session", 3));
         var courseOptions = GetRankedCourseOfferingTable(studentId, outputData);
@@ -65,6 +69,7 @@ public static class StudentScheduleAnalysisReport
         var colHeaders = new List<object> { "Session" };
         colHeaders.AddRange(rankings.Select(x => x.Rank.ToString()));
         table.AddColumnHeaders(colHeaders);
+        table.AddColGroup(colHeaders.Count - 1, ("style", "border-right: 1px solid black;"));
         
         var assignedCourses = outputData.AssignmentResults
             .Where(x => x.StudentId == studentId)
@@ -104,7 +109,11 @@ public static class StudentScheduleAnalysisReport
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
             var ranking = courseRankings[course.CourseCode];
-            table.AddRowData([i + 1, course.CourseCode, ranking.Rank]);
+            var row = table.AddRowData([i + 1, course.CourseCode, ranking.Rank]);
+            if (ranking.Rank >= 7 && ranking.Rank < 10)
+                row.RowContainer.AddStyle("background-color: yellow");
+            else if (ranking.Rank >= 10)
+                row.RowContainer.AddStyle("background-color: red");
         }
 
         return table;

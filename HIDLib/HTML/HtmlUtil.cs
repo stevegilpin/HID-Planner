@@ -28,6 +28,16 @@ public class HtmlHeader(object content, int level = 1) : XElement($"h{level}", c
 public class HtmlBreak() : XElement("br");
 public class HtmlPageBreak() : XElement("div", new XAttribute("class", "pagebreak"), string.Empty);
 public class HtmlOrderedList() : XElement("ol", string.Empty);
+
+public class HtmlList() : XElement("ul", string.Empty)
+{
+    public HtmlListItem AddItem(object itemContent)
+    {
+        var item = new HtmlListItem(itemContent);
+        Add(item);
+        return item;
+    }
+}
 public class HtmlListItem(object itemContent) : XElement("li", itemContent);
 
 public static class CSS
