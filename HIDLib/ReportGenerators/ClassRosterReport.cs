@@ -17,26 +17,29 @@ public class ClassRosterReport
         doc.StyleRuleSets.Add(CSS.TableStyles());
 
         var courseAssignments = outputData.AssignmentResults
-            .GroupBy(x => x.CourseCode)
-            .OrderBy(g => g.Key)
+            .GroupBy(x => new {
+                    outputData.CourseInputs[x.CourseCode].CourseInfo.CourseName,
+                    x.CourseCode,
+                })
+            .OrderBy(g => g.Key.CourseName)
             .ToList();
 
         foreach (var courseGroup in courseAssignments)
-            doc.Add(CreateSingleClassRoster(courseGroup.Key, courseGroup.ToList(), outputData));
+            doc.Add(CreateSingleClassRoster(courseGroup.Key.CourseName, courseGroup.Key.CourseCode, courseGroup.ToList(), outputData));
 
         return doc;
     }
 
-    private static XElement CreateSingleClassRoster(string courseCode, List<CourseAssignmentResult> selectedStudents, SchedulingOutputData outputData)
+    private static XElement CreateSingleClassRoster(string courseName, string courseCode, List<CourseAssignmentResult> selectedStudents, SchedulingOutputData outputData)
     {
-        var courseData = outputData.CourseInputs[courseCode];
         var sessionGroups = selectedStudents
             .GroupBy(x => x.SessionId)
             .OrderBy(g => g.Key)
             .ToList();
 
         var root = new XElement("div");
-        root.Add(new HtmlHeader($"Class Roster: {courseData.CourseInfo.CourseName}", 2));
+        root.Add(new HtmlHeader($"Class Roster: {courseName}", 2));
+        root.Add(new HtmlParagraph($"Class code: {courseCode}"));
 
         var grid = new HtmlGridLayout(2);
         root.Add(grid);
@@ -44,16 +47,18 @@ public class ClassRosterReport
         foreach (var group in sessionGroups) {
             var header = new HtmlHeader($"Session {group.Key}", 3);
             var table = new HtmlTable();
-            table.AddColumnHeaders(["Student Name", "Grade"]);
+            table.AddColumnHeaders(["Student Name", "Grade", "Gender"]);
             table.CaptionBelowTable = $"{group.Count()} students";
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
                 var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
-                table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade]);
+                table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade, studentInfo.Gender]);
             }
             
-            foreach (var row in table.Data)
-                row.Data[1].Add(new XAttribute("style", "text-align: center;"));
+            foreach (var row in table.Data) {
+                row.Data[1].AddStyle("text-align: center;");
+                row.Data[2].AddStyle("text-align: center;");
+            }
 
             grid.AddCell(header, table.ToXmlNode());
         }
