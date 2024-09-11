@@ -8,6 +8,7 @@ public static class HtmlUtil
     public static void WriteToFile(this HtmlDoc content, string folder)
     {
         var filePath = Path.Combine(folder, $"{content.Title}.html");
+        Directory.CreateDirectory(folder);
         using var f = new StreamWriter(filePath);
         f.Write(content.ToString());
     }
