@@ -3,12 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Data.Objects;
 
-public class CourseAssignmentRunInfo
+public class RunInfo
 {
     [Key]
     public int RunId { get; set; }
     public DateTime RunTimeStamp { get; set; }
-    public int StudentRankingInputId { get; set; }
-    public int CourseScheduleInputId { get; set; }
+    public bool ManuallyCreatedResults { get; set; }
     public string Description { get; set; }
 }

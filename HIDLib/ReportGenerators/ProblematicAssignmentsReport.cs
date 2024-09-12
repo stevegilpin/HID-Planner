@@ -8,11 +8,11 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class ProblematicAssignmentsReport(SchedulingOutputData reportData) : IHtmlGenerator
+public class ProblematicAssignmentsReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
     private const int COURSE_RANK_THRESHOLD = 7;
 
-    private readonly SchedulingOutputData ReportData = reportData;
+    private readonly AssignmentDataSet ReportData = reportData;
     
     public HtmlDoc CreateDoc()
     {
@@ -48,14 +48,14 @@ public class ProblematicAssignmentsReport(SchedulingOutputData reportData) : IHt
 
     private List<(StudentInfo Student, string CourseCode, int Rank)> FindProblematicAssignments()
     {
-        var rankings = ReportData.StudentInputs.ToDictionary(x => x.Key, x => x.Value.CourseRankings.ToDictionary(y => y.CourseCode, y => y.Rank));
+        var rankings = ReportData.InputData.StudentCourseRanking.ToDictionary(x => x.Key, x => x.Value.ToDictionary(y => y.CourseCode, y => y.Rank));
         var assignments = new List<(StudentInfo, string, int)>();
         foreach (var course in ReportData.AssignmentResults) {
             var rank = rankings[course.StudentId][course.CourseCode];
             if (rank < COURSE_RANK_THRESHOLD)
                 continue;
 
-            var student = ReportData.StudentInputs[course.StudentId].StudentInfo;
+            var student = ReportData.InputData.StudentInfo[course.StudentId];
             assignments.Add((student, course.CourseCode, rank));
         }
 

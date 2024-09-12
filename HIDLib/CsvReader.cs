@@ -76,7 +76,7 @@ public static class CsvReader
             public CourseInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.CourseScheduleInputId).Ignore();
+                Map(x => x.RunId).Ignore();
                 Map(x => x.CourseName).Optional();
                 Map(x => x.MinCapacity).Optional();
                 Map(x => x.MaxCapacity).Optional();
@@ -90,7 +90,7 @@ public static class CsvReader
             public StudentInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.RankingInputId).Optional();
+                Map(x => x.RunId).Optional();
                 Map(x => x.StudentId).Optional();
             }
         }
@@ -100,7 +100,7 @@ public static class CsvReader
             public StudentCourseRankingMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.RankingInputId).Optional();
+                Map(x => x.RunId).Optional();
             }
         }
         
@@ -109,7 +109,7 @@ public static class CsvReader
             public CourseScheduleMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.CourseScheduleInputId).Optional();
+                Map(x => x.RunId).Optional();
                 Map(x => x.RoomCode).Optional();
                 Map(x => x.Instructor).Optional();
                 Map(x => x.Supervisor).Optional();

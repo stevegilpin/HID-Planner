@@ -2,7 +2,7 @@ namespace Data.Objects;
 
 public class CourseSchedule
 {
-    public int CourseScheduleInputId { get; set; }
+    public int RunId { get; set; }
     public string CourseCode { get; set; }
     public int SessionId { get; set; }
     public string RoomCode { get; set; }

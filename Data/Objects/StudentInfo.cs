@@ -2,7 +2,7 @@ namespace Data.Objects;
 
 public class StudentInfo
 {
-    public int RankingInputId { get; set; }
+    public int RunId { get; set; }
     public int StudentId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

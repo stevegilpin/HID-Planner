@@ -9,9 +9,9 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGenerator
+public class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
-    private readonly SchedulingOutputData ReportData = reportData;
+    private readonly AssignmentDataSet ReportData = reportData;
 
     public HtmlDoc CreateDoc()
     {
@@ -28,8 +28,8 @@ public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGe
             .ToList();
 
         var courseData = courses
-            .Select(x => ReportData.CourseInputs[x])
-            .OrderBy(x => x.CourseInfo.CourseCode)
+            .Select(x => ReportData.InputData.CourseInfo[x])
+            .OrderBy(x => x.CourseCode)
             .ToList();
 
         var table = new HtmlTable();
@@ -37,9 +37,9 @@ public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGe
         AddColumnFormatting(table, grades);
         
         foreach (var course in courseData) {
-            foreach (var session in course.Schedule) {
+            var schedule = ReportData.InputData.CourseSchedule[course.CourseCode];
+            foreach (var session in schedule)
                 table.AddRow(GetRowData(session));
-            }
         }
 
         doc.Add(table.ToXmlNode());
@@ -94,7 +94,7 @@ public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGe
             .Where(x => x.SessionId == session.SessionId)
             .ToList();
 
-        var courseInfo = ReportData.CourseInputs[session.CourseCode].CourseInfo;
+        var courseInfo = ReportData.InputData.CourseInfo[session.CourseCode];
         var capacity = courseInfo.MaxCapacity;
 
         var rowData = new List<XElement>();
@@ -109,19 +109,19 @@ public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGe
         if (assigned.Count <= 5)
             HighlightCell(numAssignedCell);
 
-        var boys = assigned.Count(x => ReportData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
+        var boys = assigned.Count(x => ReportData.InputData.StudentInfo[x.StudentId].Gender == "M");
         var boysCell = AddCell(rowData, boys == 0 ? string.Empty : boys);
         if (boys == 1)
             HighlightCell(boysCell);
         
-        var girls = assigned.Count(x => ReportData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
+        var girls = assigned.Count(x => ReportData.InputData.StudentInfo[x.StudentId].Gender == "F");
         var girlsCell = AddCell(rowData, girls == 0 ? string.Empty : girls);
         if (girls == 1)
             HighlightCell(girlsCell);
 
         var grades = DistinctGrades();
         foreach (var grade in grades) {
-            var gradeCount = assigned.Count(s => ReportData.StudentInputs[s.StudentId].StudentInfo.Grade == grade);
+            var gradeCount = assigned.Count(s => ReportData.InputData.StudentInfo[s.StudentId].Grade == grade);
             AddCell(rowData, gradeCount == 0 ? string.Empty : gradeCount);
         }
 
@@ -139,8 +139,8 @@ public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGe
 
     private List<string> DistinctGrades()
     {
-        return ReportData.StudentInputs.Values
-            .Select(x => x.StudentInfo.Grade)
+        return ReportData.InputData.StudentInfo.Values
+            .Select(x => x.Grade)
             .Distinct()
             .OrderBy(x => x)
             .ToList();

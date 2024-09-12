@@ -52,63 +52,50 @@ CREATE TABLE [Rooms] (
     [Description] varchar(1024)
 );
 
-CREATE TABLE [StudentRankingInputDescription] (
-    [InputId] int PRIMARY KEY NOT NULL,
-    [EventId] varchar(50) NOT NULL,
-    [Description] varchar(1024)
-);
-
 CREATE TABLE [StudentInfo] (
-    [RankingInputId] int NOT NULL,
+    [RunId] int NOT NULL,
     [StudentId] int NOT NULL,
     [FirstName] varchar(200) NOT NULL,
     [LastName] varchar(200) NOT NULL,
     [Grade] varchar(10) NOT NULL,
     [Gender] varchar(10) NOT NULL,
     [Homeroom] varchar(20),
-    PRIMARY KEY ([RankingInputId], [StudentId])
+    PRIMARY KEY ([RunId], [StudentId])
 );
 
 CREATE TABLE [StudentCourseRanking] (
-    [RankingInputId] int NOT NULL,
+    [RunId] int NOT NULL,
     [StudentId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     [Rank] int NOT NULL,
-    PRIMARY KEY ([RankingInputId], [StudentId], [CourseCode])
-);
-
-CREATE TABLE [CourseScheduleInputDescription] (
-    [InputId] int PRIMARY KEY NOT NULL,
-    [EventId] varchar(50) NOT NULL,
-    [Description] varchar(1024)
+    PRIMARY KEY ([RunId], [StudentId], [CourseCode])
 );
 
 CREATE TABLE [CourseInfo] (
-    [CourseScheduleInputId] int NOT NULL,
+    [RunId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     [CourseName] varchar(250) NOT NULL,
     [MinCapacity] int,
     [MaxCapacity] int,
     [Description] varchar(1024),
     [GradesFlags] int,
-    PRIMARY KEY ([CourseScheduleInputId], [CourseCode])
+    PRIMARY KEY ([RunId], [CourseCode])
 );
 
 CREATE TABLE [CourseSchedule] (
-    [CourseScheduleInputId] int NOT NULL,
+    [RunId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     [SessionId] int NOT NULL,
     [RoomCode] varchar(20),
     [Instructor] varchar(200),
     [Supervisor] varchar(200),
-    PRIMARY KEY ([CourseScheduleInputId], [CourseCode], [SessionId])
+    PRIMARY KEY ([RunId], [CourseCode], [SessionId])
 );
 
-CREATE TABLE [CourseAssignmentRunInfo] (
+CREATE TABLE [RunInfo] (
     [RunId] int PRIMARY KEY NOT NULL,
     [RunTimeStamp] DateTime2 NOT NULL,
-    [StudentRankingInputId] int NOT NULL,
-    [CourseScheduleInputId] int NOT NULL,
+    [ManuallyCreatedResults] bit NOT NULL,
     [Description] varchar(1024)
 );
 

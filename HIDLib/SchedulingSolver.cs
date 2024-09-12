@@ -10,103 +10,65 @@ namespace HIDLib;
 public static class SchedulingSolver
 {
     private const string SOLVER_TYPE = "SCIP";
-    
-    private class InputData
-    {
-        public List<CourseInputData> CourseData { get; init; }
-        public List<StudentCourseRanking> StudentRankings { get; init; }
-    }
 
-    public class SolveData
-    {
-        public int StudentRankingInputId { get; init; }
-        public int CourseScheduleInputId { get; init; }
-        public List<VariableData> Variables { get; init; }
-        public Solver.ResultStatus ResultCode { get; init; }
-        public double ObjectiveFunctionValue { get; init; }
-        public DateTime Timestamp { get; init; }
-
-        public List<CourseAssignmentResult> ToDbResultRows()
-        {
-            var resultRows = new List<CourseAssignmentResult>();
-            foreach (var variable in Variables) {
-                if (variable.Variable.SolutionValue() == 0)
-                    continue;
-                
-                resultRows.Add(new CourseAssignmentResult {
-                    CourseCode = variable.StudentRanking.CourseCode,
-                    StudentId = variable.StudentRanking.StudentId,
-                    SessionId = variable.SessionId,
-                });
-            }
-
-            return resultRows;
-        }
-
-        public CourseAssignmentRunInfo ToDbRunRow(string description)
-        {
-            return new CourseAssignmentRunInfo {
-                RunTimeStamp = Timestamp,
-                CourseScheduleInputId = CourseScheduleInputId,
-                StudentRankingInputId = StudentRankingInputId,
-                Description = description,
-            };
-        }
-    }
-
-    public record VariableData(
+    private record VariableData(
         StudentCourseRanking StudentRanking,
         CourseInfo CourseInfo,
         int SessionId,
         Variable Variable);
     
-    public static SolveData RunSolve(int studentRankingId, int courseScheduleId)
+    public static AssignmentDataSet RunSolve(InputDataSet inputData)
     {
         var timestamp = DateTime.Now;
-        var inputs = LoadInputs(studentRankingId, courseScheduleId);
 
         var solver = Solver.CreateSolver(SOLVER_TYPE);
-        var variables = CreateVariables(solver, inputs);
+        var variables = CreateVariables(solver, inputData);
         AddConstraints_OneCoursePerSession(solver, variables);
-        AddConstraints_CourseCapacity(solver, inputs, variables);
+        AddConstraints_CourseCapacity(solver, inputData, variables);
         AddConstraints_NoDupeCourses(solver, variables);
         SetObjectiveFunction(solver, variables);
 
         var res = solver.Solve();
+        if (res != Solver.ResultStatus.OPTIMAL)
+            throw new Exception("Optimal solution not found");
 
-        return new SolveData {
-            CourseScheduleInputId = courseScheduleId,
-            StudentRankingInputId = studentRankingId,
-            Variables = variables,
-            ObjectiveFunctionValue = solver.Objective().Value(),
-            ResultCode = res,
-            Timestamp = timestamp,
+        var resultRows = new List<CourseAssignmentResult>();
+        foreach (var variable in variables) {
+            if (variable.Variable.SolutionValue() == 0)
+                continue;
+
+            resultRows.Add(new CourseAssignmentResult {
+                CourseCode = variable.StudentRanking.CourseCode,
+                StudentId = variable.StudentRanking.StudentId,
+                SessionId = variable.SessionId,
+            });
+        }
+
+        return new AssignmentDataSet {
+            InputData = inputData,
+            AssignmentResults = resultRows,
+            RunInfo = new RunInfo {
+                RunTimeStamp = timestamp,
+                ManuallyCreatedResults = false,
+            }
         };
     }
-    
-    private static InputData LoadInputs(int studentRankingId, int courseScheduleId)
-    {
-        var courseData = DataManager.Courses.GetInputData(courseScheduleId);
-        var studentRankings = DataManager.Students.GetStudentCourseRankingData(studentRankingId);
-        return new InputData {
-            CourseData = courseData,
-            StudentRankings = studentRankings,
-        };
-    }
 
-    private static List<VariableData> CreateVariables(Solver solver, InputData inputs)
+    private static List<VariableData> CreateVariables(Solver solver, InputDataSet inputData)
     {
-        var studentData = inputs.StudentRankings.OrderBy(x => x.StudentId).ThenBy(x => x.Rank).ToList();
-
-        var courseMap = inputs.CourseData.ToDictionary(x => x.CourseInfo.CourseCode);
+        var studentData = inputData.StudentCourseRanking
+            .SelectMany(x => x.Value)
+            .OrderBy(x => x.StudentId)
+            .ThenBy(x => x.Rank)
+            .ToList();
 
         var variables = new List<VariableData>();
         foreach (var ranking in studentData) {
-            var course = courseMap[ranking.CourseCode];
-            foreach (var session in course.Schedule) {
-                var variableName = $"{ranking.StudentId}_{course.CourseInfo.CourseCode}_{session.SessionId}";
+            var course = inputData.CourseInfo[ranking.CourseCode];
+            foreach (var session in inputData.CourseSchedule[ranking.CourseCode]) {
+                var variableName = $"{ranking.StudentId}_{course.CourseCode}_{session.SessionId}";
                 var variable = solver.MakeIntVar(0, 1, variableName);
-                variables.Add(new VariableData(ranking, course.CourseInfo, session.SessionId, variable));
+                variables.Add(new VariableData(ranking, course, session.SessionId, variable));
             }
         }
 
@@ -123,12 +85,11 @@ public static class SchedulingSolver
         }
     }
 
-    private static void AddConstraints_CourseCapacity(Solver solver, InputData inputs, List<VariableData> variables)
+    private static void AddConstraints_CourseCapacity(Solver solver, InputDataSet inputData, List<VariableData> variables)
     {
         var uniqueSessions = variables.GroupBy(x => (x.CourseInfo.CourseCode, x.SessionId)).ToList();
-        var courseInfoMap = inputs.CourseData.ToDictionary(x => x.CourseInfo.CourseCode);
         foreach (var sessionGroup in uniqueSessions) {
-            var courseInfo = courseInfoMap[sessionGroup.Key.CourseCode].CourseInfo;
+            var courseInfo = inputData.CourseInfo[sessionGroup.Key.CourseCode];
             var name = $"{sessionGroup.Key.CourseCode}_{sessionGroup.Key.SessionId}_Const2";
             AddConstraint(solver, courseInfo.MinCapacity ?? 0, courseInfo.MaxCapacity ?? int.MaxValue, sessionGroup.ToList(), name);
         }

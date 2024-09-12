@@ -8,9 +8,9 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class StudentScheduleOverviewReport(SchedulingOutputData reportData) : IHtmlGenerator
+public class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
-    private readonly SchedulingOutputData ReportData = reportData;
+    private readonly AssignmentDataSet ReportData = reportData;
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Student Schedule Overview");
@@ -19,9 +19,9 @@ public class StudentScheduleOverviewReport(SchedulingOutputData reportData) : IH
 
         doc.Add(new HtmlHeader("Student Schedules"));
 
-        var studentIds = ReportData.StudentInputs
-            .OrderBy(x => x.Value.StudentInfo.LastName)
-            .ThenBy(x => x.Value.StudentInfo.FirstName)
+        var studentIds = ReportData.InputData.StudentInfo
+            .OrderBy(x => x.Value.LastName)
+            .ThenBy(x => x.Value.FirstName)
             .Select(x => x.Key)
             .ToList();
 
@@ -29,7 +29,7 @@ public class StudentScheduleOverviewReport(SchedulingOutputData reportData) : IH
         const int numColumns = 2;
         var rowData = new List<XElement>();
         foreach (var id in studentIds) {
-            var student = ReportData.StudentInputs[id].StudentInfo;
+            var student = ReportData.InputData.StudentInfo[id];
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
             var table = GetStudentTable(id).ToXmlNode();
             var cell = new XElement("div", header, table);
@@ -54,8 +54,8 @@ public class StudentScheduleOverviewReport(SchedulingOutputData reportData) : IH
         table.AddColumnHeaders(["Session", "Class", "Room"]);
 
         foreach (var course in assigned) {
-            var courseName = ReportData.CourseInputs[course.CourseCode].CourseInfo.CourseName;
-            var room = ReportData.CourseInputs[course.CourseCode].Schedule.Single(x => x.SessionId == course.SessionId).RoomCode;
+            var courseName = ReportData.InputData.CourseInfo[course.CourseCode].CourseName;
+            var room = ReportData.InputData.CourseSchedule[course.CourseCode].Single(x => x.SessionId == course.SessionId).RoomCode;
             table.AddRowData([course.SessionId, courseName, room ?? "TBD"]);
         }
 

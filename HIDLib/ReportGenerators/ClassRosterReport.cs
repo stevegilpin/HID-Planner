@@ -9,9 +9,9 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class ClassRosterReport(SchedulingOutputData reportData) : IHtmlGenerator
+public class ClassRosterReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
-    private readonly SchedulingOutputData ReportData = reportData;
+    private readonly AssignmentDataSet ReportData = reportData;
 
     public HtmlDoc CreateDoc()
     {
@@ -22,7 +22,7 @@ public class ClassRosterReport(SchedulingOutputData reportData) : IHtmlGenerator
 
         var courseAssignments = ReportData.AssignmentResults
             .GroupBy(x => new {
-                ReportData.CourseInputs[x.CourseCode].CourseInfo.CourseName,
+                ReportData.InputData.CourseInfo[x.CourseCode].CourseName,
                 x.CourseCode,
             })
             .OrderBy(g => g.Key.CourseName)
@@ -55,7 +55,7 @@ public class ClassRosterReport(SchedulingOutputData reportData) : IHtmlGenerator
             table.CaptionBelowTable = $"{group.Count()} students";
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
-                var studentInfo = ReportData.StudentInputs[student.StudentId].StudentInfo;
+                var studentInfo = ReportData.InputData.StudentInfo[student.StudentId];
                 table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade, studentInfo.Gender]);
             }
             

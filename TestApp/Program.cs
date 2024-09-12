@@ -1,9 +1,7 @@
 ﻿using System;
 using TestApp;
 
-// DataSimulator.PopulateStudentInfo();
-// DataSimulator.PopulateCourseInfo();
-// DataSimulator.RunScheduling();
+DataSimulator.RunScheduling();
 DataSimulator.CreateReports();
 
 Console.WriteLine("Done");

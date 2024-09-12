@@ -2,7 +2,7 @@ namespace Data.Objects;
 
 public class CourseInfo
 {
-    public int CourseScheduleInputId { get; set; }
+    public int RunId { get; set; }
     public string CourseCode { get; set; }
     public string CourseName { get; set; }
     public int? MinCapacity { get; set; }

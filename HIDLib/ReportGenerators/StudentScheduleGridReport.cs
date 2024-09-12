@@ -9,9 +9,9 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlGenerator
+public class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
-    private readonly SchedulingOutputData ReportData = reportData;
+    private readonly AssignmentDataSet ReportData = reportData;
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Student Schedule Grid");
@@ -19,7 +19,7 @@ public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlG
         doc.StyleRuleSets.Add(CSS.PageBreak());
         doc.StyleRuleSets.Add(CSS.TableStyles());
 
-        var studentIds =  ReportData.StudentInputs.Keys.OrderBy(x => x).ToList();
+        var studentIds =  ReportData.InputData.StudentInfo.Keys.OrderBy(x => x).ToList();
         foreach (var id in studentIds) {
             doc.Add(GetStudentSchedule(id));
             doc.Add(new HtmlPageBreak());
@@ -31,16 +31,16 @@ public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlG
     private XElement GetStudentSchedule(int studentId)
     {
         var root = new XElement("div");
-        var studentData =  ReportData.StudentInputs[studentId];
+        var studentData =  ReportData.InputData.StudentInfo[studentId];
 
         // page header
-        var name = $"{studentData.StudentInfo.FirstName} {studentData.StudentInfo.LastName}";
+        var name = $"{studentData.FirstName} {studentData.LastName}";
         root.Add(new HtmlHeader(name, 2));
-        root.Add(new XElement("span", $"Grade: {studentData.StudentInfo.Grade}"));
+        root.Add(new XElement("span", $"Grade: {studentData.Grade}"));
         root.Add(new HtmlBreak());
-        root.Add(new XElement("span", $"Room: {studentData.StudentInfo.Homeroom}"));
+        root.Add(new XElement("span", $"Room: {studentData.Homeroom}"));
         root.Add(new HtmlBreak());
-        root.Add(new XElement("span", $"ID: {studentData.StudentInfo.StudentId}"));
+        root.Add(new XElement("span", $"ID: {studentData.StudentId}"));
         root.Add(new HtmlBreak());
         
         root.Add(new HtmlHeader("Choices by Session", 3));
@@ -57,13 +57,13 @@ public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlG
     private HtmlTable GetRankedCourseOfferingTable(int studentId)
     {
         const int numChoicesShown = 12;
-        var rankings =  ReportData.StudentInputs[studentId].CourseRankings
+        var rankings =  ReportData.InputData.StudentCourseRanking[studentId]
             .Where(x => x.Rank <= numChoicesShown)
             .OrderBy(x => x.Rank).ToList();
 
         var availableCourses = new Dictionary<string, HashSet<int>>();
         foreach (var course in rankings) {
-            var sessionIds = ReportData.CourseInputs[course.CourseCode].Schedule.Select(x => x.SessionId).ToHashSet();
+            var sessionIds = ReportData.InputData.CourseSchedule[course.CourseCode].Select(x => x.SessionId).ToHashSet();
             availableCourses.Add(course.CourseCode, sessionIds);
         }
 
@@ -102,8 +102,7 @@ public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlG
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var studentData = ReportData.StudentInputs[studentId];
-        var courseRankings = studentData.CourseRankings.ToDictionary(x => x.CourseCode);
+        var courseRankings = ReportData.InputData.StudentCourseRanking[studentId].ToDictionary(x => x.CourseCode);
         var objectiveScore = assigned.Sum(x => SchedulingSolver.GetCourseCost(courseRankings[x.CourseCode].Rank));
 
         var table = new HtmlTable();
