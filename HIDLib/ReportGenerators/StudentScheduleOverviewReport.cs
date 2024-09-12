@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -7,9 +7,11 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public static class StudentScheduleOverviewReport
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
+public class StudentScheduleOverviewReport(SchedulingOutputData reportData) : IHtmlGenerator
 {
-    public static HtmlDoc Create(SchedulingOutputData outputData)
+    private readonly SchedulingOutputData ReportData = reportData;
+    public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Student Schedule Overview");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
@@ -17,7 +19,7 @@ public static class StudentScheduleOverviewReport
 
         doc.Add(new HtmlHeader("Student Schedules"));
 
-        var studentIds = outputData.StudentInputs
+        var studentIds = ReportData.StudentInputs
             .OrderBy(x => x.Value.StudentInfo.LastName)
             .ThenBy(x => x.Value.StudentInfo.FirstName)
             .Select(x => x.Key)
@@ -27,9 +29,9 @@ public static class StudentScheduleOverviewReport
         const int numColumns = 2;
         var rowData = new List<XElement>();
         foreach (var id in studentIds) {
-            var student = outputData.StudentInputs[id].StudentInfo;
+            var student = ReportData.StudentInputs[id].StudentInfo;
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
-            var table = GetStudentTable(id, outputData).ToXmlNode();
+            var table = GetStudentTable(id).ToXmlNode();
             var cell = new XElement("div", header, table);
             rowData.Add(cell);
             if (rowData.Count == numColumns) {
@@ -41,9 +43,9 @@ public static class StudentScheduleOverviewReport
         return doc;
     }
 
-    private static HtmlTable GetStudentTable(int studentId, SchedulingOutputData outputData)
+    private HtmlTable GetStudentTable(int studentId)
     {
-        var assigned = outputData.AssignmentResults
+        var assigned = ReportData.AssignmentResults
             .Where(x => x.StudentId == studentId)
             .OrderBy(x => x.SessionId)
             .ToList();
@@ -52,8 +54,8 @@ public static class StudentScheduleOverviewReport
         table.AddColumnHeaders(["Session", "Class", "Room"]);
 
         foreach (var course in assigned) {
-            var courseName = outputData.CourseInputs[course.CourseCode].CourseInfo.CourseName;
-            var room = outputData.CourseInputs[course.CourseCode].Schedule.Single(x => x.SessionId == course.SessionId).RoomCode;
+            var courseName = ReportData.CourseInputs[course.CourseCode].CourseInfo.CourseName;
+            var room = ReportData.CourseInputs[course.CourseCode].Schedule.Single(x => x.SessionId == course.SessionId).RoomCode;
             table.AddRowData([course.SessionId, courseName, room ?? "TBD"]);
         }
 

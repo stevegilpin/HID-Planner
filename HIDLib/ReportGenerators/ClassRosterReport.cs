@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -7,30 +8,33 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class ClassRosterReport
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
+public class ClassRosterReport(SchedulingOutputData reportData) : IHtmlGenerator
 {
-    public static HtmlDoc Create(SchedulingOutputData outputData)
+    private readonly SchedulingOutputData ReportData = reportData;
+
+    public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Class Roster");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(CSS.PageBreak());
         doc.StyleRuleSets.Add(CSS.TableStyles());
 
-        var courseAssignments = outputData.AssignmentResults
+        var courseAssignments = ReportData.AssignmentResults
             .GroupBy(x => new {
-                    outputData.CourseInputs[x.CourseCode].CourseInfo.CourseName,
-                    x.CourseCode,
-                })
+                ReportData.CourseInputs[x.CourseCode].CourseInfo.CourseName,
+                x.CourseCode,
+            })
             .OrderBy(g => g.Key.CourseName)
             .ToList();
 
         foreach (var courseGroup in courseAssignments)
-            doc.Add(CreateSingleClassRoster(courseGroup.Key.CourseName, courseGroup.Key.CourseCode, courseGroup.ToList(), outputData));
+            doc.Add(CreateSingleClassRoster(courseGroup.Key.CourseName, courseGroup.Key.CourseCode, courseGroup.ToList()));
 
         return doc;
     }
 
-    private static XElement CreateSingleClassRoster(string courseName, string courseCode, List<CourseAssignmentResult> selectedStudents, SchedulingOutputData outputData)
+    private XElement CreateSingleClassRoster(string courseName, string courseCode, List<CourseAssignmentResult> selectedStudents)
     {
         var sessionGroups = selectedStudents
             .GroupBy(x => x.SessionId)
@@ -51,7 +55,7 @@ public class ClassRosterReport
             table.CaptionBelowTable = $"{group.Count()} students";
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
-                var studentInfo = outputData.StudentInputs[student.StudentId].StudentInfo;
+                var studentInfo = ReportData.StudentInputs[student.StudentId].StudentInfo;
                 table.AddRowData([$"{studentInfo.FirstName} {studentInfo.LastName}", studentInfo.Grade, studentInfo.Gender]);
             }
             

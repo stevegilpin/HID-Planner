@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -7,9 +8,12 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public static class AssignmentAnalysisReport
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
+public class AssignmentAnalysisReport(SchedulingOutputData reportData) : IHtmlGenerator
 {
-    public static HtmlDoc Create(SchedulingOutputData outputData)
+    private readonly SchedulingOutputData ReportData = reportData;
+
+    public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Assignment Analysis");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
@@ -18,23 +22,23 @@ public static class AssignmentAnalysisReport
         
         doc.Add(new HtmlHeader("Analysis of Class Assignments"));
 
-        var courses = outputData.AssignmentResults
+        var courses = ReportData.AssignmentResults
             .Select(x => x.CourseCode)
             .Distinct()
             .ToList();
 
         var courseData = courses
-            .Select(x => outputData.CourseInputs[x])
+            .Select(x => ReportData.CourseInputs[x])
             .OrderBy(x => x.CourseInfo.CourseCode)
             .ToList();
 
         var table = new HtmlTable();
-        var grades = DistinctGrades(outputData);
+        var grades = DistinctGrades();
         AddColumnFormatting(table, grades);
         
         foreach (var course in courseData) {
             foreach (var session in course.Schedule) {
-                table.AddRow(GetRowData(session, outputData));
+                table.AddRow(GetRowData(session));
             }
         }
 
@@ -83,14 +87,14 @@ public static class AssignmentAnalysisReport
 
     }
 
-    private static List<XElement> GetRowData(CourseSchedule session, SchedulingOutputData outputData)
+    private List<XElement> GetRowData(CourseSchedule session)
     {
-        var assigned = outputData.AssignmentResults
+        var assigned = ReportData.AssignmentResults
             .Where(x => x.CourseCode == session.CourseCode)
             .Where(x => x.SessionId == session.SessionId)
             .ToList();
 
-        var courseInfo = outputData.CourseInputs[session.CourseCode].CourseInfo;
+        var courseInfo = ReportData.CourseInputs[session.CourseCode].CourseInfo;
         var capacity = courseInfo.MaxCapacity;
 
         var rowData = new List<XElement>();
@@ -105,19 +109,19 @@ public static class AssignmentAnalysisReport
         if (assigned.Count <= 5)
             HighlightCell(numAssignedCell);
 
-        var boys = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
+        var boys = assigned.Count(x => ReportData.StudentInputs[x.StudentId].StudentInfo.Gender == "M");
         var boysCell = AddCell(rowData, boys == 0 ? string.Empty : boys);
         if (boys == 1)
             HighlightCell(boysCell);
         
-        var girls = assigned.Count(x => outputData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
+        var girls = assigned.Count(x => ReportData.StudentInputs[x.StudentId].StudentInfo.Gender == "F");
         var girlsCell = AddCell(rowData, girls == 0 ? string.Empty : girls);
         if (girls == 1)
             HighlightCell(girlsCell);
 
-        var grades = DistinctGrades(outputData);
+        var grades = DistinctGrades();
         foreach (var grade in grades) {
-            var gradeCount = assigned.Count(s => outputData.StudentInputs[s.StudentId].StudentInfo.Grade == grade);
+            var gradeCount = assigned.Count(s => ReportData.StudentInputs[s.StudentId].StudentInfo.Grade == grade);
             AddCell(rowData, gradeCount == 0 ? string.Empty : gradeCount);
         }
 
@@ -133,9 +137,9 @@ public static class AssignmentAnalysisReport
         static void HighlightCell(XElement cell) => cell.AddStyle("background-color: yellow");
     }
 
-    private static List<string> DistinctGrades(SchedulingOutputData outputData)
+    private List<string> DistinctGrades()
     {
-        return outputData.StudentInputs.Values
+        return ReportData.StudentInputs.Values
             .Select(x => x.StudentInfo.Grade)
             .Distinct()
             .OrderBy(x => x)

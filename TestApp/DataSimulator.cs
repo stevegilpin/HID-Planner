@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Data;
@@ -54,10 +55,15 @@ public static class DataSimulator
         var latestRun = DataManager.Scheduling.LatestRun();
         var data = DataManager.Scheduling.LoadSavedData(latestRun.RunId);
 
-        ProblematicAssignmentsReport.Create(data).WriteToFile(ReportsFolder);
-        ClassRosterReport.Create(data).WriteToFile(ReportsFolder);
-        StudentScheduleGridReport.Create(data).WriteToFile(ReportsFolder);
-        AssignmentAnalysisReport.Create(data).WriteToFile(ReportsFolder);
-        StudentScheduleOverviewReport.Create(data).WriteToFile(ReportsFolder);
+        var generators = new IHtmlGenerator[] {
+            new ProblematicAssignmentsReport(data),
+            new ClassRosterReport(data),
+            new StudentScheduleGridReport(data),
+            new AssignmentAnalysisReport(data),
+            new StudentScheduleOverviewReport(data),
+        };
+
+        foreach (var g in generators)
+            g.CreateDoc().WriteToFile(ReportsFolder);
     }
 }

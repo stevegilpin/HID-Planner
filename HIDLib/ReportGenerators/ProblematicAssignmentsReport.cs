@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Data.Objects;
 using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class ProblematicAssignmentsReport
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
+public class ProblematicAssignmentsReport(SchedulingOutputData reportData) : IHtmlGenerator
 {
     private const int COURSE_RANK_THRESHOLD = 7;
+
+    private readonly SchedulingOutputData ReportData = reportData;
     
-    public static HtmlDoc Create(SchedulingOutputData outputData)
+    public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Problematic Assignments");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
@@ -19,7 +23,7 @@ public class ProblematicAssignmentsReport
 
         doc.Add(new HtmlHeader("Problematic Student Assignments"));
 
-        var dataSet = FindProblematicAssignments(outputData)
+        var dataSet = FindProblematicAssignments()
             .OrderByDescending(x => x.Rank)
             .ThenBy(x => x.Student.LastName)
             .ThenBy(x => x.Student.FirstName)
@@ -42,16 +46,16 @@ public class ProblematicAssignmentsReport
         return doc;
     }
 
-    private static List<(StudentInfo Student, string CourseCode, int Rank)> FindProblematicAssignments(SchedulingOutputData outputData)
+    private List<(StudentInfo Student, string CourseCode, int Rank)> FindProblematicAssignments()
     {
-        var rankings = outputData.StudentInputs.ToDictionary(x => x.Key, x => x.Value.CourseRankings.ToDictionary(y => y.CourseCode, y => y.Rank));
+        var rankings = ReportData.StudentInputs.ToDictionary(x => x.Key, x => x.Value.CourseRankings.ToDictionary(y => y.CourseCode, y => y.Rank));
         var assignments = new List<(StudentInfo, string, int)>();
-        foreach (var course in outputData.AssignmentResults) {
+        foreach (var course in ReportData.AssignmentResults) {
             var rank = rankings[course.StudentId][course.CourseCode];
             if (rank < COURSE_RANK_THRESHOLD)
                 continue;
 
-            var student = outputData.StudentInputs[course.StudentId].StudentInfo;
+            var student = ReportData.StudentInputs[course.StudentId].StudentInfo;
             assignments.Add((student, course.CourseCode, rank));
         }
 

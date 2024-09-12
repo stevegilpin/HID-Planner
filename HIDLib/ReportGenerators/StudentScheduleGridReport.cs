@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
@@ -7,28 +8,30 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public static class StudentScheduleGridReport
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
+public class StudentScheduleGridReport(SchedulingOutputData reportData) : IHtmlGenerator
 {
-    public static HtmlDoc Create(SchedulingOutputData outputData)
+    private readonly SchedulingOutputData ReportData = reportData;
+    public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Student Schedule Grid");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(CSS.PageBreak());
         doc.StyleRuleSets.Add(CSS.TableStyles());
 
-        var studentIds = outputData.StudentInputs.Keys.OrderBy(x => x).ToList();
+        var studentIds =  ReportData.StudentInputs.Keys.OrderBy(x => x).ToList();
         foreach (var id in studentIds) {
-            doc.Add(GetStudentSchedule(id, outputData));
+            doc.Add(GetStudentSchedule(id));
             doc.Add(new HtmlPageBreak());
         }
 
         return doc;
     }
 
-    private static XElement GetStudentSchedule(int studentId, SchedulingOutputData outputData)
+    private XElement GetStudentSchedule(int studentId)
     {
         var root = new XElement("div");
-        var studentData = outputData.StudentInputs[studentId];
+        var studentData =  ReportData.StudentInputs[studentId];
 
         // page header
         var name = $"{studentData.StudentInfo.FirstName} {studentData.StudentInfo.LastName}";
@@ -41,27 +44,27 @@ public static class StudentScheduleGridReport
         root.Add(new HtmlBreak());
         
         root.Add(new HtmlHeader("Choices by Session", 3));
-        var courseOptions = GetRankedCourseOfferingTable(studentId, outputData);
+        var courseOptions = GetRankedCourseOfferingTable(studentId);
         root.Add(courseOptions.ToXmlNode());
 
         root.Add(new HtmlHeader("Assigned Classes", 3));
-        var assigned = GetAssignedClassesTable(studentId, outputData);
+        var assigned = GetAssignedClassesTable(studentId);
         root.Add(assigned.ToXmlNode());
 
         return root;
     }
 
-    private static HtmlTable GetRankedCourseOfferingTable(int studentId, SchedulingOutputData outputData)
+    private HtmlTable GetRankedCourseOfferingTable(int studentId)
     {
         const int numChoicesShown = 12;
-        var rankings = outputData.StudentInputs[studentId].CourseRankings
+        var rankings =  ReportData.StudentInputs[studentId].CourseRankings
             .Where(x => x.Rank <= numChoicesShown)
             .OrderBy(x => x.Rank).ToList();
 
         var availableCourses = new Dictionary<string, HashSet<int>>();
         foreach (var course in rankings) {
-            var foo = outputData.CourseInputs[course.CourseCode].Schedule.Select(x => x.SessionId).ToHashSet();
-            availableCourses.Add(course.CourseCode, foo);
+            var sessionIds = ReportData.CourseInputs[course.CourseCode].Schedule.Select(x => x.SessionId).ToHashSet();
+            availableCourses.Add(course.CourseCode, sessionIds);
         }
 
         var table = new HtmlTable();
@@ -71,7 +74,7 @@ public static class StudentScheduleGridReport
         table.AddColumnHeaders(colHeaders);
         table.AddColGroup(colHeaders.Count - 1, ("style", "border-right: 1px solid black;"));
         
-        var assignedCourses = outputData.AssignmentResults
+        var assignedCourses = ReportData.AssignmentResults
             .Where(x => x.StudentId == studentId)
             .Select(x => (x.CourseCode, x.SessionId))
             .ToHashSet();
@@ -92,14 +95,14 @@ public static class StudentScheduleGridReport
         return table;
     }
 
-    private static HtmlTable GetAssignedClassesTable(int studentId, SchedulingOutputData outputData)
+    private HtmlTable GetAssignedClassesTable(int studentId)
     {
-        var assigned = outputData.AssignmentResults
+        var assigned = ReportData.AssignmentResults
             .Where(x => x.StudentId == studentId)
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var studentData = outputData.StudentInputs[studentId];
+        var studentData = ReportData.StudentInputs[studentId];
         var courseRankings = studentData.CourseRankings.ToDictionary(x => x.CourseCode);
         var objectiveScore = assigned.Sum(x => SchedulingSolver.GetCourseCost(courseRankings[x.CourseCode].Rank));
 
