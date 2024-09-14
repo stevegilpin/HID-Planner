@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
 using Data.Objects;
@@ -64,5 +63,13 @@ public static class DataManager
             AssignmentResults = results,
             RunInfo = run
         };
+    }
+
+    public static void ClearApplicationData()
+    {
+        if (DbProvider.TryDeleteDatabase(true, out var backupLocation))
+            Console.WriteLine($"Database deleted. A backup was saved at {backupLocation}.");
+        else
+            Console.WriteLine("Database delete failed.");
     }
 }

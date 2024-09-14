@@ -43,6 +43,23 @@ internal static class DbProvider
         using var command = connection.CreateCommand();
         command.CommandText = CREATE_SCHEMA_SQL;
         command.ExecuteNonQuery();
+        Console.WriteLine("Database created");
+    }
+
+    public static bool TryDeleteDatabase(bool saveBackup, out string backupPath)
+    {
+        backupPath = default;
+        var dbFilePath = GetDbFilePath();
+        if (File.Exists(dbFilePath) == false)
+            return false;
+
+        if (saveBackup) {
+            backupPath = Path.Combine(DB_FOLDER, $"{DB_FILE_NAME}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss}");
+            File.Move(dbFilePath, backupPath);
+        } else
+            File.Delete(dbFilePath);
+
+        return true;
     }
 
     private const string CREATE_SCHEMA_SQL =
