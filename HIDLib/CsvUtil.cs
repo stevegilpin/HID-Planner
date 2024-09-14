@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using CsvHelper;
 using CsvHelper.Configuration;
 using Data.Objects;
 
 namespace HIDLib;
 
-public static class CsvReader
+public static class CsvUtil
 {
     public static List<CourseInfo> ReadCourseInfo(string filePath)
     {
@@ -67,6 +68,34 @@ public static class CsvReader
         var records = csv.GetRecords<TData>().ToList();
 
         return records;
+    }
+
+    public static void WriteResultsToCsv(AssignmentDataSet data, string folder)
+    {
+        var courseSchedule = data.InputData.CourseSchedule.OrderBy(x => x.Key).SelectMany(x => x.Value.OrderBy(c => c.SessionId)).ToList();
+        WriteCsv(courseSchedule, Path.Combine(folder, "Inputs", "CourseSchedule.csv"));
+
+        var studentInfo = data.InputData.StudentInfo.Values.OrderBy(x => x.StudentId).ToList();
+        WriteCsv(studentInfo, Path.Combine(folder, "Inputs", "StudentInfo.csv"));
+
+        var studentRankings = data.InputData.StudentCourseRanking.OrderBy(x => x.Key).SelectMany(x => x.Value.OrderBy(c => c.Rank)).ToList();
+        WriteCsv(studentRankings, Path.Combine(folder, "Inputs", "StudentCourseRankings.csv"));
+
+        var courseInfo = data.InputData.CourseInfo.Values.OrderBy(x => x.CourseCode).ToList();
+        WriteCsv(courseInfo, Path.Combine(folder, "Inputs", "CourseInfo.csv"));
+
+        var assignments = data.AssignmentResults.OrderBy(x => x.StudentId).ThenBy(x => x.SessionId).ToList();
+        WriteCsv(assignments, Path.Combine(folder, "CourseAssignments.csv"));
+    }
+    
+    private static void WriteCsv<T>(List<T> data, string filePath)
+    {
+        Directory.CreateDirectory(Directory.GetParent(filePath)!.FullName);
+        using var stream = new StreamWriter(filePath);
+        using var writer = new CsvWriter(stream, CultureInfo.CurrentCulture);
+        writer.WriteHeader<T>();
+        writer.NextRecord();
+        writer.WriteRecords(data);
     }
 
     private static class Mappers

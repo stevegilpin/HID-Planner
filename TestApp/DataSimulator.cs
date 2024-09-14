@@ -18,14 +18,14 @@ public static class DataSimulator
     private static InputDataSet LoadInputs()
     {
         var studentInfoFilePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
-        var infoRows = CsvReader.ReadStudentInfo(studentInfoFilePath);
+        var infoRows = CsvUtil.ReadStudentInfo(studentInfoFilePath);
         var rankingFilePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
-        var rankingRows = CsvReader.ReadStudentCourseRankings(rankingFilePath);
+        var rankingRows = CsvUtil.ReadStudentCourseRankings(rankingFilePath);
 
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
         var courseInfoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
-        var courseInfoRows = CsvReader.ReadCourseInfo(courseInfoFilePath);
-        var scheduleRows = CsvReader.ReadCourseSchedule(scheduleFilePath);
+        var courseInfoRows = CsvUtil.ReadCourseInfo(courseInfoFilePath);
+        var scheduleRows = CsvUtil.ReadCourseSchedule(scheduleFilePath);
 
         Console.WriteLine($"Read {infoRows.Count} StudentInfo rows");
         Console.WriteLine($"Read {rankingRows.Count} StudentCourseRanking rows");
@@ -59,5 +59,15 @@ public static class DataSimulator
 
         foreach (var g in generators)
             g.CreateDoc().WriteToFile(ReportsFolder);
+        Console.WriteLine("Done");
+    }
+
+    public static void DumpResultsFromLatestRun()
+    {
+        var latestRun = DataManager.LatestRun();
+        var data = DataManager.LoadDataSet(latestRun.RunId);
+        Console.WriteLine($"Writing raw data to {ReportsFolder}");
+        CsvUtil.WriteResultsToCsv(data, ReportsFolder);
+        Console.WriteLine("Done");
     }
 }
