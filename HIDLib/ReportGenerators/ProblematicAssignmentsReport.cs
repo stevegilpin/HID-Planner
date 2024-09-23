@@ -8,10 +8,9 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class ProblematicAssignmentsReport(AssignmentDataSet reportData) : IHtmlGenerator
+internal class ProblematicAssignmentsReport(AssignmentDataSet reportData, int rankingThreshold = 7) : IHtmlGenerator
 {
-    private const int COURSE_RANK_THRESHOLD = 7;
-
+    private int WorstCourseRankThreshold = rankingThreshold;
     private readonly AssignmentDataSet ReportData = reportData;
     
     public HtmlDoc CreateDoc()
@@ -30,11 +29,11 @@ public class ProblematicAssignmentsReport(AssignmentDataSet reportData) : IHtmlG
             .ToList();
 
         if (dataSet.Count == 0) {
-            doc.Add(new HtmlParagraph($"No course assignments at {COURSE_RANK_THRESHOLD} or worse"));
+            doc.Add(new HtmlParagraph($"No course assignments at {WorstCourseRankThreshold} or worse"));
             return doc;
         }
 
-        doc.Add(new HtmlParagraph($"Assigned courses ranked at or below {COURSE_RANK_THRESHOLD}"));
+        doc.Add(new HtmlParagraph($"Assigned courses ranked at or below {WorstCourseRankThreshold}"));
         var table = new HtmlTable();
         // table.CaptionBelowTable = $"Courses ranked at or below {COURSE_RANK_THRESHOLD}";
         table.AddColumnHeaders(["Last Name", "First Name", "Course Rank", "Course Code"]);
@@ -52,7 +51,7 @@ public class ProblematicAssignmentsReport(AssignmentDataSet reportData) : IHtmlG
         var assignments = new List<(StudentInfo, string, int)>();
         foreach (var course in ReportData.AssignmentResults) {
             var rank = rankings[course.StudentId][course.CourseCode];
-            if (rank < COURSE_RANK_THRESHOLD)
+            if (rank < WorstCourseRankThreshold)
                 continue;
 
             var student = ReportData.InputData.StudentInfo[course.StudentId];

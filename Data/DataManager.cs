@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
 using Data.Objects;
@@ -44,6 +45,12 @@ public static class DataManager
         using var db = DbProvider.GetDbContext();
         var id = db.RunInfo.Max(x => x.RunId);
         return db.RunInfo.Single(x => x.RunId == id);
+    }
+
+    public static List<RunInfo> AllRuns()
+    {
+        using var db = DbProvider.GetDbContext();
+        return db.RunInfo.ToList();
     }
 
     public static AssignmentDataSet LoadDataSet(int id)

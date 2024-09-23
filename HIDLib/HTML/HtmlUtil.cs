@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-public static class HtmlUtil
+internal static class HtmlUtil
 {
     public static void WriteToFile(this HtmlDoc content, string folder)
     {
@@ -25,12 +25,12 @@ public static class HtmlUtil
     public static void AddStyle(this XElement element, string value) => element.AddAttribute("style", value);
 }
 
-public class HtmlHeader(object content, int level = 1) : XElement($"h{level}", content);
-public class HtmlBreak() : XElement("br");
-public class HtmlPageBreak() : XElement("div", new XAttribute("class", "pagebreak"), string.Empty);
-public class HtmlOrderedList() : XElement("ol", string.Empty);
+internal class HtmlHeader(object content, int level = 1) : XElement($"h{level}", content);
+internal class HtmlBreak() : XElement("br");
+internal class HtmlPageBreak() : XElement("div", new XAttribute("class", "pagebreak"), string.Empty);
+internal class HtmlOrderedList() : XElement("ol", string.Empty);
 
-public class HtmlList() : XElement("ul", string.Empty)
+internal class HtmlList() : XElement("ul", string.Empty)
 {
     public HtmlListItem AddItem(object itemContent)
     {
@@ -39,10 +39,10 @@ public class HtmlList() : XElement("ul", string.Empty)
         return item;
     }
 }
-public class HtmlListItem(object itemContent) : XElement("li", itemContent);
-public class HtmlParagraph(string text) : XElement("p", text);
+internal class HtmlListItem(object itemContent) : XElement("li", itemContent);
+internal class HtmlParagraph(string text) : XElement("p", text);
 
-public static class CSS
+internal static class CSS
 {
     public static string PageBreak()
     {

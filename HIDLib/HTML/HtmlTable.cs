@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-public class HtmlTable
+internal class HtmlTable
 {
     public List<RowData> Data = new();
     public List<XElement> ColGroups = new();
@@ -52,7 +52,7 @@ public class HtmlTable
     }
 }
 
-public class RowData
+internal class RowData
 {
     public XElement RowContainer { get; init; }
     public List<XElement> Data { get; init; }

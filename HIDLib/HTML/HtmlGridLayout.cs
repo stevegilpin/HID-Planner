@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-public class HtmlGridLayout(int numColumns) : XElement("div", GetContainerStyle(numColumns))
+internal class HtmlGridLayout(int numColumns) : XElement("div", GetContainerStyle(numColumns))
 {
     public void AddCell(params object[] cellContent)
     {

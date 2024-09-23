@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-public class HtmlTableGrid() : XElement("table", new XAttribute("class", GRID_CLASS_NAME))
+internal class HtmlTableGrid() : XElement("table", new XAttribute("class", GRID_CLASS_NAME))
 {
     private const string GRID_CLASS_NAME = "grid-container";
     private const string DATA_CLASS_NAME = "grid-data";

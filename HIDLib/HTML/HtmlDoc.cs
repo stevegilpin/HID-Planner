@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-public sealed class HtmlDoc
+internal sealed class HtmlDoc
 {
     public XElement Head { get; private set; }
     public List<string> StyleRuleSets { get; private set; }

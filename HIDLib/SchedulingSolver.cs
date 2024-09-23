@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Data;
 using Data.Objects;
 using Google.OrTools.LinearSolver;
 
 namespace HIDLib;
 
-public static class SchedulingSolver
+internal static class SchedulingSolver
 {
     private const string SOLVER_TYPE = "SCIP";
 
