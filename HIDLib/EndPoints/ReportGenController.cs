@@ -27,8 +27,14 @@ public static class ReportGenController
             new StudentScheduleOverviewReport(data),
         };
 
-        CsvUtil.WriteResultsToCsv(data, outputFolder); // todo error handling
-        
+        try {
+            CsvUtil.WriteResultsToCsv(data, outputFolder);
+        }
+        catch (Exception e) {
+            errorMessage = $"Error saving raw results{Environment.NewLine}{e.Message}";
+            return false;
+        }
+
         try {
             foreach (var g in generators)
                 g.CreateDoc().WriteToFile(outputFolder);
