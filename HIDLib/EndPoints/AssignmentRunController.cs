@@ -20,6 +20,33 @@ public static class AssignmentRunController
             : AssignmentRunResult.SuccessfulResult(runId);
     }
 
+    public static AssignmentRunResult UploadAssignmentData(AssignmentRunInputs inputs, string resultFilePath, string description)
+    {
+        if (TryLoadInputs(inputs, out var inputData, out var loadError) == false)
+            return AssignmentRunResult.InputError(loadError);
+
+        if (ValidateInputs(inputData, out var inputError) == false)
+            return AssignmentRunResult.InputError(inputError);
+        
+        if (TryLoad(resultFilePath, CsvUtil.ReadAssignmentResults, out var resultRows, out var resultLoadError) == false)
+            return AssignmentRunResult.InputError(resultLoadError);
+
+        var dataSet = new AssignmentDataSet {
+            AssignmentResults = resultRows,
+            InputData = inputData,
+            RunInfo = new RunInfo {
+                ManuallyCreatedResults = true,
+                RunTimeStamp = DateTime.Now,
+            }
+        };
+
+        if (ValidateResults(dataSet, out var resultValidationError) == false)
+            return AssignmentRunResult.InputError(resultValidationError);
+
+        var runId = DataManager.Save(dataSet, description);
+        return AssignmentRunResult.SuccessfulResult(runId);
+    }
+    
     private static bool TryLoadInputs(AssignmentRunInputs fileInfo, out InputDataSet inputData, out string errorMessage)
     {
         string error;
@@ -120,6 +147,43 @@ public static class AssignmentRunController
         return true;
     }
 
+    private static bool ValidateResults(AssignmentDataSet data, out string errorMessage)
+    {
+        var missingStudents = data.AssignmentResults.Select(x => x.StudentId).Except(data.InputData.StudentInfo.Keys).ToList();
+        if (missingStudents.Any()) {
+            errorMessage = $"Student info not found for the following student IDs:{Environment.NewLine}{string.Join(", ", missingStudents.Take(10))}";
+            if (missingStudents.Count > 10)
+                errorMessage += $"{Environment.NewLine}{Environment.NewLine}First 10 of {missingStudents.Count} shown.";
+            return false;
+        }
+        
+        var missingCourses = data.AssignmentResults.Select(x => x.CourseCode).Except(data.InputData.CourseInfo.Keys).ToList();
+        if (missingCourses.Any()) {
+            errorMessage = $"Course info not found for the following course codes:{Environment.NewLine}{string.Join(", ", missingCourses.Take(10))}";
+            if (missingCourses.Count > 10)
+                errorMessage += $"{Environment.NewLine}{Environment.NewLine}First 10 of {missingCourses.Count} shown.";
+            return false;
+        }
+
+        var minSession = data.AssignmentResults.Min(x => x.SessionId);
+        var maxSession = data.AssignmentResults.Max(x => x.SessionId);
+        var expectedSessions = Enumerable.Range(minSession, maxSession - minSession + 1);
+        var missingSessions = data.AssignmentResults
+            .GroupBy(x => x.StudentId)
+            .Where(g => expectedSessions.SequenceEqual(g.Select(x => x.SessionId).OrderBy(x => x).ToList()) == false)
+            .Select(g => g.Key)
+            .ToList();
+        if (missingSessions.Any()) {
+            errorMessage = $"Expected sessions ({minSession} - {maxSession}) not found for the following student IDs:{Environment.NewLine}{string.Join(", ", missingSessions.Take(10))}";
+            if (missingSessions.Count > 10)
+                errorMessage += $"{Environment.NewLine}{Environment.NewLine}First 10 of {missingSessions.Count} shown.";
+            return false;
+        }
+
+        errorMessage = null;
+        return true;
+    }
+    
     private static bool RunAssignment(InputDataSet inputs, string description, out int runId, out string errorMessage)
     {
         try {

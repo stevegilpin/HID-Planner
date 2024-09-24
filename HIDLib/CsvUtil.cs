@@ -59,6 +59,11 @@ public static class CsvUtil
         return ReadFile<CourseSchedule, Mappers.CourseScheduleMapper>(filePath);
     }
 
+    public static List<CourseAssignmentResult> ReadAssignmentResults(string filePath)
+    {
+        return ReadFile<CourseAssignmentResult, Mappers.CourseAssignmentResultsMapper>(filePath);
+    }
+    
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
         using var reader = new StreamReader(filePath);
@@ -142,6 +147,15 @@ public static class CsvUtil
                 Map(x => x.RoomCode).Optional();
                 Map(x => x.Instructor).Optional();
                 Map(x => x.Supervisor).Optional();
+            }
+        }
+
+        public sealed class CourseAssignmentResultsMapper : ClassMap<CourseAssignmentResult>
+        {
+            public CourseAssignmentResultsMapper()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+                Map(x => x.RunId).Ignore();
             }
         }
     }
