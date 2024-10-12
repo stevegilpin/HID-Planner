@@ -42,12 +42,12 @@ internal class HtmlTableGrid() : XElement("table", new XAttribute("class", GRID_
     }}
     ";
 
-    public RowData AddRow(List<XElement> rowData)
+    public HtmlRow AddRow(List<XElement> rowData)
     {
         rowData.ForEach(x => x.AddAttribute("class", DATA_CLASS_NAME));
-        var row = new RowData(rowData.Cast<object>().ToList());
-        row.RowContainer.AddAttribute("class", GRID_CLASS_NAME);
-        Add(row.RowContainer);
+        var row = new HtmlRow(rowData.Cast<object>().ToList(), false);
+        row.AddAttribute("class", GRID_CLASS_NAME);
+        Add(row);
         return row;
     }
 }

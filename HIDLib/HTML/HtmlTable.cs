@@ -1,18 +1,41 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-internal class HtmlTable
+internal class HtmlTable : XElement
 {
-    public List<RowData> Data = new();
-    public List<XElement> ColGroups = new();
-    public string CaptionAboveTable;
-    public string CaptionBelowTable;
+    public List<HtmlRow> Data => Elements().OfType<HtmlRow>().ToList();
+    
+    private readonly XElement ColGroups = new("colgroup");
+    public HtmlTable(List<object> headers = null) : base("table")
+    {
+        if (headers != null)
+            AddHeaderRow(headers);
+        Add(ColGroups);
+    }
 
-    public RowData AddColumnHeaders(List<object> headers) => AddRow(headers, "th");
+    public HtmlRow AddHeaderRow(List<object> headerData) => AddRow(headerData, true);
+    public HtmlRow AddRowData(List<object> rowData) => AddRow(rowData, false);
+    public void AddRow(List<HtmlCell> rowData) => Add(new HtmlRow(rowData));
 
+    private HtmlRow AddRow(List<object> content, bool headerCells)
+    {
+        var cells = content.Select(x => new HtmlCell(x, headerCells)).ToList();
+        var row = new HtmlRow(cells);
+        Add(row);
+        return row;
+    }
+    
+    public HtmlCaption AddCaption(string text, HtmlCaption.TextAlign textAlign)
+    {
+        var caption = new HtmlCaption(text);
+        caption.Add(new XAttribute("style", $"caption-side: bottom; text-align: {textAlign.ToString().ToLower()}; padding: 5px;"));
+        return caption;
+    }
+    
     public XElement AddColGroup(int span, params (string name, string value)[] attributes)
     {
         var group = new XElement("col", new XAttribute("span", span));
@@ -22,45 +45,28 @@ internal class HtmlTable
         ColGroups.Add(group);
         return group;
     }
-    public RowData AddRowData(List<object> rowData) => AddRow(rowData, "td");
-    public void AddRow(List<XElement> rowData) => Data.Add(new RowData(rowData));
+}
 
-    private RowData AddRow(List<object> content, string cellType)
+internal class HtmlRow : XElement
+{
+    public List<HtmlCell> Data => Elements().OfType<HtmlCell>().ToList();
+
+    public HtmlRow(List<object> data, bool headerCell) : this(data.Select(x => new HtmlCell(x, headerCell)).ToList()) { }    
+    public HtmlRow(List<HtmlCell> data) : base("tr")
     {
-        var cells = content.Select(x => new XElement(cellType, x)).ToList();
-        var row = new RowData(cells);
-        Data.Add(row);
-        return row;
-    }
-
-    public XElement ToXmlNode()
-    {
-        var table = new XElement("table");
-
-        if (string.IsNullOrEmpty(CaptionAboveTable) == false)
-            table.Add(new XElement("caption", CaptionAboveTable));
-        if (string.IsNullOrEmpty(CaptionBelowTable) == false)
-            table.Add(new XElement("caption", CaptionBelowTable, new XAttribute("style", "caption-side: bottom; text-align: right; padding: 5px;")));
-
-        if (ColGroups.Count != 0)
-            table.Add(new XElement("colgroup", ColGroups));
-
-        foreach (var row in Data)
-            table.Add(row.RowContainer);
-
-        return table;
+        foreach (var cell in data)
+            Add(cell);
     }
 }
 
-internal class RowData
-{
-    public XElement RowContainer { get; init; }
-    public List<XElement> Data { get; init; }
+internal class HtmlCell(object Content, bool HeaderCell = false) : XElement(HeaderCell ? "th" : "td", Content);
 
-    public RowData(List<object> data, string cellType = "td") : this(data.Select(x => new XElement(cellType, x)).ToList()) { }    
-    public RowData(List<XElement> data)
+internal class HtmlCaption(string Text) : XElement("caption", Text)
+{
+    public enum TextAlign
     {
-        Data = data.ToList();
-        RowContainer = new XElement("tr", Data);
+        Left,
+        Center,
+        Right
     }
 }

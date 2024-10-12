@@ -32,7 +32,7 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
             .OrderBy(x => x.CourseCode)
             .ToList();
 
-        var table = new HtmlTable();
+        var table = doc.Add(new HtmlTable());
         var grades = DistinctGrades();
         AddColumnFormatting(table, grades);
         
@@ -42,7 +42,6 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
                 table.AddRow(GetRowData(session));
         }
 
-        doc.Add(table.ToXmlNode());
 
         return doc;
     }
@@ -52,7 +51,7 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
         var columnHeaders = new List<object> { "Class", "Code", "Session", "Capacity", "# Assigned", "boys", "girls" };
         columnHeaders.AddRange(grades);
 
-        var headers = table.AddColumnHeaders(columnHeaders);
+        var headers = table.AddHeaderRow(columnHeaders);
         headers.Data[0].AddStyle("text-align: left");
         headers.Data[1].AddStyle("text-align: left");
 
@@ -87,7 +86,7 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
 
     }
 
-    private List<XElement> GetRowData(CourseSchedule session)
+    private List<HtmlCell> GetRowData(CourseSchedule session)
     {
         var assigned = ReportData.AssignmentResults
             .Where(x => x.CourseCode == session.CourseCode)
@@ -97,7 +96,7 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
         var courseInfo = ReportData.InputData.CourseInfo[session.CourseCode];
         var capacity = courseInfo.MaxCapacity;
 
-        var rowData = new List<XElement>();
+        var rowData = new List<HtmlCell>();
         AddCell(rowData, courseInfo.CourseName);
         AddCell(rowData, courseInfo.CourseCode);
         rowData.ForEach(x => x.AddStyle("text-align: left"));
@@ -127,9 +126,9 @@ internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGen
 
         return rowData;
 
-        static XElement AddCell(List<XElement> data, object content)
+        static HtmlCell AddCell(List<HtmlCell> data, object content)
         {
-            var cell = new XElement("td", content);
+            var cell = new HtmlCell(content);
             data.Add(cell);
             return cell;
         }

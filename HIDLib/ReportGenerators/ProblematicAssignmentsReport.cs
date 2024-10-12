@@ -34,13 +34,11 @@ internal class ProblematicAssignmentsReport(AssignmentDataSet reportData, int ra
         }
 
         doc.Add(new HtmlParagraph($"Assigned courses ranked at or below {WorstCourseRankThreshold}"));
-        var table = new HtmlTable();
-        // table.CaptionBelowTable = $"Courses ranked at or below {COURSE_RANK_THRESHOLD}";
-        table.AddColumnHeaders(["Last Name", "First Name", "Course Rank", "Course Code"]);
+        var table = new HtmlTable(["Last Name", "First Name", "Course Rank", "Course Code"]);
         foreach (var item in dataSet)
             table.AddRowData([item.Student.LastName, item.Student.FirstName, item.Rank, item.CourseCode]);
 
-        doc.Add(table.ToXmlNode());
+        doc.Add(table);
 
         return doc;
     }

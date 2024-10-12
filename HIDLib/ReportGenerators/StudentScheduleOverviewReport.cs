@@ -31,11 +31,11 @@ internal class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHt
         foreach (var id in studentIds) {
             var student = ReportData.InputData.StudentInfo[id];
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
-            var table = GetStudentTable(id).ToXmlNode();
+            var table = GetStudentTable(id);
             var cell = new XElement("div", header, table);
             rowData.Add(cell);
             if (rowData.Count == numColumns) {
-                grid.AddRow(rowData);
+                grid.AddRow(rowData.ToList());
                 rowData.Clear();
             }
         }
@@ -50,9 +50,7 @@ internal class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHt
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var table = new HtmlTable();
-        table.AddColumnHeaders(["Session", "Class", "Room"]);
-
+        var table = new HtmlTable(["Session", "Class", "Room"]);
         foreach (var course in assigned) {
             var courseName = ReportData.InputData.CourseInfo[course.CourseCode].CourseName;
             var room = ReportData.InputData.CourseSchedule[course.CourseCode].Single(x => x.SessionId == course.SessionId).RoomCode;

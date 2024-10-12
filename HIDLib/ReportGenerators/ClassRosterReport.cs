@@ -50,9 +50,8 @@ internal class ClassRosterReport(AssignmentDataSet reportData) : IHtmlGenerator
 
         foreach (var group in sessionGroups) {
             var header = new HtmlHeader($"Session {group.Key}", 3);
-            var table = new HtmlTable();
-            table.AddColumnHeaders(["Student Name", "Grade", "Gender"]);
-            table.CaptionBelowTable = $"{group.Count()} students";
+            var table = new HtmlTable(["Student Name", "Grade", "Gender"]);
+            table.AddCaption($"{group.Count()} students", HtmlCaption.TextAlign.Right);
             var students = group.OrderBy(x => x.StudentId).ToList();
             foreach (var student in students) {
                 var studentInfo = ReportData.InputData.StudentInfo[student.StudentId];
@@ -64,7 +63,7 @@ internal class ClassRosterReport(AssignmentDataSet reportData) : IHtmlGenerator
                 row.Data[2].AddStyle("text-align: center;");
             }
 
-            grid.AddCell(header, table.ToXmlNode());
+            grid.AddCell(header, table);
         }
 
         root.Add(new HtmlBreak());

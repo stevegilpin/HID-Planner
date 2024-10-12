@@ -44,12 +44,10 @@ internal class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGe
         root.Add(new HtmlBreak());
         
         root.Add(new HtmlHeader("Choices by Session", 3));
-        var courseOptions = GetRankedCourseOfferingTable(studentId);
-        root.Add(courseOptions.ToXmlNode());
+        root.Add(GetRankedCourseOfferingTable(studentId));
 
         root.Add(new HtmlHeader("Assigned Classes", 3));
-        var assigned = GetAssignedClassesTable(studentId);
-        root.Add(assigned.ToXmlNode());
+        root.Add(GetAssignedClassesTable(studentId));
 
         return root;
     }
@@ -67,13 +65,12 @@ internal class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGe
             availableCourses.Add(course.CourseCode, sessionIds);
         }
 
-        var table = new HtmlTable();
-        table.CaptionBelowTable = $"Top {numChoicesShown} choices shown";
         var colHeaders = new List<object> { "Session" };
         colHeaders.AddRange(rankings.Select(x => x.Rank.ToString()));
-        table.AddColumnHeaders(colHeaders);
+        var table = new HtmlTable(colHeaders);
+        table.AddCaption($"Top {numChoicesShown} choices shown", HtmlCaption.TextAlign.Right);
         table.AddColGroup(colHeaders.Count - 1, ("style", "border-right: 1px solid black;"));
-        
+
         var assignedCourses = ReportData.AssignmentResults
             .Where(x => x.StudentId == studentId)
             .Select(x => (x.CourseCode, x.SessionId))
@@ -81,12 +78,12 @@ internal class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGe
 
         var sessions = assignedCourses.Select(x => x.SessionId).OrderBy(x => x).ToList();
         foreach (var s in sessions) {
-            var rowData = new List<XElement> { new("th", s) };
+            var rowData = new List<HtmlCell> { new(s, true) };
             foreach (var course in rankings) {
-                var cellData = new XElement("td", availableCourses[course.CourseCode].Contains(s) ? course.CourseCode : string.Empty);
+                var cellData = new HtmlCell(availableCourses[course.CourseCode].Contains(s) ? course.CourseCode : string.Empty);
                 rowData.Add(cellData);
                 if (assignedCourses.Contains((course.CourseCode, s)))
-                    cellData.Add(new XAttribute("style", "color: red; font-weight: bold;"));
+                    cellData.AddStyle("color: red; font-weight: bold;");
             }
 
             table.AddRow(rowData);
@@ -105,17 +102,16 @@ internal class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGe
         var courseRankings = ReportData.InputData.StudentCourseRanking[studentId].ToDictionary(x => x.CourseCode);
         var objectiveScore = assigned.Sum(x => SchedulingSolver.GetCourseCost(courseRankings[x.CourseCode].Rank));
 
-        var table = new HtmlTable();
-        table.CaptionBelowTable = $"Objective score: {objectiveScore:N0}";
-        table.AddColumnHeaders(["Session", "Course", "Course Ranking"]);
+        var table = new HtmlTable(["Session", "Course", "Course Ranking"]);
+        table.AddCaption($"Objective score: {objectiveScore:N0}", HtmlCaption.TextAlign.Right);
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
             var ranking = courseRankings[course.CourseCode];
             var row = table.AddRowData([i + 1, course.CourseCode, ranking.Rank]);
             if (ranking.Rank >= 7 && ranking.Rank < 10)
-                row.RowContainer.AddStyle("background-color: yellow");
+                row.AddStyle("background-color: yellow");
             else if (ranking.Rank >= 10)
-                row.RowContainer.AddStyle("background-color: red");
+                row.AddStyle("background-color: red");
         }
 
         return table;
