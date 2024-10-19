@@ -3,7 +3,7 @@ using Data;
 using TestApp;
 
 // DataManager.ClearApplicationData();
-DataSimulator.RunScheduling();
+DataSimulator.TestRunScheduling();
 DataSimulator.CreateReports();
 
 Console.WriteLine("Done");

@@ -16,19 +16,13 @@
     </Design.DataContext>
 
     <StackPanel>
-        <!-- <TextBlock 
-            Text="{Binding Greeting}" 
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center"
-        /> -->
-        
-        <TextBlock Text="Temporarily use the first 2 buttons to load the test files into the DB and run reports"/>
-        <Button Click="importFiles">Import Test Files</Button>
+        <Button Command="{ Binding importCoursesCommand }">Import Courses</Button>
+        <Button Command="{ Binding importScheduleCommand }">Import Schedule of Courses</Button>
+        <Button Command="{ Binding importStudentsCommand }">Import Students</Button>
+        <Button Command="{ Binding importStudentChoicesCommand }">Import Student Choices</Button>
+        <TextBlock Text="Import all 4 files, then click run reports"/>
         <Button Click="runReports">Run Reports</Button>
-
-        <Button Click="importCourses">Import Courses</Button>
-        <Button Click="importSchedule">Import Schedule of Courses</Button>
-        <Button Click="importStudents">Import Students</Button>
-        <Button Click="importStudentChoices">Import Student Choices</Button>
+        <TextBlock Text="Import Files button imports all 4 from the default testing location. (This is for test purposes only.)"/>
+        <Button Click="importFiles">Import Files</Button>
     </StackPanel>
 </Window>

@@ -16,8 +16,7 @@ public static class DataSimulator
     public static readonly string SampleDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "sample data");
     public static readonly string ReportsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "reports");
 
-    public static void RunScheduling()
-    {
+    public static void TestRunScheduling() {
         var studentInfoFilePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
         var rankingFilePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
@@ -25,6 +24,19 @@ public static class DataSimulator
 
         var runInputs = new AssignmentRunInputs {
             RunDescription = "Test run",
+            CourseInfoFilePath = courseInfoFilePath,
+            CourseScheduleFilePath = scheduleFilePath,
+            StudentInfoFilePath = studentInfoFilePath,
+            StudentRankingsFilePath = rankingFilePath
+        };
+
+        RunScheduling(courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath);
+    }
+
+    public static void RunScheduling(string courseInfoFilePath, string scheduleFilePath, string studentInfoFilePath, string rankingFilePath)
+    {
+        var runInputs = new AssignmentRunInputs {
+            RunDescription = "Manual test run",
             CourseInfoFilePath = courseInfoFilePath,
             CourseScheduleFilePath = scheduleFilePath,
             StudentInfoFilePath = studentInfoFilePath,
@@ -43,7 +55,7 @@ public static class DataSimulator
     public static void CreateReports()
     {
         var latest = DataManager.LatestRun();
-        if (ReportGenController.TryGenerateReports(latest.RunId, SampleDataFolder, out var error) == false)
+        if (ReportGenController.TryGenerateReports(latest.RunId, ReportsFolder, out var error) == false)
             Console.WriteLine(error);
     }
 }
