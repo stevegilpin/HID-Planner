@@ -27,13 +27,12 @@ public static class DataSimulator
 
     public static void RunScheduling(string courseInfoFilePath, string scheduleFilePath, string studentInfoFilePath, string rankingFilePath)
     {
-        var controller = new SchedulingController {
-            InputDescription = "Manual test run",
-            CourseInfoFilePath = courseInfoFilePath,
-            CourseScheduleFilePath = scheduleFilePath,
-            StudentInfoFilePath = studentInfoFilePath,
-            StudentCourseRankingsFilePath = rankingFilePath
-        };
+        var controller = new SchedulingController { InputDescription = "Manual test run" };
+
+        if (controller.TrySetFilePaths([courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath], out var error) == false) {
+            Console.WriteLine(error);
+            return;
+        }
 
         var message = controller.RunScheduling();
         Console.WriteLine(message);

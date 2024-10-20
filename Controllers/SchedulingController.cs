@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Data.Objects;
 using HIDLib;
 using HIDLib.EndPoints;
@@ -12,6 +13,56 @@ public class SchedulingController
     public string CourseScheduleFilePath { get; set; }
     public string StudentInfoFilePath { get; set; }
     public string StudentCourseRankingsFilePath { get; set; }
+
+    public bool TrySetFilePaths(string[] paths, out string errorMessage)
+    {
+        var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
+        if (courseInfo.Count == 0) {
+            errorMessage = "No files found matching required headers for course info data.";
+            return false;
+        }
+        if (courseInfo.Count > 1) {
+            errorMessage = "Multiple files found matching required headers for course info data.";
+            return false;
+        }
+
+        var courseSchedule = paths.Where(CsvUtil.HeaderMatchesCourseSchedule).ToList();
+        if (courseSchedule.Count == 0) {
+            errorMessage = "No files found matching required headers for course schedule data.";
+            return false;
+        }
+        if (courseSchedule.Count > 1) {
+            errorMessage = "Multiple files found matching required headers for course schedule data.";
+            return false;
+        }
+
+        var studentInfo = paths.Where(CsvUtil.HeaderMatchesStudentInfo).ToList();
+        if (studentInfo.Count == 0) {
+            errorMessage = "No files found matching required headers for student info data.";
+            return false;
+        }
+        if (studentInfo.Count > 1) {
+            errorMessage = "Multiple files found matching required headers for student info data.";
+            return false;
+        }
+
+        var studentRankings = paths.Where(CsvUtil.HeaderMatchesStudentCourseRankings).ToList();
+        if (studentRankings.Count == 0) {
+            errorMessage = "No files found matching required headers for students' course ranking data.";
+            return false;
+        }
+        if (studentRankings.Count > 1) {
+            errorMessage = "Multiple files found matching required headers for students' course ranking data.";
+            return false;
+        }
+
+        CourseInfoFilePath = courseInfo.Single();
+        CourseScheduleFilePath = courseSchedule.Single();
+        StudentInfoFilePath = studentInfo.Single();
+        StudentCourseRankingsFilePath = studentRankings.Single();
+        errorMessage = null;
+        return true;
+    }
     
     public string RunScheduling()
     {
