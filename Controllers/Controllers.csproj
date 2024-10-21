@@ -8,4 +8,9 @@
       <ProjectReference Include="..\HIDLib\HIDLib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Serilog" Version="4.0.2" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    </ItemGroup>
+
 </Project>

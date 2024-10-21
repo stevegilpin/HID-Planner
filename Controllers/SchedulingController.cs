@@ -3,11 +3,14 @@ using System.Linq;
 using Data.Objects;
 using HIDLib;
 using HIDLib.EndPoints;
+using Serilog;
 
 namespace Controllers;
 
 public class SchedulingController
 {
+    public ILogger Logger { get; set; } = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+
     public string InputDescription { get; set; }
     public string CourseInfoFilePath { get; set; }
     public string CourseScheduleFilePath { get; set; }
@@ -110,10 +113,10 @@ public class SchedulingController
             return false;
         }
 
-        Console.WriteLine($"Read {infoRows.Count} StudentInfo rows");
-        Console.WriteLine($"Read {rankingRows.Count} StudentCourseRanking rows");
-        Console.WriteLine($"Read {courseInfoRows.Count} {nameof(courseInfoRows)} rows");
-        Console.WriteLine($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
+        Logger.Information($"Read {infoRows.Count} StudentInfo rows");
+        Logger.Information($"Read {rankingRows.Count} StudentCourseRanking rows");
+        Logger.Information($"Read {courseInfoRows.Count} {nameof(courseInfoRows)} rows");
+        Logger.Information($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
 
         errorMessage = null;
         inputData = new InputDataSet(courseInfoRows, scheduleRows, infoRows, rankingRows);
