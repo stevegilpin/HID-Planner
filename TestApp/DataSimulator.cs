@@ -42,7 +42,7 @@ public static class DataSimulator
     public static void CreateReports()
     {
         var latest = DataManager.LatestRun();
-        if (ReportGenController.TryGenerateReports(latest.RunId, ReportsFolder, out var error) == false)
-            Console.WriteLine(error);
+        var message = ReportGenController.GenerateReports(latest.RunId, ReportsFolder);
+        Console.WriteLine(message);
     }
 }
