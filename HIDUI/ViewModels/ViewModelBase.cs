@@ -1,6 +1,6 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TestApp.HIDUI.ViewModels;
 
-public class ViewModelBase : ReactiveObject {
+public class ViewModelBase : ObservableObject {
 }

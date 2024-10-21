@@ -1,79 +1,174 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using System.Threading.Tasks;
-using TestApp.HIDUI.ViewModels;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
-using System.Reactive;
+using System.ComponentModel;
+using Avalonia.Interactivity;
 
-namespace TestApp.HIDUI.Views;
+namespace TestApp.HIDUI.Views {
 
-public partial class MainWindow: ReactiveWindow<MainWindowViewModel> {
-    public MainWindow() {
-        InitializeComponent();
-        this.WhenActivated(d => d(ViewModel.importCoursesInteraction.RegisterHandler(importCoursesHandler)));
-        this.WhenActivated(d => d(ViewModel.importScheduleInteraction.RegisterHandler(importScheduleHandler)));
-        this.WhenActivated(d => d(ViewModel.importStudentsInteraction.RegisterHandler(importStudentsHandler)));
-        this.WhenActivated(d => d(ViewModel.importStudentChoicesInteraction.RegisterHandler(importStudentChoicesHandler)));
-    }
+    public partial class MainWindow: Window {
+        public MainWindow() {
+            InitializeComponent();
+            DataContext = new MainWindowViewModel();
+        }
 
-    private async Task importCoursesHandler(IInteractionContext<Unit, string> interaction) {
-        interaction.SetOutput(await chooseFilePath("Import Classes CSV"));
-    }
+        public async void ImportCoursesOnClick(object sender, RoutedEventArgs args) {
+            string coursesFilePath = await ChooseFilePath("Import Courses CSV");
+            // var dialog = new OpenFileDialog();
 
-    private async Task importScheduleHandler(IInteractionContext<Unit, string> interaction) {
-        interaction.SetOutput(await chooseFilePath("Import Schedule CSV"));
-    }
+            // if (dialog.ShowDialog() == true)
+            // {
+            // // Consider to create the FileStream here to handle errors 
+            // // related to the user's picked file in the view. 
+            // // If opening the FileStream succeeds, we can pass it over to the viewmodel.
+            // // Also consider wrapping the actual call to the view model into a try-catch block 
+            // // in order to provide feedback to the user if needed.
+            // string destinationFilePath = dialog.FileName;
+            (this.DataContext as MainWindowViewModel)?.ImportCourses(coursesFilePath);
+            // }
+        }
 
-    private async Task importStudentsHandler(IInteractionContext<Unit, string> interaction) {
-        interaction.SetOutput(await chooseFilePath("Import Students CSV"));
-    }
+        public async void ImportScheduleOnClick(object sender, RoutedEventArgs args) {
+            string scheduleFilePath = await ChooseFilePath("Import Schedule CSV");
+            (this.DataContext as MainWindowViewModel)?.ImportSchedule(scheduleFilePath);
+        }
 
-    private async Task importStudentChoicesHandler(IInteractionContext<Unit, string> interaction) {
-        interaction.SetOutput(await chooseFilePath("Import Student Choices CSV"));
-    }
+        public async void ImportStudentsOnClick(object sender, RoutedEventArgs args) {
+            string studentsFilePath = await ChooseFilePath("Import Students CSV");
+            (this.DataContext as MainWindowViewModel)?.ImportStudents(studentsFilePath);
+        }
 
-    // private async void importCoursesClicked(IInteractionContext<string, bool> context) {
-    //     var filePath = await chooseFilePath("Import Classes CSV");
-    //     context.SetOutput(filePath);
-    // }
+        public async void ImportStudentChoicesOnClick(object sender, RoutedEventArgs args) {
+            string studentChoicesFilePath = await ChooseFilePath("Import Student Choices CSV");
+            (this.DataContext as MainWindowViewModel)?.ImportStudentChoices(studentChoicesFilePath);
+        }
 
-    private async void importFiles(object sender, RoutedEventArgs args) {
-        if (this.ViewModel.CoursesFilePath != ""
-        && this.ViewModel.ScheduleFilePath != ""
-        && this.ViewModel.StudentsFilePath != ""
-        && this.ViewModel.StudentChoicesFilePath != "") {
-            await Task.Run(() => 
-                DataSimulator.RunScheduling(
-                    this.ViewModel.CoursesFilePath,
-                    this.ViewModel.ScheduleFilePath,
-                    this.ViewModel.StudentsFilePath,
-                    this.ViewModel.StudentChoicesFilePath
-                )
-            );
+        public async Task<string> ChooseFilePath(string title) {
+            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+{
+                Title = title,
+                AllowMultiple = false
+            });
+
+            if (files.Count == 1) {
+                return files[0].Path.LocalPath;
+            }
+            // TODO: error handling and not selecting file?
+            return "";
         }
     }
 
-    private async void runReports(object sender, RoutedEventArgs args) {
-        await Task.Run(() => DataSimulator.CreateReports());
-    }
+    public partial class MainWindowViewModel: INotifyPropertyChanged {
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-    private async Task<string> chooseFilePath(string title) {
-        // Get top level from the current control. Alternatively, you can use Window reference instead.
-        var topLevel = TopLevel.GetTopLevel(this);
-
-        // Start async operation to open the dialog.
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = title,
-            AllowMultiple = false
-        });
-
-        if (files.Count == 1) {
-            return files[0].Path.LocalPath;
+        private string coursesFileName = "";
+        public string CoursesFileName {
+            get => coursesFileName;
+            set {
+                coursesFileName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesFileName)));
+            }
         }
-        // TODO: error handling and not selecting file?
-        return "";
+
+        private string coursesFilePath = "";
+        public string CoursesFilePath {
+            get => coursesFilePath;
+            set {
+                coursesFilePath = value;
+                CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesFilePath)));
+            }
+        }
+        
+        private string scheduleFileName = "";
+        public string ScheduleFileName {
+            get => scheduleFileName;
+            set {
+                scheduleFileName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleFileName)));
+            }
+        }
+
+        private string scheduleFilePath = "";
+        public string ScheduleFilePath {
+            get => scheduleFilePath;
+            set {
+                scheduleFilePath = value;
+                ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleFilePath)));
+            }
+        }
+
+        private string studentsFileName = "";
+        public string StudentsFileName {
+            get => studentsFileName;
+            set {
+                studentsFileName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFileName)));
+            }
+        }
+        private string studentsFilePath = "";
+        public string StudentsFilePath {
+            get => studentsFilePath;
+            set {
+                studentsFilePath = value;
+                StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFilePath)));
+            }
+        }
+
+        private string studentChoicesFileName = "";
+        public string StudentChoicesFileName {
+            get => studentChoicesFileName;
+            set {
+                studentChoicesFileName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFileName)));
+            }
+        }
+        private string studentChoicesFilePath = "";
+        public string StudentChoicesFilePath {
+            get => studentChoicesFilePath;
+            set {
+                studentChoicesFilePath = value;
+                StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFilePath)));
+            }
+        }
+
+        public void ImportCourses(string filePathSelection) {
+            CoursesFilePath = filePathSelection;
+        }
+
+        public void ImportSchedule(string filePathSelection) {
+            ScheduleFilePath = filePathSelection;
+        }
+
+        public void ImportStudents(string filePathSelection) {
+            StudentsFilePath = filePathSelection;
+        }
+
+        public void ImportStudentChoices(string filePathSelection) {
+            StudentChoicesFilePath = filePathSelection;
+        }
+
+        public async void ImportFiles() {
+            if (CoursesFilePath != ""
+            && ScheduleFilePath != ""
+            && StudentsFilePath != ""
+            && StudentChoicesFilePath != "") {
+                await Task.Run(() => 
+                    DataSimulator.RunScheduling(
+                        CoursesFilePath,
+                        ScheduleFilePath,
+                        StudentsFilePath,
+                        StudentChoicesFilePath
+                    )
+                );
+            }
+        }
+
+        public async void RunReports() {
+            await Task.Run(() => DataSimulator.CreateReports());
+        }
     }
 }

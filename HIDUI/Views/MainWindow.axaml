@@ -1,28 +1,40 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:TestApp.HIDUI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TestApp.HIDUI.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:CompileBindings="False"
         Icon="/Assets/avalonia-logo.ico"
         Title="HIDUI">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <!-- <vm:MainWindowViewModel/> -->
     </Design.DataContext>
 
     <StackPanel>
-        <Button Command="{ Binding importCoursesCommand }">Import Courses</Button>
-        <Button Command="{ Binding importScheduleCommand }">Import Schedule of Courses</Button>
-        <Button Command="{ Binding importStudentsCommand }">Import Students</Button>
-        <Button Command="{ Binding importStudentChoicesCommand }">Import Student Choices</Button>
+        <StackPanel Orientation="Horizontal">
+            <Button Click="ImportCoursesOnClick">Import Courses</Button>
+            <TextBlock Text="{ Binding CoursesFileName }"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Click="ImportScheduleOnClick">Import Schedule of Courses</Button>
+            <TextBlock Text="{ Binding ScheduleFileName }"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Click="ImportStudentsOnClick">Import Students</Button>
+            <TextBlock Text="{ Binding StudentsFileName }"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Click="ImportStudentChoicesOnClick">Import Student Choices</Button>
+            <TextBlock Text="{ Binding StudentChoicesFileName }"/>
+        </StackPanel>
+
         <TextBlock Text="Import all 4 files, then click run reports"/>
-        <Button Click="runReports">Run Reports</Button>
+        <Button Command="{ Binding RunReports }">Run Reports</Button>
         <TextBlock Text="Import Files button imports all 4 from the default testing location. (This is for test purposes only.)"/>
-        <Button Click="importFiles">Import Files</Button>
+        <Button Command="{ Binding ImportFiles }">Import Files</Button>
     </StackPanel>
 </Window>
