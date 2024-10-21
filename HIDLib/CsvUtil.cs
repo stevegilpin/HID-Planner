@@ -11,6 +11,44 @@ namespace HIDLib;
 
 public static class CsvUtil
 {
+    public static bool HeaderMatchesCourseInfo(string filePath)
+    {
+        return HeaderMatches<CourseInfo, Mappers.CourseInfoMapper>(filePath);
+    }
+
+    public static bool HeaderMatchesCourseSchedule(string filePath)
+    {
+        return HeaderMatches<CourseSchedule, Mappers.CourseScheduleMapper>(filePath);
+    }
+    
+    public static bool HeaderMatchesStudentInfo(string filePath)
+    {
+        return HeaderMatches<StudentInfo, Mappers.StudentInfoMapper>(filePath);
+    }
+
+    public static bool HeaderMatchesStudentCourseRankings(string filePath)
+    {
+        return HeaderMatches<StudentCourseRanking, Mappers.StudentCourseRankingMapper>(filePath);
+    }
+
+    private static bool HeaderMatches<TTable, TMapper>(string filePath) where TMapper : ClassMap<TTable>
+    {
+        if (File.Exists(filePath) == false)
+            return false;
+
+        bool headerOk = true;
+        using var reader = new StreamReader(filePath);
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture) {
+            HeaderValidated = args => headerOk = args.InvalidHeaders.Length == 0
+        };
+        using var csv = new CsvReader(reader, config);
+        csv.Context.RegisterClassMap<TMapper>();
+        csv.Read();
+        csv.ReadHeader();
+        csv.ValidateHeader(typeof(TTable));
+        return headerOk;
+    }
+    
     public static List<CourseInfo> ReadCourseInfo(string filePath)
     {
         using var reader = new StreamReader(filePath);
@@ -111,10 +149,8 @@ public static class CsvUtil
             {
                 AutoMap(CultureInfo.InvariantCulture);
                 Map(x => x.RunId).Ignore();
-                Map(x => x.CourseName).Optional();
                 Map(x => x.MinCapacity).Optional();
                 Map(x => x.MaxCapacity).Optional();
-                Map(x => x.Description).Optional();
                 Map(x => x.GradesFlags).Ignore();
             }
         }
@@ -124,7 +160,7 @@ public static class CsvUtil
             public StudentInfoMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.RunId).Optional();
+                Map(x => x.RunId).Ignore();
                 Map(x => x.StudentId).Optional();
             }
         }
@@ -134,7 +170,7 @@ public static class CsvUtil
             public StudentCourseRankingMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.RunId).Optional();
+                Map(x => x.RunId).Ignore();
             }
         }
         
@@ -143,7 +179,7 @@ public static class CsvUtil
             public CourseScheduleMapper()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(x => x.RunId).Optional();
+                Map(x => x.RunId).Ignore();
                 Map(x => x.RoomCode).Optional();
                 Map(x => x.Instructor).Optional();
                 Map(x => x.Supervisor).Optional();
