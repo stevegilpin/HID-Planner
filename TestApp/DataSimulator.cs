@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Controllers;
 using Data;
 using HIDLib;
 using Data.Objects;
@@ -21,35 +22,21 @@ public static class DataSimulator
         var rankingFilePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
         var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
         var courseInfoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
-
-        var runInputs = new AssignmentRunInputs {
-            RunDescription = "Test run",
-            CourseInfoFilePath = courseInfoFilePath,
-            CourseScheduleFilePath = scheduleFilePath,
-            StudentInfoFilePath = studentInfoFilePath,
-            StudentRankingsFilePath = rankingFilePath
-        };
-
         RunScheduling(courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath);
     }
 
     public static void RunScheduling(string courseInfoFilePath, string scheduleFilePath, string studentInfoFilePath, string rankingFilePath)
     {
-        var runInputs = new AssignmentRunInputs {
-            RunDescription = "Manual test run",
+        var controller = new SchedulingController {
+            InputDescription = "Manual test run",
             CourseInfoFilePath = courseInfoFilePath,
             CourseScheduleFilePath = scheduleFilePath,
             StudentInfoFilePath = studentInfoFilePath,
-            StudentRankingsFilePath = rankingFilePath
+            StudentCourseRankingsFilePath = rankingFilePath
         };
 
-        var runResult = AssignmentRunController.RunAssignments(runInputs);
-        if (runResult.ValidInputs == false)
-            Console.WriteLine(runResult.InputValidationError);
-        else if (runResult.SuccessfulAssignment == false)
-            Console.WriteLine(runResult.CourseAssignmentError);
-        else
-            Console.WriteLine($"Results saved with ID {runResult.RunId}");
+        var message = controller.RunScheduling();
+        Console.WriteLine(message);
     }
 
     public static void CreateReports()
