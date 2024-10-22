@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace TestApp.HIDUI.ViewModels;
+namespace HIDUI.ViewModels;
 
 public class ViewModelBase : ObservableObject {
 }

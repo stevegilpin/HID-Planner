@@ -2,7 +2,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using TestApp.HIDUI.Views;
+using HIDUI.Views;
+using MainWindow = HIDUI.Views.MainWindow;
 
 namespace HIDUI;
 

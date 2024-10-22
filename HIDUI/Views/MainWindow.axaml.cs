@@ -1,10 +1,11 @@
-using Avalonia.Controls;
-using Avalonia.Platform.Storage;
-using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
+using TestApp;
 
-namespace TestApp.HIDUI.Views {
+namespace HIDUI.Views {
 
     public partial class MainWindow: Window {
         public MainWindow() {
