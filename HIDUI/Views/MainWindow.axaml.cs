@@ -7,7 +7,10 @@ using TestApp;
 
 namespace HIDUI.Views {
 
-    public partial class MainWindow: Window {
+    public partial class MainWindow: Window
+    {
+        private MainWindowViewModel ViewModel => DataContext as MainWindowViewModel;
+        
         public MainWindow() {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
@@ -25,23 +28,23 @@ namespace HIDUI.Views {
             // // Also consider wrapping the actual call to the view model into a try-catch block 
             // // in order to provide feedback to the user if needed.
             // string destinationFilePath = dialog.FileName;
-            (this.DataContext as MainWindowViewModel)?.ImportCourses(coursesFilePath);
+            ViewModel.ImportCourses(coursesFilePath);
             // }
         }
 
         public async void ImportScheduleOnClick(object sender, RoutedEventArgs args) {
             string scheduleFilePath = await ChooseFilePath("Import Schedule CSV");
-            (this.DataContext as MainWindowViewModel)?.ImportSchedule(scheduleFilePath);
+            ViewModel.ImportSchedule(scheduleFilePath);
         }
 
         public async void ImportStudentsOnClick(object sender, RoutedEventArgs args) {
             string studentsFilePath = await ChooseFilePath("Import Students CSV");
-            (this.DataContext as MainWindowViewModel)?.ImportStudents(studentsFilePath);
+            ViewModel.ImportStudents(studentsFilePath);
         }
 
         public async void ImportStudentChoicesOnClick(object sender, RoutedEventArgs args) {
             string studentChoicesFilePath = await ChooseFilePath("Import Student Choices CSV");
-            (this.DataContext as MainWindowViewModel)?.ImportStudentChoices(studentChoicesFilePath);
+            ViewModel.ImportStudentChoices(studentChoicesFilePath);
         }
 
         public async Task<string> ChooseFilePath(string title) {
@@ -62,7 +65,7 @@ namespace HIDUI.Views {
     public partial class MainWindowViewModel: INotifyPropertyChanged {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string coursesFileName = "";
+        private string coursesFileName;
         public string CoursesFileName {
             get => coursesFileName;
             set {
@@ -71,7 +74,7 @@ namespace HIDUI.Views {
             }
         }
 
-        private string coursesFilePath = "";
+        private string coursesFilePath;
         public string CoursesFilePath {
             get => coursesFilePath;
             set {
@@ -81,7 +84,7 @@ namespace HIDUI.Views {
             }
         }
         
-        private string scheduleFileName = "";
+        private string scheduleFileName;
         public string ScheduleFileName {
             get => scheduleFileName;
             set {
@@ -90,7 +93,7 @@ namespace HIDUI.Views {
             }
         }
 
-        private string scheduleFilePath = "";
+        private string scheduleFilePath;
         public string ScheduleFilePath {
             get => scheduleFilePath;
             set {
@@ -100,7 +103,7 @@ namespace HIDUI.Views {
             }
         }
 
-        private string studentsFileName = "";
+        private string studentsFileName;
         public string StudentsFileName {
             get => studentsFileName;
             set {
@@ -108,7 +111,7 @@ namespace HIDUI.Views {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFileName)));
             }
         }
-        private string studentsFilePath = "";
+        private string studentsFilePath;
         public string StudentsFilePath {
             get => studentsFilePath;
             set {
@@ -118,7 +121,7 @@ namespace HIDUI.Views {
             }
         }
 
-        private string studentChoicesFileName = "";
+        private string studentChoicesFileName;
         public string StudentChoicesFileName {
             get => studentChoicesFileName;
             set {
@@ -126,7 +129,7 @@ namespace HIDUI.Views {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFileName)));
             }
         }
-        private string studentChoicesFilePath = "";
+        private string studentChoicesFilePath;
         public string StudentChoicesFilePath {
             get => studentChoicesFilePath;
             set {
@@ -152,12 +155,14 @@ namespace HIDUI.Views {
             StudentChoicesFilePath = filePathSelection;
         }
 
+        private bool InputsAreReady() => string.IsNullOrEmpty(CoursesFilePath) == false &&
+                                         string.IsNullOrEmpty(ScheduleFilePath) == false &&
+                                         string.IsNullOrEmpty(StudentsFilePath) == false &&
+                                         string.IsNullOrEmpty(StudentChoicesFilePath) == false;
+
         public async void ImportFiles() {
-            if (CoursesFilePath != ""
-            && ScheduleFilePath != ""
-            && StudentsFilePath != ""
-            && StudentChoicesFilePath != "") {
-                await Task.Run(() => 
+            if (InputsAreReady())
+                await Task.Run(() =>
                     DataSimulator.RunScheduling(
                         CoursesFilePath,
                         ScheduleFilePath,
@@ -165,7 +170,6 @@ namespace HIDUI.Views {
                         StudentChoicesFilePath
                     )
                 );
-            }
         }
 
         public async void RunReports() {
