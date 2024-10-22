@@ -16,26 +16,12 @@
     </Design.DataContext>
 
     <StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Button Click="ImportCoursesOnClick">Import Courses</Button>
-            <TextBlock Text="{ Binding CoursesFileName }"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Button Click="ImportScheduleOnClick">Import Schedule of Courses</Button>
-            <TextBlock Text="{ Binding ScheduleFileName }"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Button Click="ImportStudentsOnClick">Import Students</Button>
-            <TextBlock Text="{ Binding StudentsFileName }"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Button Click="ImportStudentChoicesOnClick">Import Student Choices</Button>
-            <TextBlock Text="{ Binding StudentChoicesFileName }"/>
-        </StackPanel>
-
+        <TextBlock Text="{ Binding CoursesFileName }"/>
+        <TextBlock Text="{ Binding ScheduleFileName }"/>
+        <TextBlock Text="{ Binding StudentsFileName }"/>
+        <TextBlock Text="{ Binding StudentChoicesFileName }"/>
         <TextBlock Text="Import all 4 files, then click run reports"/>
+        <Button Click="ImportFilesOnClick">Import Files</Button>
         <Button Command="{ Binding RunReports }">Run Reports</Button>
-        <TextBlock Text="Import Files button imports all 4 from the default testing location. (This is for test purposes only.)"/>
-        <Button Command="{ Binding ImportFiles }">Import Files</Button>
     </StackPanel>
 </Window>

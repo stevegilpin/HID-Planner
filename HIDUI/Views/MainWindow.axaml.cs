@@ -1,8 +1,10 @@
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using HIDLib;
 using TestApp;
 
 namespace HIDUI.Views {
@@ -16,49 +18,17 @@ namespace HIDUI.Views {
             DataContext = new MainWindowViewModel();
         }
 
-        public async void ImportCoursesOnClick(object sender, RoutedEventArgs args) {
-            string coursesFilePath = await ChooseFilePath("Import Courses CSV");
-            // var dialog = new OpenFileDialog();
-
-            // if (dialog.ShowDialog() == true)
-            // {
-            // // Consider to create the FileStream here to handle errors 
-            // // related to the user's picked file in the view. 
-            // // If opening the FileStream succeeds, we can pass it over to the viewmodel.
-            // // Also consider wrapping the actual call to the view model into a try-catch block 
-            // // in order to provide feedback to the user if needed.
-            // string destinationFilePath = dialog.FileName;
-            ViewModel.ImportCourses(coursesFilePath);
-            // }
+        public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
+            var filePaths = await ChooseFilePath("Select Import Files");
+            ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
         }
 
-        public async void ImportScheduleOnClick(object sender, RoutedEventArgs args) {
-            string scheduleFilePath = await ChooseFilePath("Import Schedule CSV");
-            ViewModel.ImportSchedule(scheduleFilePath);
-        }
-
-        public async void ImportStudentsOnClick(object sender, RoutedEventArgs args) {
-            string studentsFilePath = await ChooseFilePath("Import Students CSV");
-            ViewModel.ImportStudents(studentsFilePath);
-        }
-
-        public async void ImportStudentChoicesOnClick(object sender, RoutedEventArgs args) {
-            string studentChoicesFilePath = await ChooseFilePath("Import Student Choices CSV");
-            ViewModel.ImportStudentChoices(studentChoicesFilePath);
-        }
-
-        public async Task<string> ChooseFilePath(string title) {
-            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-{
+        public async Task<string[]> ChooseFilePath(string title) {
+            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
                 Title = title,
-                AllowMultiple = false
+                AllowMultiple = true
             });
-
-            if (files.Count == 1) {
-                return files[0].Path.LocalPath;
-            }
-            // TODO: error handling and not selecting file?
-            return "";
+            return files.Select(file => file.Path.LocalPath).ToArray();
         }
     }
 
@@ -139,26 +109,51 @@ namespace HIDUI.Views {
             }
         }
 
-        public void ImportCourses(string filePathSelection) {
-            CoursesFilePath = filePathSelection;
+        public bool TrySetFilePaths(string[] paths, out string errorMessage) {
+            var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
+            if (courseInfo.Count > 1) {
+                errorMessage = "Multiple files found matching required headers for course info data.";
+                return false;
+            }
+
+            var courseSchedule = paths.Where(CsvUtil.HeaderMatchesCourseSchedule).ToList();
+            if (courseSchedule.Count > 1) {
+                errorMessage = "Multiple files found matching required headers for course schedule data.";
+                return false;
+            }
+
+            var studentInfo = paths.Where(CsvUtil.HeaderMatchesStudentInfo).ToList();
+            if (studentInfo.Count > 1) {
+                errorMessage = "Multiple files found matching required headers for student info data.";
+                return false;
+            }
+
+            var studentChoices = paths.Where(CsvUtil.HeaderMatchesStudentCourseRankings).ToList();
+            if (studentChoices.Count > 1) {
+                errorMessage = "Multiple files found matching required headers for students' course ranking data.";
+                return false;
+            }
+
+            if (courseInfo.Count == 1) {
+                CoursesFilePath = courseInfo.Single();
+            }
+            if (courseSchedule.Count == 1) {
+                ScheduleFilePath = courseSchedule.Single();
+            }
+            if (studentInfo.Count == 1) {
+                StudentsFilePath = studentInfo.Single();
+            }
+            if (studentChoices.Count == 1) {
+                StudentChoicesFilePath = studentChoices.Single();
+            }
+            errorMessage = null;
+            return true;
         }
 
-        public void ImportSchedule(string filePathSelection) {
-            ScheduleFilePath = filePathSelection;
-        }
-
-        public void ImportStudents(string filePathSelection) {
-            StudentsFilePath = filePathSelection;
-        }
-
-        public void ImportStudentChoices(string filePathSelection) {
-            StudentChoicesFilePath = filePathSelection;
-        }
-
-        private bool InputsAreReady() => string.IsNullOrEmpty(CoursesFilePath) == false &&
-                                         string.IsNullOrEmpty(ScheduleFilePath) == false &&
-                                         string.IsNullOrEmpty(StudentsFilePath) == false &&
-                                         string.IsNullOrEmpty(StudentChoicesFilePath) == false;
+        private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
+                                      && !string.IsNullOrEmpty(ScheduleFilePath)
+                                      && !string.IsNullOrEmpty(StudentsFilePath)
+                                      && !string.IsNullOrEmpty(StudentChoicesFilePath);
 
         public async void ImportFiles() {
             if (InputsAreReady())
