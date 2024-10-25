@@ -20,7 +20,12 @@ namespace HIDUI.Views {
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
             var filePaths = await ChooseFilePath("Select Import Files");
-            ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
+            if (ViewModel.TrySetFilePaths(filePaths, out string errorMessage) == false) {
+                // TODO error feedback
+                return;
+            }
+            
+            ViewModel.ImportFiles();
         }
 
         public async Task<string[]> ChooseFilePath(string title) {
