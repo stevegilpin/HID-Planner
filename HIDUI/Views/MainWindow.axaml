@@ -7,7 +7,8 @@
         x:Class="HIDUI.Views.MainWindow"
         x:CompileBindings="False"
         Icon="/Assets/avalonia-logo.ico"
-        Title="HIDUI">
+        Title="HIDUI"
+        WindowState="Maximized">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,13 +16,81 @@
         <views1:MainWindowViewModel/>
     </Design.DataContext>
 
-    <StackPanel>
-        <TextBlock Text="{ Binding CoursesFileName }"/>
-        <TextBlock Text="{ Binding ScheduleFileName }"/>
-        <TextBlock Text="{ Binding StudentsFileName }"/>
-        <TextBlock Text="{ Binding StudentChoicesFileName }"/>
-        <TextBlock Text="Import all 4 files, then click run reports"/>
-        <Button Click="ImportFilesOnClick">Import Files</Button>
-        <Button Command="{ Binding RunReports }">Run Reports</Button>
-    </StackPanel>
+    <!-- <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Foreground" Value="Red" />
+        </Style>
+    </Window.Styles> -->
+
+    <Grid ColumnDefinitions="*, 2, *">
+        <StackPanel Grid.Column="0">
+            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Import Files for Courses, Schedule, Students, and Student Choices</TextBlock>
+            
+            <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Import Files</TextBlock>
+            </Button>
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock>Courses</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsCoursesFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding CoursesFileName }"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding ScheduleStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock>Schedule</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsScheduleFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduleFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding ScheduleFileName }" ToolTip.Tip="{ Binding ScheduleFilePath }"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock>Students</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsStudentsFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentsFileName }"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding StudentChoicesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock>Student Choices</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsStudentChoicesFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentChoicesFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentChoicesFileName }"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- <TextBlock Text="Import all 4 files, then click run reports"/> -->
+            <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                    Run Scheduling
+                </TextBlock>
+            </Button>
+
+            <TextBlock>This create reports button will be in the table for each row, right?</TextBlock>
+            <Button Command="{ Binding CreateReports }">Create Reports</Button>
+        </StackPanel>
+
+        <GridSplitter Grid.Column="1" Background="White" ResizeDirection="Columns"/>
+    </Grid>
 </Window>

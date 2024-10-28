@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,12 +21,7 @@ namespace HIDUI.Views {
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
             var filePaths = await ChooseFilePath("Select Import Files");
-            if (ViewModel.TrySetFilePaths(filePaths, out string errorMessage) == false) {
-                // TODO error feedback
-                return;
-            }
-            
-            ViewModel.ImportFiles();
+            ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
         }
 
         public async Task<string[]> ChooseFilePath(string title) {
@@ -40,6 +36,15 @@ namespace HIDUI.Views {
     public partial class MainWindowViewModel: INotifyPropertyChanged {
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        // Courses
+        private bool isCoursesFileSet = false;
+        public bool IsCoursesFileSet {
+            get => isCoursesFileSet;
+            set {
+                isCoursesFileSet = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCoursesFileSet)));
+            }
+        }
         private string coursesFileName;
         public string CoursesFileName {
             get => coursesFileName;
@@ -55,10 +60,30 @@ namespace HIDUI.Views {
             set {
                 coursesFilePath = value;
                 CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
+                IsCoursesFileSet = true;
+                CoursesStatusColor = "Green";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesFilePath)));
             }
         }
+
+        private string coursesStatusColor = "Gray";
+        public string CoursesStatusColor {
+            get => coursesStatusColor;
+            set {
+                coursesStatusColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesStatusColor)));
+            }
+        }
         
+        // Schedule
+        private bool isScheduleFileSet = false;
+        public bool IsScheduleFileSet {
+            get => isScheduleFileSet;
+            set {
+                isScheduleFileSet = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsScheduleFileSet)));
+            }
+        }
         private string scheduleFileName;
         public string ScheduleFileName {
             get => scheduleFileName;
@@ -74,10 +99,30 @@ namespace HIDUI.Views {
             set {
                 scheduleFilePath = value;
                 ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
+                IsScheduleFileSet = true;
+                ScheduleStatusColor = "Green";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleFilePath)));
             }
         }
 
+        private string scheduleStatusColor = "Gray";
+        public string ScheduleStatusColor {
+            get => scheduleStatusColor;
+            set {
+                scheduleStatusColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleStatusColor)));
+            }
+        }
+
+        // Students
+        private bool isStudentsFileSet = false;
+        public bool IsStudentsFileSet {
+            get => isStudentsFileSet;
+            set {
+                isStudentsFileSet = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStudentsFileSet)));
+            }
+        }
         private string studentsFileName;
         public string StudentsFileName {
             get => studentsFileName;
@@ -92,10 +137,30 @@ namespace HIDUI.Views {
             set {
                 studentsFilePath = value;
                 StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
+                IsStudentsFileSet = true;
+                StudentsStatusColor = "Green";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFilePath)));
             }
         }
 
+        private string studentsStatusColor = "Gray";
+        public string StudentsStatusColor {
+            get => studentsStatusColor;
+            set {
+                studentsStatusColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsStatusColor)));
+            }
+        }
+
+        // Student Choices
+        private bool isStudentChoicesFileSet = false;
+        public bool IsStudentChoicesFileSet {
+            get => isStudentChoicesFileSet;
+            set {
+                isStudentChoicesFileSet = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStudentChoicesFileSet)));
+            }
+        }
         private string studentChoicesFileName;
         public string StudentChoicesFileName {
             get => studentChoicesFileName;
@@ -110,7 +175,18 @@ namespace HIDUI.Views {
             set {
                 studentChoicesFilePath = value;
                 StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
+                IsStudentChoicesFileSet = true;
+                StudentChoicesStatusColor = "Green";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFilePath)));
+            }
+        }
+
+        private string studentChoicesStatusColor = "Gray";
+        public string StudentChoicesStatusColor {
+            get => studentChoicesStatusColor;
+            set {
+                studentChoicesStatusColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesStatusColor)));
             }
         }
 
@@ -160,7 +236,31 @@ namespace HIDUI.Views {
                                       && !string.IsNullOrEmpty(StudentsFilePath)
                                       && !string.IsNullOrEmpty(StudentChoicesFilePath);
 
-        public async void ImportFiles() {
+        public void RemoveCoursesFile() {
+            CoursesFilePath = null;
+            IsCoursesFileSet = false;
+            CoursesStatusColor = "Gray";
+        }
+
+        public void RemoveScheduleFile() {
+            ScheduleFilePath = null;
+            IsScheduleFileSet = false;
+            ScheduleStatusColor = "Gray";
+        }
+
+        public void RemoveStudentsFile() {
+            StudentsFilePath = null;
+            IsStudentsFileSet = false;
+            StudentsStatusColor = "Gray";
+        }
+
+        public void RemoveStudentChoicesFile() {
+            StudentChoicesFilePath = null;
+            IsStudentChoicesFileSet = false;
+            StudentChoicesStatusColor = "Gray";
+        }
+
+        public async void RunScheduling() {
             if (InputsAreReady())
                 await Task.Run(() =>
                     DataSimulator.RunScheduling(
@@ -172,7 +272,7 @@ namespace HIDUI.Views {
                 );
         }
 
-        public async void RunReports() {
+        public static async void CreateReports() {
             await Task.Run(() => DataSimulator.CreateReports());
         }
     }
