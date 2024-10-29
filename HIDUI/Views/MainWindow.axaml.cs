@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,8 +9,7 @@ using TestApp;
 
 namespace HIDUI.Views {
 
-    public partial class MainWindow: Window
-    {
+    public partial class MainWindow: Window {
         private MainWindowViewModel ViewModel => DataContext as MainWindowViewModel;
         
         public MainWindow() {

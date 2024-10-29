@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mycontrols="clr-namespace:HIDUI.Views"
         xmlns:views1="clr-namespace:HIDUI.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HIDUI.Views.MainWindow"
@@ -9,12 +10,6 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="HIDUI"
         WindowState="Maximized">
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <views1:MainWindowViewModel/>
-    </Design.DataContext>
 
     <!-- <Window.Styles>
         <Style Selector="Button">
@@ -24,11 +19,13 @@
 
     <Grid ColumnDefinitions="*, 2, *">
         <StackPanel Grid.Column="0">
-            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Import Files for Courses, Schedule, Students, and Student Choices</TextBlock>
+            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Files for Courses, Schedule, Students, and Student Choices</TextBlock>
             
             <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Import Files</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Select Input Files</TextBlock>
             </Button>
+
+            <mycontrols:InputField/>
 
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
                 <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
@@ -80,7 +77,6 @@
                 </Border>
             </Grid>
 
-            <!-- <TextBlock Text="Import all 4 files, then click run reports"/> -->
             <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                     Run Scheduling

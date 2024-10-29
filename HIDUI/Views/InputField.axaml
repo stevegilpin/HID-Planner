@@ -1,0 +1,21 @@
+<UserControl x:Class="HIDUI.Views.InputField"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:HIDUI.Views"
+             x:CompileBindings="False"
+             d:DesignHeight="200" 
+             d:DesignWidth="200">
+    <Border BorderBrush="{ Binding StatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
+        <StackPanel>
+            <TextBlock>Courses</TextBlock>
+            <StackPanel IsVisible="{ Binding IsFileSet }" Orientation="Horizontal">
+                <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveFile }">
+                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                </Button>
+                <TextBlock VerticalAlignment="Center" Text="{ Binding FileName }"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>
