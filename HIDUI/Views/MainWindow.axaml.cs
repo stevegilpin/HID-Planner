@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Controllers;
+using Data.Objects;
 using HIDLib;
 using TestApp;
 
@@ -190,6 +194,13 @@ namespace HIDUI.Views {
             }
         }
 
+        ObservableCollection<RunInfo> Runs { get; }
+
+        public MainWindowViewModel() {
+            List<RunInfo> currentRuns = ReportGenController.GetAllSchedulingRuns();
+            Runs = new ObservableCollection<RunInfo>(currentRuns);
+        }
+
         public bool TrySetFilePaths(string[] paths, out string errorMessage) {
             var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
             if (courseInfo.Count > 1) {
@@ -274,6 +285,17 @@ namespace HIDUI.Views {
 
         public static async void CreateReports() {
             await Task.Run(() => DataSimulator.CreateReports());
+        }
+    }
+
+    public class RunModel {
+        public string RunId { get; set; }
+        public DateTime RunTimeStamp { get; set; }
+        
+        public RunModel(string runId , DateTime runTimeStamp)
+        {
+            RunId = runId;
+            RunTimeStamp = runTimeStamp;
         }
     }
 }

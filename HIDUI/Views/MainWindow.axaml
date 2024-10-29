@@ -24,10 +24,10 @@
 
     <Grid ColumnDefinitions="*, 2, *">
         <StackPanel Grid.Column="0">
-            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Import Files for Courses, Schedule, Students, and Student Choices</TextBlock>
+            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
             
             <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Import Files</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
             </Button>
 
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
@@ -89,8 +89,36 @@
 
             <TextBlock>This create reports button will be in the table for each row, right?</TextBlock>
             <Button Command="{ Binding CreateReports }">Create Reports</Button>
+
+            <DataGrid Margin="20" 
+                    ItemsSource="{Binding Runs}"
+                    IsReadOnly="True"
+                    CanUserResizeColumns="True"
+                    GridLinesVisibility="All"
+                    BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                <!-- <DataGridTextColumn Header="Name" Binding="{ Binding Name }" /> -->
+                <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding RunTimeStamp }" />
+                <!-- <DataGridTextColumn Header="Accuracy" Binding="{ Binding Accuracy }" /> -->
+                <!-- <DataTemplate> -->
+                    <!-- <Button Command="{ Binding #Root.((vm:MainViewModel)DataContext).RemoveItemCommand }" CommandParameter="{Binding .}"> -->
+                <DataGridTemplateColumn Width="*" Header="Actions">
+                    <!-- <DataGridTemplateColumn> -->
+                        <DataTemplate>
+                            <Button>More Info
+                                <!-- <PathIcon Data="{ DynamicResource DeleteIconData }"
+                                        Height="15"
+                                        Foreground="Red"/> -->
+                            </Button>
+                        </DataTemplate>
+                    <!-- </DataGridTemplateColumn> -->
+                </DataGridTemplateColumn>
+                <!-- </DataTemplate> -->
+            </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
 
-        <GridSplitter Grid.Column="1" Background="White" ResizeDirection="Columns"/>
+        <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
     </Grid>
 </Window>
