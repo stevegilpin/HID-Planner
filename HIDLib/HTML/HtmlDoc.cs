@@ -4,11 +4,11 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-internal sealed class HtmlDoc
+public sealed class HtmlDoc
 {
-    public XElement Head { get; private set; }
-    public List<string> StyleRuleSets { get; private set; }
-    public XElement Body { get; private set; }
+    internal XElement Head { get; private set; }
+    internal List<string> StyleRuleSets { get; private set; }
+    internal XElement Body { get; private set; }
     public string Title { get; init; }
 
     public HtmlDoc(string docTitle)
@@ -21,14 +21,14 @@ internal sealed class HtmlDoc
         AddToHead(new XElement("title", docTitle));
     }
 
-    public T Add<T>(T element) where T : XElement
+    internal T Add<T>(T element) where T : XElement
     {
         Body.Add(element);
         return element;
     }
-    public void AddToHead(XElement element) => Head.Add(element);
+    internal void AddToHead(XElement element) => Head.Add(element);
 
-    public void AddCssRuleSet(string selector, List<string> styleRules)
+    internal void AddCssRuleSet(string selector, List<string> styleRules)
     {
         string ruleset =
             $@"

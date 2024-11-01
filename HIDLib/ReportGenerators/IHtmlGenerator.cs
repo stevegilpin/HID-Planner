@@ -3,7 +3,7 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-internal interface IHtmlGenerator
+public interface IHtmlGenerator
 {
     HtmlDoc CreateDoc();
 }

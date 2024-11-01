@@ -9,7 +9,7 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-internal class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGenerator
+public class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
 

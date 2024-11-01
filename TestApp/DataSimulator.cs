@@ -41,7 +41,9 @@ public static class DataSimulator
     public static void CreateReports()
     {
         var latest = DataManager.LatestRun();
-        var message = ReportGenController.GenerateReports(latest.RunId, ReportsFolder);
-        Console.WriteLine(message);
+        var data = DataManager.LoadDataSet(latest.RunId);
+        var docs = ReportGenController.GetHtmlDocs(data);
+        ReportGenController.ExportData(docs, data, ReportsFolder);
+        Console.WriteLine($"Data written to {ReportsFolder}");
     }
 }

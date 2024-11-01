@@ -1,41 +1,36 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using Data.Objects;
 using HIDLib.EndPoints;
+using HIDLib.HTML;
+using HIDLib.ReportGenerators;
 
 namespace Controllers;
 
 public class ReportGenController
 {
     public static List<RunInfo> GetAllSchedulingRuns() => DataManager.AllRuns();
-    public static RunInfo LatestSchedulingRun() => DataManager.LatestRun();
 
-    public static string GenerateReports(int assignmentRunId, string outputFolder)
+    public static List<HtmlDoc> GetHtmlDocs(AssignmentDataSet data)
     {
-        AssignmentDataSet data;
-        try {
-            data = DataManager.LoadDataSet(assignmentRunId);
-        }
-        catch (Exception e) {
-            return $"Error loading data for run ID {assignmentRunId}:{Environment.NewLine}{e.Message}";
-        }
+        var generators = new IHtmlGenerator[] {
+            new ProblematicAssignmentsReport(data),
+            new ClassRosterReport(data),
+            new StudentScheduleGridReport(data),
+            new AssignmentAnalysisReport(data),
+            new StudentScheduleOverviewReport(data),
+        };
 
-        try {
-            ReportGenerator.WriteRawData(data, outputFolder);
-        }
-        catch (Exception e) {
-            return $"Error saving raw results{Environment.NewLine}{e.Message}";
-        }
+        return generators.Select(x => x.CreateDoc()).ToList();
+    }
 
-        try {
-            ReportGenerator.GenerateReports(data, outputFolder);
-        }
-        catch (Exception e) {
-            return $"Error saving reports:{Environment.NewLine}{e.Message}";
-        }
-
-        return $"Saved reports to {outputFolder}";
+    public static void ExportData(List<HtmlDoc> htmlDocs, AssignmentDataSet data, string outputFolder)
+    {
+        ReportGenerator.WriteRawData(data, outputFolder);
+        foreach (var doc in htmlDocs)
+            doc.WriteToFile(outputFolder);
     }
 
     public static bool TryGetAnalytics(int assignmentRunId, out SchedulingRunAnalyticData analytics, out string errorMessage)

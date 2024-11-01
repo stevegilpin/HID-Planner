@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace HIDLib.HTML;
 
-internal static class HtmlUtil
+public static class HtmlUtil
 {
     public static void WriteToFile(this HtmlDoc content, string folder)
     {
@@ -13,7 +13,7 @@ internal static class HtmlUtil
         f.Write(content.ToString());
     }
 
-    public static void AddAttribute(this XElement element, string name, string value)
+    internal static void AddAttribute(this XElement element, string name, string value)
     {
         var attr = element.Attribute(name);
         if (attr == null)
@@ -22,7 +22,7 @@ internal static class HtmlUtil
             attr.Value += $" {value};";
     }
 
-    public static void AddStyle(this XElement element, string value) => element.AddAttribute("style", value);
+    internal static void AddStyle(this XElement element, string value) => element.AddAttribute("style", value);
 }
 
 internal class HtmlHeader(object content, int level = 1) : XElement($"h{level}", content);

@@ -8,7 +8,7 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-internal class ProblematicAssignmentsReport(AssignmentDataSet reportData, int rankingThreshold = 7) : IHtmlGenerator
+public class ProblematicAssignmentsReport(AssignmentDataSet reportData, int rankingThreshold = 7) : IHtmlGenerator
 {
     private int WorstCourseRankThreshold = rankingThreshold;
     private readonly AssignmentDataSet ReportData = reportData;
