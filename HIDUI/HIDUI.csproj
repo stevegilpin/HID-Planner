@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <ProjectReference Include="..\TestApp\TestApp.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\HIDLib\HIDLib.csproj" />
   </ItemGroup>
@@ -24,6 +23,11 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.0.2" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
   </ItemGroup>
 </Project>
 

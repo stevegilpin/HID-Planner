@@ -13,7 +13,7 @@ using HIDLib;
 using HIDLib.EndPoints;
 using HIDLib.HTML;
 using HIDLib.ReportGenerators;
-using TestApp;
+using HIDUI.ViewModels;
 
 namespace HIDUI.Views {
 
@@ -276,18 +276,28 @@ namespace HIDUI.Views {
 
         public async void RunScheduling() {
             if (InputsAreReady())
-                await Task.Run(() =>
-                    DataSimulator.RunScheduling(
-                        CoursesFilePath,
-                        ScheduleFilePath,
-                        StudentsFilePath,
-                        StudentChoicesFilePath
-                    )
+                await Task.Run(() => {
+                        var mgr = new SchedulingManager {
+                            InputDescription = "Manual test run", // todo set from UI
+                            CourseInfoFilePath = CoursesFilePath,
+                            CourseScheduleFilePath = ScheduleFilePath,
+                            StudentInfoFilePath = StudentsFilePath,
+                            StudentCourseRankingsFilePath = StudentChoicesFilePath,
+                        };
+                        var msg = mgr.RunScheduling();
+                        mgr.Logger.Information(msg);
+                    }
                 );
         }
 
         public static async void CreateReports() {
-            await Task.Run(() => DataSimulator.CreateReports());
+            await Task.Run(() => {
+                var latest = DataManager.LatestRun(); // todo get selected run, not the latest
+                var data = DataManager.LoadDataSet(latest.RunId);
+                var docs = GetHtmlDocs(data);
+                ExportData(docs, data, FilePaths.ReportsFolder);
+                Console.WriteLine($"Reports written to: {FilePaths.ReportsFolder}");
+            });
         }
         
         public static List<HtmlDoc> GetHtmlDocs(AssignmentDataSet data)

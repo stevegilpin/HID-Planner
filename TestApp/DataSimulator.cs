@@ -13,14 +13,11 @@ namespace TestApp;
 
 public static class DataSimulator
 {
-    public static readonly string SampleDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "sample data");
-    public static readonly string ReportsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HID", "reports");
-
     public static void TestRunScheduling() {
-        var studentInfoFilePath = Path.Combine(SampleDataFolder, "StudentInfoSample.csv");
-        var rankingFilePath = Path.Combine(SampleDataFolder, "StudentCourseRankingSample.csv");
-        var scheduleFilePath = Path.Combine(SampleDataFolder, "CourseScheduleSample.csv");
-        var courseInfoFilePath = Path.Combine(SampleDataFolder, "CourseInfoSample.csv");
+        var studentInfoFilePath = Path.Combine(FilePaths.SampleDataFolder, "StudentInfoSample.csv");
+        var rankingFilePath = Path.Combine(FilePaths.SampleDataFolder, "StudentCourseRankingSample.csv");
+        var scheduleFilePath = Path.Combine(FilePaths.SampleDataFolder, "CourseScheduleSample.csv");
+        var courseInfoFilePath = Path.Combine(FilePaths.SampleDataFolder, "CourseInfoSample.csv");
         RunScheduling(courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath);
     }
 
@@ -50,10 +47,10 @@ public static class DataSimulator
         };
 
         foreach (var g in generators)
-            g.CreateDoc().WriteToFile(ReportsFolder);
+            g.CreateDoc().WriteToFile(FilePaths.ReportsFolder);
         
-        ReportGenerator.WriteRawData(data, ReportsFolder);
+        ReportGenerator.WriteRawData(data, FilePaths.ReportsFolder);
 
-        Console.WriteLine($"Data written to {ReportsFolder}");
+        Console.WriteLine($"Data written to {FilePaths.ReportsFolder}");
     }
 }
