@@ -5,7 +5,7 @@ using HIDLib;
 using HIDLib.EndPoints;
 using Serilog;
 
-namespace Controllers;
+namespace TestApp;
 
 public class SchedulingController
 {

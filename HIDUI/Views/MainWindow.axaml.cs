@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using Controllers;
+using Data;
 using Data.Objects;
 using HIDLib;
+using HIDLib.EndPoints;
+using HIDLib.HTML;
+using HIDLib.ReportGenerators;
 using TestApp;
 
 namespace HIDUI.Views {
@@ -197,7 +200,7 @@ namespace HIDUI.Views {
         ObservableCollection<RunInfo> Runs { get; }
 
         public MainWindowViewModel() {
-            List<RunInfo> currentRuns = ReportGenController.GetAllSchedulingRuns();
+            List<RunInfo> currentRuns = DataManager.AllRuns();
             Runs = new ObservableCollection<RunInfo>(currentRuns);
         }
 
@@ -285,6 +288,50 @@ namespace HIDUI.Views {
 
         public static async void CreateReports() {
             await Task.Run(() => DataSimulator.CreateReports());
+        }
+        
+        public static List<HtmlDoc> GetHtmlDocs(AssignmentDataSet data)
+        {
+            var generators = new IHtmlGenerator[] {
+                new ProblematicAssignmentsReport(data),
+                new ClassRosterReport(data),
+                new StudentScheduleGridReport(data),
+                new AssignmentAnalysisReport(data),
+                new StudentScheduleOverviewReport(data),
+            };
+
+            return generators.Select(x => x.CreateDoc()).ToList();
+        }
+
+        public static void ExportData(List<HtmlDoc> htmlDocs, AssignmentDataSet data, string outputFolder)
+        {
+            ReportGenerator.WriteRawData(data, outputFolder);
+            foreach (var doc in htmlDocs)
+                doc.WriteToFile(outputFolder);
+        }
+
+        public static bool TryGetAnalytics(int assignmentRunId, out SchedulingRunAnalyticData analytics, out string errorMessage)
+        {
+            AssignmentDataSet data;
+            try {
+                data = DataManager.LoadDataSet(assignmentRunId);
+            }
+            catch (Exception e) {
+                errorMessage = $"Error loading data for run ID {assignmentRunId}:{Environment.NewLine}{e.Message}";
+                analytics = null;
+                return false;
+            }
+
+            try {
+                analytics = SchedulingRunSelector.GetAnalyticData(data);
+                errorMessage = null;
+                return true;
+            }
+            catch (Exception e) {
+                analytics = null;
+                errorMessage = $"Error creating analytics:{Environment.NewLine}{e.Message}";
+                return false;
+            }
         }
     }
 

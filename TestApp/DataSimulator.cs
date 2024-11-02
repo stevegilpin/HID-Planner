@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Controllers;
 using Data;
 using HIDLib;
 using Data.Objects;
@@ -42,8 +41,19 @@ public static class DataSimulator
     {
         var latest = DataManager.LatestRun();
         var data = DataManager.LoadDataSet(latest.RunId);
-        var docs = ReportGenController.GetHtmlDocs(data);
-        ReportGenController.ExportData(docs, data, ReportsFolder);
+        var generators = new IHtmlGenerator[] {
+            new ProblematicAssignmentsReport(data),
+            new ClassRosterReport(data),
+            new StudentScheduleGridReport(data),
+            new AssignmentAnalysisReport(data),
+            new StudentScheduleOverviewReport(data),
+        };
+
+        foreach (var g in generators)
+            g.CreateDoc().WriteToFile(ReportsFolder);
+        
+        ReportGenerator.WriteRawData(data, ReportsFolder);
+
         Console.WriteLine($"Data written to {ReportsFolder}");
     }
 }
