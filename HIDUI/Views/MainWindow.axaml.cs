@@ -5,10 +5,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Data;
 using Data.Objects;
+using DynamicData;
 using HIDLib;
 using HIDLib.EndPoints;
 using HIDLib.HTML;
@@ -200,7 +202,7 @@ namespace HIDUI.Views {
         ObservableCollection<RunInfo> Runs { get; }
 
         public MainWindowViewModel() {
-            List<RunInfo> currentRuns = DataManager.AllRuns();
+            var currentRuns = DataManager.AllRuns().OrderByDescending(x => x.RunId).ToList();
             Runs = new ObservableCollection<RunInfo>(currentRuns);
         }
 
@@ -275,7 +277,7 @@ namespace HIDUI.Views {
         }
 
         public async void RunScheduling() {
-            if (InputsAreReady())
+            if (InputsAreReady()) {
                 await Task.Run(() => {
                         var mgr = new SchedulingManager {
                             RunName = "Manual test run", // todo set from UI
@@ -286,8 +288,13 @@ namespace HIDUI.Views {
                         };
                         var msg = mgr.RunScheduling();
                         mgr.Logger.Information(msg);
+
                     }
                 );
+
+                Runs.Clear();
+                Runs.AddRange(DataManager.AllRuns().OrderByDescending(x => x.RunId));
+            }
         }
 
         public static async void CreateReports() {
