@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Data;
 using HIDLib;
-using Data.Objects;
 using HIDLib.EndPoints;
 using HIDLib.HTML;
 using HIDLib.ReportGenerators;
@@ -23,7 +20,7 @@ public static class DataSimulator
 
     public static void RunScheduling(string courseInfoFilePath, string scheduleFilePath, string studentInfoFilePath, string rankingFilePath)
     {
-        var controller = new SchedulingController { InputDescription = "Manual test run" };
+        var controller = new SchedulingController { RunName = "Manual test run" };
 
         if (controller.TrySetFilePaths([courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath], out var error) == false) {
             Console.WriteLine(error);

@@ -278,7 +278,7 @@ namespace HIDUI.Views {
             if (InputsAreReady())
                 await Task.Run(() => {
                         var mgr = new SchedulingManager {
-                            InputDescription = "Manual test run", // todo set from UI
+                            RunName = "Manual test run", // todo set from UI
                             CourseInfoFilePath = CoursesFilePath,
                             CourseScheduleFilePath = ScheduleFilePath,
                             StudentInfoFilePath = StudentsFilePath,

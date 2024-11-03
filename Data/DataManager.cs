@@ -8,7 +8,7 @@ namespace Data;
 
 public static class DataManager
 {
-    public static int Save(AssignmentDataSet dataSet, string description)
+    public static int Save(AssignmentDataSet dataSet, string name)
     {
         using var db = DbProvider.GetDbContext();
         var runId = 1; // todo create db sequence for this
@@ -26,7 +26,7 @@ public static class DataManager
         courseSchedule.ForEach(x => x.RunId = runId);
         dataSet.AssignmentResults.ForEach(x => x.RunId = runId);
         dataSet.RunInfo.RunId = runId;
-        dataSet.RunInfo.Description = description;
+        dataSet.RunInfo.Name = name;
 
         db.StudentInfo.AddRange(studentInfo);
         db.StudentCourseRanking.AddRange(studentCourseRankings);
@@ -70,6 +70,22 @@ public static class DataManager
             AssignmentResults = results,
             RunInfo = run
         };
+    }
+
+    public static void UpdateRunName(int runId, string name)
+    {
+        using var db = DbProvider.GetDbContext();
+        var run = db.RunInfo.Single(x => x.RunId == runId);
+        run.Name = name;
+        db.SaveChanges();
+    }
+
+    public static void UpdateRunNotes(int runId, string notes)
+    {
+        using var db = DbProvider.GetDbContext();
+        var run = db.RunInfo.Single(x => x.RunId == runId);
+        run.Notes = notes;
+        db.SaveChanges();
     }
 
     public static void ClearApplicationData()

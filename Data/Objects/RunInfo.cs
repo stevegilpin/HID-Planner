@@ -9,5 +9,6 @@ public class RunInfo
     public int RunId { get; set; }
     public DateTime RunTimeStamp { get; set; }
     public bool ManuallyCreatedResults { get; set; }
-    public string Description { get; set; }
+    public string Name { get; set; }
+    public string Notes { get; set; }
 }

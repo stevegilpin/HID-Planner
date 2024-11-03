@@ -11,7 +11,7 @@ public class SchedulingManager
 {
     public ILogger Logger { get; set; } = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
-    public required string InputDescription { get; init; }
+    public required string RunName { get; init; }
     public required string CourseInfoFilePath { get; init; }
     public required string CourseScheduleFilePath { get; init; }
     public required string StudentInfoFilePath { get; init; }
@@ -30,7 +30,7 @@ public class SchedulingManager
             if (ValidateOutputs(output, out var errorMessage) == false)
                 return errorMessage;
 
-            var runId = CourseScheduler.Save(output, InputDescription);
+            var runId = CourseScheduler.Save(output, RunName);
             return $"Results saved with ID {runId}";
         }
         catch (Exception e) {

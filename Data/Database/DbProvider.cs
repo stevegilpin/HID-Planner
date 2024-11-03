@@ -113,7 +113,8 @@ CREATE TABLE [RunInfo] (
     [RunId] int PRIMARY KEY NOT NULL,
     [RunTimeStamp] DateTime2 NOT NULL,
     [ManuallyCreatedResults] bit NOT NULL,
-    [Description] varchar(1024)
+    [Name] varchar(100) NOT NULL,
+    [Notes] varchar(4096) NULL
 );
 
 CREATE TABLE [CourseAssignmentResult] (

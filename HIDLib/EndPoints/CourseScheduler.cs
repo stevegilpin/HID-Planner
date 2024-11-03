@@ -10,9 +10,9 @@ public static class CourseScheduler
         return SchedulingSolver.RunSolve(inputs);
     }
 
-    public static int Save(AssignmentDataSet outputData, string inputDescription)
+    public static int Save(AssignmentDataSet outputData, string inputName)
     {
-        return DataManager.Save(outputData, inputDescription);
+        return DataManager.Save(outputData, inputName);
     }
 }
 
