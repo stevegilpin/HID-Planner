@@ -73,15 +73,15 @@ public static class CsvUtil
 
         return data;
 
-        static bool IsCourseOfferedToGrade(CsvHelper.CsvReader reader, Grades grade)
+        static bool IsCourseOfferedToGrade(CsvReader reader, Grades grade)
         {
-            object? val;
+            object val;
             if (reader.TryGetField(typeof(string), grade.ToString(), out val) == false) {
                 if (reader.TryGetField(typeof(string), $"{grade} Grade", out val) == false)
                     return false;
             }
             
-            return bool.TryParse((string?)val, out bool isOffered) && isOffered;
+            return bool.TryParse((string)val, out bool isOffered) && isOffered;
         }
     }
 
