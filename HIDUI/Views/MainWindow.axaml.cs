@@ -43,7 +43,7 @@ namespace HIDUI.Views {
     }
 
     public partial class MainWindowViewModel: INotifyPropertyChanged {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         // Courses
         private bool isCoursesFileSet = false;
