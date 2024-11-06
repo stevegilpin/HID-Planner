@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views1="clr-namespace:HIDUI.Views"
+        xmlns:av="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HIDUI.Views.MainWindow"
         x:CompileBindings="False"
@@ -120,5 +121,6 @@
         </StackPanel>
 
         <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
+        <av:HtmlPanel x:Name="_htmlPanel" Grid.Column="0" Margin="10 5" />
     </Grid>
 </Window>

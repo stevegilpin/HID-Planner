@@ -25,6 +25,7 @@ namespace HIDUI.Views {
         public MainWindow() {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
+            _htmlPanel.Text = $"<p>Hello World!</p>";
         }
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
