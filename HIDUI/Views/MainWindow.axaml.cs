@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Data;
 using Data.Objects;
+using DynamicData;
 using HIDLib;
 using HIDLib.EndPoints;
 using HIDLib.HTML;
