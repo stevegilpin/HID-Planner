@@ -9,6 +9,7 @@
         x:CompileBindings="False"
         Icon="/Assets/avalonia-logo.ico"
         Title="HIDUI"
+        Background="#252525"
         WindowState="Maximized">
 
     <Design.DataContext>
@@ -88,39 +89,52 @@
                 </TextBlock>
             </Button>
 
-            <TextBlock>This create reports button will be in the table for each row, right?</TextBlock>
-            <Button Command="{ Binding CreateReports }">Create Reports</Button>
-
             <DataGrid Margin="20" 
                     ItemsSource="{Binding Runs}"
                     IsReadOnly="True"
                     CanUserResizeColumns="True"
                     GridLinesVisibility="All"
-                    BorderThickness="1" BorderBrush="Gray">
+                    BorderThickness="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
                 <!-- <DataGridTextColumn Header="Name" Binding="{ Binding Name }" /> -->
                 <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding RunTimeStamp }" />
                 <!-- <DataGridTextColumn Header="Accuracy" Binding="{ Binding Accuracy }" /> -->
-                <!-- <DataTemplate> -->
-                    <!-- <Button Command="{ Binding #Root.((vm:MainViewModel)DataContext).RemoveItemCommand }" CommandParameter="{Binding .}"> -->
                 <DataGridTemplateColumn Width="*" Header="Actions">
-                    <!-- <DataGridTemplateColumn> -->
                         <DataTemplate>
-                            <Button>More Info
-                                <!-- <PathIcon Data="{ DynamicResource DeleteIconData }"
-                                        Height="15"
-                                        Foreground="Red"/> -->
+                            <Button Click="TableRowMoreInfo" 
+                                    x:Name="Check" 
+                                    Name="{Binding RunId}">
+                                More Info
                             </Button>
                         </DataTemplate>
-                    <!-- </DataGridTemplateColumn> -->
                 </DataGridTemplateColumn>
-                <!-- </DataTemplate> -->
             </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
 
         <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
-        <av:HtmlPanel x:Name="_htmlPanel" Grid.Column="0" Margin="10 5" />
+        <TabControl Margin="5" Grid.Column="2">
+            <TabItem Header="Tab 1">
+                <!-- <TextBlock Margin="5">This is tab 1 content</TextBlock> -->
+                <av:HtmlPanel x:Name="_htmlPanel1"/>
+            </TabItem>
+            <TabItem Header="Tab 2">
+                <!-- <TextBlock Margin="5">This is tab 2 content</TextBlock> -->
+                <av:HtmlPanel x:Name="_htmlPanel2"/>
+            </TabItem>
+            <TabItem Header="Tab 3">
+                <!-- <TextBlock Margin="5">This is tab 3 content</TextBlock> -->
+                <av:HtmlPanel x:Name="_htmlPanel3"/>
+            </TabItem>
+            <TabItem Header="Tab 4">
+                <!-- <TextBlock Margin="5">This is tab 4 content</TextBlock> -->
+                <av:HtmlPanel x:Name="_htmlPanel4"/>
+            </TabItem>
+            <TabItem Header="Tab 5">
+                <!-- <TextBlock Margin="5">This is tab 5 content</TextBlock> -->
+                <av:HtmlPanel x:Name="_htmlPanel5"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
