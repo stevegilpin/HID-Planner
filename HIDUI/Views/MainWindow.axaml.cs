@@ -242,12 +242,7 @@ namespace HIDUI.Views {
             }
         }
 
-        ObservableCollection<RunInfo> Runs { get; }
-
-        public MainWindowViewModel() {
-            var currentRuns = DataManager.AllRuns().OrderByDescending(x => x.RunId).ToList();
-            Runs = new ObservableCollection<RunInfo>(currentRuns);
-        }
+        ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
         public bool TrySetFilePaths(string[] paths, out string errorMessage) {
             var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
@@ -336,33 +331,12 @@ namespace HIDUI.Views {
                 );
 
                 Runs.Clear();
-                Runs.AddRange(DataManager.AllRuns().OrderByDescending(x => x.RunId));
+                Runs.AddRange(LoadRunData());
             }
         }
 
-        public static bool TryGetAnalytics(int assignmentRunId, out SchedulingRunAnalyticData analytics, out string errorMessage)
-        {
-            AssignmentDataSet data;
-            try {
-                data = DataManager.LoadDataSet(assignmentRunId);
-            }
-            catch (Exception e) {
-                errorMessage = $"Error loading data for run ID {assignmentRunId}:{Environment.NewLine}{e.Message}";
-                analytics = null;
-                return false;
-            }
-
-            try {
-                analytics = SchedulingRunSelector.GetAnalyticData(data);
-                errorMessage = null;
-                return true;
-            }
-            catch (Exception e) {
-                analytics = null;
-                errorMessage = $"Error creating analytics:{Environment.NewLine}{e.Message}";
-                return false;
-            }
-        }
+        private static List<SchedulingRunAnalyticData> LoadRunData() => SchedulingRunSelector.GetSchedulingRunData()
+            .OrderByDescending(x => x.RunId).ToList();
     }
 
     public class RunModel {

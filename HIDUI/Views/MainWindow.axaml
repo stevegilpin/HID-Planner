@@ -98,7 +98,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
                 <!-- <DataGridTextColumn Header="Name" Binding="{ Binding Name }" /> -->
-                <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding RunTimeStamp }" />
+                <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
                 <!-- <DataGridTextColumn Header="Accuracy" Binding="{ Binding Accuracy }" /> -->
                 <DataGridTemplateColumn Width="*" Header="Actions">
                         <DataTemplate>
