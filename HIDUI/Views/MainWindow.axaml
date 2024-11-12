@@ -102,12 +102,21 @@
                 <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
                 <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
                 <!-- <DataGridTextColumn Header="Accuracy" Binding="{ Binding Accuracy }" /> -->
-                <DataGridTemplateColumn Width="*" Header="Actions">
+                <DataGridTemplateColumn Width="*" Header="View">
                         <DataTemplate>
-                            <Button Click="TableRowMoreInfo" 
+                            <Button Click="TableRowViewReports" 
                                     x:Name="Check" 
                                     Name="{Binding RunId}">
-                                More Info
+                                View
+                            </Button>
+                        </DataTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" Header="Save">
+                        <DataTemplate>
+                            <Button Click="TableRowSaveData" 
+                                    x:Name="Check" 
+                                    Name="{Binding RunId}">
+                                Save
                             </Button>
                         </DataTemplate>
                 </DataGridTemplateColumn>

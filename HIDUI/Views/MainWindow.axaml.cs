@@ -38,9 +38,11 @@ namespace HIDUI.Views {
             ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
         }
 
-        public async void TableRowMoreInfo(object sender, RoutedEventArgs args) {
+        public async void TableRowViewReports(object sender, RoutedEventArgs args) {
             string runId = string.Empty;
             await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
+            
+            // todo store this data behind the scenes in Runs so we don't load it repeatedly
             var data = DataManager.LoadDataSet(Int32.Parse(runId));
             var docs = GetHtmlDocs(data);
             
@@ -51,6 +53,16 @@ namespace HIDUI.Views {
                 _htmlPanel4.Text = (docs[3].ToString() + "<head><style>body { color: white; }</style></head>");
                 _htmlPanel5.Text = (docs[4].ToString() + "<head><style>body { color: white; }</style></head>");
             }));
+        }
+
+        public async void TableRowSaveData(object sender, RoutedEventArgs args) {
+            string runId = string.Empty;
+            await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
+
+            // todo store this data behind the scenes in Runs so we don't load it repeatedly
+            var data = DataManager.LoadDataSet(Int32.Parse(runId));
+            var docs = GetHtmlDocs(data);
+
             ExportData(docs, data, FilePaths.ReportsFolder);
             Console.WriteLine($"Reports written to: {FilePaths.ReportsFolder}");
         }
