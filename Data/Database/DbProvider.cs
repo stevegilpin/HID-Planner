@@ -76,7 +76,7 @@ CREATE TABLE [StudentInfo] (
     [LastName] varchar(200) NOT NULL,
     [Grade] varchar(10) NOT NULL,
     [Gender] varchar(10) NOT NULL,
-    [Homeroom] varchar(20),
+    [Homeroom] varchar(50) NOT NULL,
     PRIMARY KEY ([RunId], [StudentId])
 );
 
