@@ -124,6 +124,6 @@ internal static class SchedulingSolver
 
     public static double GetCourseCost(int courseRank)
     {
-        return Math.Pow(courseRank, 3);
+        return courseRank == -1 ? double.NegativeInfinity : Math.Pow(courseRank, 3);
     }
 }
