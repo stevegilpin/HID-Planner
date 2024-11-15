@@ -97,9 +97,9 @@ internal static class SchedulingSolver
     // a student can take a course 0 or 1 times (no duplicate courses)
     private static void AddConstraints_NoDupeCourses(Solver solver, List<VariableData> variables)
     {
-        var studentCourseGroups = variables.GroupBy(x => (x.StudentRanking.StudentId, x.StudentRanking.CourseCode)).ToList();
+        var studentCourseGroups = variables.GroupBy(x => (x.StudentRanking.StudentId, x.CourseInfo.CourseName)).ToList();
         foreach (var courseGroup in studentCourseGroups) {
-            var name = $"{courseGroup.Key.StudentId}_{courseGroup.Key.CourseCode}_Const3";
+            var name = $"{courseGroup.Key.StudentId}_{courseGroup.Key.CourseName}_Const3";
             AddConstraint(solver, 0, 1, courseGroup.ToList(), name);
         }
     }
