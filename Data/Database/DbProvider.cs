@@ -95,7 +95,8 @@ CREATE TABLE [CourseInfo] (
     [MinCapacity] int,
     [MaxCapacity] int,
     [Description] varchar(1024),
-    [GradesFlags] int,
+    [MinGrade] int NOT NULL,
+    [MaxGrade] int  NOT NULL,
     PRIMARY KEY ([RunId], [CourseCode])
 );
 

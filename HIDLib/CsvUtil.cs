@@ -52,37 +52,17 @@ public static class CsvUtil
     public static List<CourseInfo> ReadCourseInfo(string filePath)
     {
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         csv.Context.RegisterClassMap<Mappers.CourseInfoMapper>();
-        
+
         csv.Read();
         csv.ReadHeader();
 
         var data = new List<CourseInfo>();
-        while (csv.Read()) {
-            var record = csv.GetRecord<CourseInfo>()!;
-            data.Add(record);
-            var offeredGrades = Grades.None;
-            foreach (var grade in Enum.GetValues<Grades>()) {
-                if (IsCourseOfferedToGrade(csv, grade))
-                    offeredGrades |= grade;
-            }
-
-            record.GradesFlags = (int)offeredGrades;
-        }
+        while (csv.Read())
+            data.Add(csv.GetRecord<CourseInfo>());
 
         return data;
-
-        static bool IsCourseOfferedToGrade(CsvReader reader, Grades grade)
-        {
-            object val;
-            if (reader.TryGetField(typeof(string), grade.ToString(), out val) == false) {
-                if (reader.TryGetField(typeof(string), $"{grade} Grade", out val) == false)
-                    return false;
-            }
-            
-            return bool.TryParse((string)val, out bool isOffered) && isOffered;
-        }
     }
 
     public static List<StudentInfo> ReadStudentInfo(string filePath) => ReadFile<StudentInfo, Mappers.StudentInfoMapper>(filePath);
@@ -105,7 +85,7 @@ public static class CsvUtil
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         csv.Context.RegisterClassMap<TMapper>();
 
         var records = csv.GetRecords<TData>().ToList();
@@ -116,27 +96,28 @@ public static class CsvUtil
     public static void WriteResultsToCsv(AssignmentDataSet data, string folder)
     {
         var courseSchedule = data.InputData.CourseSchedule.OrderBy(x => x.Key).SelectMany(x => x.Value.OrderBy(c => c.SessionId)).ToList();
-        WriteCsv(courseSchedule, Path.Combine(folder, "Inputs", "CourseSchedule.csv"));
+        WriteCsv<CourseSchedule, Mappers.CourseScheduleMapper>(courseSchedule, Path.Combine(folder, "Inputs", "CourseSchedule.csv"));
 
         var studentInfo = data.InputData.StudentInfo.Values.OrderBy(x => x.StudentId).ToList();
-        WriteCsv(studentInfo, Path.Combine(folder, "Inputs", "StudentInfo.csv"));
+        WriteCsv<StudentInfo, Mappers.StudentInfoMapper>(studentInfo, Path.Combine(folder, "Inputs", "StudentInfo.csv"));
 
         var studentRankings = data.InputData.StudentCourseRanking.OrderBy(x => x.Key).SelectMany(x => x.Value.OrderBy(c => c.Rank)).ToList();
-        WriteCsv(studentRankings, Path.Combine(folder, "Inputs", "StudentCourseRankings.csv"));
+        WriteCsv<StudentCourseRanking, Mappers.StudentCourseRankingMapper>(studentRankings, Path.Combine(folder, "Inputs", "StudentCourseRankings.csv"));
 
         var courseInfo = data.InputData.CourseInfo.Values.OrderBy(x => x.CourseCode).ToList();
-        WriteCsv(courseInfo, Path.Combine(folder, "Inputs", "CourseInfo.csv"));
+        WriteCsv<CourseInfo, Mappers.CourseInfoMapper>(courseInfo, Path.Combine(folder, "Inputs", "CourseInfo.csv"));
 
         var assignments = data.AssignmentResults.OrderBy(x => x.StudentId).ThenBy(x => x.SessionId).ToList();
-        WriteCsv(assignments, Path.Combine(folder, "CourseAssignments.csv"));
+        WriteCsv<CourseAssignmentResult, Mappers.CourseAssignmentResultsMapper>(assignments, Path.Combine(folder, "CourseAssignments.csv"));
     }
     
-    private static void WriteCsv<T>(List<T> data, string filePath)
+    private static void WriteCsv<TData, TMapper>(List<TData> data, string filePath) where TMapper : ClassMap<TData>
     {
         Directory.CreateDirectory(Directory.GetParent(filePath)!.FullName);
         using var stream = new StreamWriter(filePath);
         using var writer = new CsvWriter(stream, CultureInfo.CurrentCulture);
-        writer.WriteHeader<T>();
+        writer.Context.RegisterClassMap<TMapper>();
+        writer.WriteHeader<TData>();
         writer.NextRecord();
         writer.WriteRecords(data);
     }
@@ -151,7 +132,26 @@ public static class CsvUtil
                 Map(x => x.RunId).Ignore();
                 Map(x => x.MinCapacity).Optional();
                 Map(x => x.MaxCapacity).Optional();
-                Map(x => x.GradesFlags).Ignore();
+                Map(x => x.MinGrade).Convert(ParseGradeNumber);
+                Map(x => x.MaxGrade).Convert(ParseGradeNumber);
+                Map(x => x.MinGrade).Convert(WriteMinGradeNumber);
+                Map(x => x.MaxGrade).Convert(WriteMaxGradeNumber);
+            }
+
+            private string WriteMinGradeNumber(ConvertToStringArgs<CourseInfo> args) => WriteGradeNumber(args.Value.MinGrade);
+            private string WriteMaxGradeNumber(ConvertToStringArgs<CourseInfo> args) => WriteGradeNumber(args.Value.MaxGrade);
+            private string WriteGradeNumber(int gradeNumber) => gradeNumber > 0 ? gradeNumber.ToString() : $"K{gradeNumber + 5}";
+            
+            private int ParseGradeNumber(ConvertFromStringArgs args)
+            {
+                var gradeCode = args.Row.GetField<string>(nameof(CourseInfo.MinGrade));
+                if (int.TryParse(gradeCode, out var grade))
+                    return grade;
+
+                if (int.TryParse(gradeCode!.ToUpper().Replace("K", string.Empty), out var kindergartenGrade))
+                    return kindergartenGrade - 5; // K5 = 0, K4 = -1, K3 = -2, etc.
+
+                throw new ArgumentException();
             }
         }
 
@@ -161,7 +161,7 @@ public static class CsvUtil
             {
                 AutoMap(CultureInfo.InvariantCulture);
                 Map(x => x.RunId).Ignore();
-                Map(x => x.StudentId).Optional();
+                Map(x => x.StudentId).Optional(); // todo should be ignored or required
             }
         }
 

@@ -8,5 +8,6 @@ public class CourseInfo
     public int? MinCapacity { get; set; }
     public int? MaxCapacity { get; set; }
     public string Description { get; set; }
-    public int? GradesFlags { get; set; }
+    public int MinGrade { get; set; }
+    public int MaxGrade { get; set; }
 }
