@@ -103,6 +103,12 @@ public static class DataManager
         return db.Settings.ToList();
     }
 
+    public static string GetSettingValue(string name)
+    {
+        using var db = DbProvider.GetDbContext();
+        return db.Settings.Single(x => x.Name == name).Value;
+    }
+    
     public static void UpdateSetting(string name, string value)
     {
         using var db = DbProvider.GetDbContext();
