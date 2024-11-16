@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Data.Objects;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,8 +20,10 @@ internal static class DbProvider
     public static HidDbContext GetDbContext()
     {
         var dbFilePath = GetDbFilePath();
-        if (File.Exists(dbFilePath) == false)
+        if (File.Exists(dbFilePath) == false) {
             CreateDatabase();
+            DefaultSettings.PopulateSettingsTable();
+        }
 
         var optionBuilder = new DbContextOptionsBuilder();
         optionBuilder.UseSqlite(GetConnectionString());
@@ -124,5 +127,13 @@ CREATE TABLE [CourseAssignmentResult] (
     [SessionId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     PRIMARY KEY ([RunId], [StudentId], [SessionId])
-);";
+);
+
+CREATE TABLE [Settings] (
+    [Name] varchar(50) PRIMARY KEY NOT NULL,
+    [Value] varchar(200) NOT NULL,
+    [Description] varchar(200) NOT NULL,
+    [IsWritable] bit NOT NULL
+);
+";
 }

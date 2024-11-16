@@ -12,6 +12,7 @@ internal class HidDbContext : DbContext
     public DbSet<RunInfo> RunInfo { get; set; }
     public DbSet<StudentCourseRanking> StudentCourseRanking { get; set; }
     public DbSet<StudentInfo> StudentInfo { get; set; }
+    public DbSet<Settings> Settings { get; set; }
 
     public HidDbContext(DbContextOptions options) : base(options) { }
 
