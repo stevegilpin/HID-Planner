@@ -8,11 +8,15 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class ProblematicAssignmentsReport(AssignmentDataSet reportData, int rankingThreshold = 7) : IHtmlGenerator
+public class ProblematicAssignmentsReport(
+    AssignmentDataSet reportData,
+    int rankingThreshold = ProblematicAssignmentsReport.DEFAULT_RANK_THRESHOLD)
+    : IHtmlGenerator
 {
+    public const int DEFAULT_RANK_THRESHOLD = 7; // todo move this to settings table
     private int WorstCourseRankThreshold = rankingThreshold;
     private readonly AssignmentDataSet ReportData = reportData;
-    
+
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Problematic Assignments");
@@ -38,7 +42,7 @@ public class ProblematicAssignmentsReport(AssignmentDataSet reportData, int rank
         return doc;
     }
 
-    public static List<BadAssignment> FindProblematicAssignments(AssignmentDataSet reportData, int courseRankCutoff)
+    public static List<BadAssignment> FindProblematicAssignments(AssignmentDataSet reportData, int courseRankCutoff = DEFAULT_RANK_THRESHOLD)
     {
         var rankings = reportData.InputData.StudentCourseRanking.ToDictionary(x => x.Key, x => x.Value.ToDictionary(y => y.CourseCode, y => y.Rank));
         var assignments = new List<BadAssignment>();
