@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Data.Objects;
 
 namespace TestApp;
 
@@ -36,5 +37,31 @@ public static class SurveyParser
         }
 
         return responses;
+    }
+
+    public static List<StudentCourseRanking> ToSchedulingInput(List<SurveyResponse> surveyData, List<CourseInfo> courseData, List<StudentInfo> studentData)
+    {
+        var rankings = new List<StudentCourseRanking>();
+        var studentInfoMap = studentData.ToDictionary(x => (x.LastName, x.FirstName));
+        foreach (var response in surveyData) {
+            var studentInfo = studentInfoMap[(response.LastName, response.FirstName)];
+            var grade = GradeToInt(studentInfo.Grade);
+            var eligibleCourses = courseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
+            rankings.AddRange(response.ClassRankings.Select((x, i) => new StudentCourseRanking {
+                CourseCode = eligibleCourses[x].CourseCode,
+                Rank = i + 1,
+                StudentId = studentInfo.StudentId,
+            }));
+        }
+
+        return rankings;
+    }
+
+    private static int GradeToInt(string gradeCode)
+    {
+        if (int.TryParse(gradeCode, out var grade))
+            return grade;
+
+        return int.Parse(gradeCode!.Replace("K", string.Empty)) - 5;
     }
 }
