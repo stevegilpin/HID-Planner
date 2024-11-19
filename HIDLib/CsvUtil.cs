@@ -132,8 +132,8 @@ public static class CsvUtil
                 Map(x => x.RunId).Ignore();
                 Map(x => x.MinCapacity).Optional();
                 Map(x => x.MaxCapacity).Optional();
-                Map(x => x.MinGrade).Convert(ParseGradeNumber);
-                Map(x => x.MaxGrade).Convert(ParseGradeNumber);
+                Map(x => x.MinGrade).Convert(ParseMinGrade);
+                Map(x => x.MaxGrade).Convert(ParseMaxGrade);
                 Map(x => x.MinGrade).Convert(WriteMinGradeNumber);
                 Map(x => x.MaxGrade).Convert(WriteMaxGradeNumber);
             }
@@ -141,10 +141,19 @@ public static class CsvUtil
             private string WriteMinGradeNumber(ConvertToStringArgs<CourseInfo> args) => WriteGradeNumber(args.Value.MinGrade);
             private string WriteMaxGradeNumber(ConvertToStringArgs<CourseInfo> args) => WriteGradeNumber(args.Value.MaxGrade);
             private string WriteGradeNumber(int gradeNumber) => gradeNumber > 0 ? gradeNumber.ToString() : $"K{gradeNumber + 5}";
-            
-            private int ParseGradeNumber(ConvertFromStringArgs args)
+
+            private int ParseMinGrade(ConvertFromStringArgs args)
             {
                 var gradeCode = args.Row.GetField<string>(nameof(CourseInfo.MinGrade));
+                return ParseGradeNumber(gradeCode);
+            }
+            private int ParseMaxGrade(ConvertFromStringArgs args)
+            {
+                var gradeCode = args.Row.GetField<string>(nameof(CourseInfo.MaxGrade));
+                return ParseGradeNumber(gradeCode);
+            }
+            private int ParseGradeNumber(string gradeCode)
+            {
                 if (int.TryParse(gradeCode, out var grade))
                     return grade;
 
