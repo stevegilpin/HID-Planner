@@ -100,6 +100,15 @@ namespace HIDUI.Views {
     public partial class MainWindowViewModel: INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private bool isSettingsShown = false;
+        public bool IsSettingsShown {
+            get => isSettingsShown;
+            set {
+                isSettingsShown = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSettingsShown)));
+            }
+        }
+
         // Courses
         private bool isCoursesFileSet = false;
         public bool IsCoursesFileSet {
@@ -349,6 +358,10 @@ namespace HIDUI.Views {
 
         private static List<SchedulingRunAnalyticData> LoadRunData() => SchedulingRunSelector.GetSchedulingRunData()
             .OrderByDescending(x => x.RunId).ToList();
+        
+        public void ToggleIsSettingsShown() {
+            IsSettingsShown = !IsSettingsShown;
+        }
     }
 
     public class RunModel {
