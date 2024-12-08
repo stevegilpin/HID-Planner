@@ -6,15 +6,24 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class CourseOptionsReport(List<CourseInfo> courseData, string gradeFilter = null) : IHtmlGenerator
+public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, string eventDescription, string gradeFilter = null) : IHtmlGenerator
 {
     public readonly List<CourseInfo> CourseData = courseData;
+    public readonly string DocumentHeader = docHeader;
+    public readonly string EventDescription = eventDescription;
     public readonly string GradeFilter = gradeFilter;
 
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Course Options");
         doc.StyleRuleSets.Add(CSS.PageBreak());
+        doc.StyleRuleSets.Add("""
+                              li {
+                                  padding: 5px;
+                              }
+                              """);
+        doc.Add(new HtmlHeader(DocumentHeader));
+        doc.Add(new HtmlParagraph(EventDescription));
 
         var minGrade = CourseData.Min(x => x.MinGrade);
         var maxGrade = CourseData.Max(x => x.MaxGrade);
@@ -36,15 +45,18 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string gradeFilter
         if (eligibleCourses.Count == 0)
             return new XElement("div");
 
-        var section = new HtmlList();
+        var section = new XElement("div");
         var gradeCode = GradeToString(grade);
         section.Add(new HtmlHeader($"Class Options for Grade {gradeCode}", 2));
+
+        var list = new HtmlList();
+        section.Add(list);
 
         foreach (var course in eligibleCourses.OrderBy(x => x.CourseName)) {
             var itemContent = new XElement("div");
             itemContent.Add(new XElement("span", new XAttribute("style", "font-weight: bold;"), $"{course.CourseName}: "));
             itemContent.Add(new XElement("span", course.Description));
-            section.Add(new HtmlListItem(itemContent));
+            list.Add(new HtmlListItem(itemContent));
         }
 
         return section;
