@@ -36,13 +36,15 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string gradeFilter
         if (eligibleCourses.Count == 0)
             return new XElement("div");
 
-        var section = new XElement("div");
+        var section = new HtmlList();
         var gradeCode = GradeToString(grade);
         section.Add(new HtmlHeader($"Class Options for Grade {gradeCode}", 2));
 
         foreach (var course in eligibleCourses.OrderBy(x => x.CourseName)) {
-            section.Add(new HtmlHeader(course.CourseName, 4));
-            section.Add(new HtmlParagraph(course.Description));
+            var itemContent = new XElement("div");
+            itemContent.Add(new XElement("span", new XAttribute("style", "font-weight: bold;"), $"{course.CourseName}: "));
+            itemContent.Add(new XElement("span", course.Description));
+            section.Add(new HtmlListItem(itemContent));
         }
 
         return section;
