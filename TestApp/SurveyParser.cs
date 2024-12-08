@@ -22,6 +22,9 @@ public static class SurveyParser
         var rowDataStart = new[] { lastNameIndex, firstNameIndex, gradeIndex, emailIndex }.Max() + 1;
         var responses = new List<SurveyResponse>();
         foreach (var line in lines.Skip(1)) {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
             var data = line.Split(',').ToList();
             var rankings = data
                 .Where((_, i) => i >= rowDataStart)
@@ -57,7 +60,7 @@ public static class SurveyParser
         return rankings;
     }
 
-    private static int GradeToInt(string gradeCode)
+    public static int GradeToInt(string gradeCode)
     {
         if (int.TryParse(gradeCode, out var grade))
             return grade;
