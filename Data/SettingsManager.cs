@@ -17,12 +17,14 @@ public static class SettingsManager
         public const string InputsFolder = "INPUTS_FOLDER";
         public const string OutputFolder = "OUTPUT_FOLDER";
         public const string BadCourseRankCutoff = "BAD_RANK_CUTOFF";
+        public const string CostFunctionExponent = "COST_EXPONENT";
     }
 
     public static string GetDatabaseFileLocation() => GetSettingValue(SettingNames.DatabaseFileLocation);
     public static string GetDefaultInputsFolder() => GetSettingValue(SettingNames.InputsFolder);
     public static string GetDefaultOutputFolder() => GetSettingValue(SettingNames.OutputFolder);
     public static int GetBadCourseRankCutoff() => int.Parse(GetSettingValue(SettingNames.BadCourseRankCutoff));
+    public static int GetCostFunctionExponent() => int.Parse(GetSettingValue(SettingNames.CostFunctionExponent));
     
     public static List<Settings> GetSettings()
     {
@@ -82,6 +84,12 @@ public static class SettingsManager
                 Name = SettingNames.BadCourseRankCutoff,
                 Value = 9.ToString(),
                 Description = "Min. ranking for a course assignment to be considered 'bad'",
+                IsWritable = true,
+            },
+            new Settings {
+                Name = SettingNames.CostFunctionExponent,
+                Value = 3.ToString(),
+                Description = "Exponent for optimizer's cost function",
                 IsWritable = true,
             }
         );
