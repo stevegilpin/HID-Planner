@@ -1,7 +1,7 @@
 using Data;
 using Data.Objects;
 
-namespace HIDLib.EndPoints;
+namespace HIDLib.Scheduling;
 
 public static class CourseScheduler
 {

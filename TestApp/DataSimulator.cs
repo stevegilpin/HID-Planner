@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using Data;
 using HIDLib;
-using HIDLib.EndPoints;
 using HIDLib.HTML;
+using HIDLib.IO;
 using HIDLib.ReportGenerators;
 
 namespace TestApp;
@@ -46,7 +46,7 @@ public static class DataSimulator
         foreach (var g in generators)
             g.CreateDoc().WriteToFile(FilePaths.ReportsFolder);
         
-        ReportGenerator.WriteRawData(data, FilePaths.ReportsFolder);
+        CsvWriteUtil.WriteResultsToCsv(data, FilePaths.ReportsFolder);
 
         Console.WriteLine($"Data written to {FilePaths.ReportsFolder}");
     }

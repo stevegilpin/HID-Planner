@@ -2,7 +2,8 @@
 using System.Linq;
 using Data.Objects;
 using HIDLib;
-using HIDLib.EndPoints;
+using HIDLib.IO;
+using HIDLib.Scheduling;
 using Serilog;
 
 namespace HIDUI.ViewModels;
@@ -43,22 +44,22 @@ public class SchedulingManager
         string error;
         inputData = null;
 
-        if (TryLoad(StudentInfoFilePath, CsvUtil.ReadStudentInfo, out var infoRows, out error) == false) {
+        if (TryLoad(StudentInfoFilePath, CsvReadUtil.ReadStudentInfo, out var infoRows, out error) == false) {
             errorMessage = $"Error parsing student info file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(StudentCourseRankingsFilePath, CsvUtil.ReadStudentCourseRankings, out var rankingRows, out error) == false) {
+        if (TryLoad(StudentCourseRankingsFilePath, CsvReadUtil.ReadStudentCourseRankings, out var rankingRows, out error) == false) {
             errorMessage = $"Error parsing student ranking file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(CourseInfoFilePath, CsvUtil.ReadCourseInfo, out var courseInfoRows, out error) == false) {
+        if (TryLoad(CourseInfoFilePath, CsvReadUtil.ReadCourseInfo, out var courseInfoRows, out error) == false) {
             errorMessage = $"Error parsing course info file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(CourseScheduleFilePath, CsvUtil.ReadCourseSchedule, out var scheduleRows, out error) == false) {
+        if (TryLoad(CourseScheduleFilePath, CsvReadUtil.ReadCourseSchedule, out var scheduleRows, out error) == false) {
             errorMessage = $"Error parsing course schedule file:{Environment.NewLine}{error}";
             return false;
         }

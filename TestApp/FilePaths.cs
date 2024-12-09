@@ -1,7 +1,6 @@
-using System;
-using System.IO;
+using HIDLib;
 
-namespace HIDLib;
+namespace TestApp;
 
 public static class FilePaths
 {

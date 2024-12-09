@@ -4,7 +4,7 @@ using System.Linq;
 using Data.Objects;
 using Google.OrTools.LinearSolver;
 
-namespace HIDLib;
+namespace HIDLib.Scheduling;
 
 internal static class SchedulingSolver
 {

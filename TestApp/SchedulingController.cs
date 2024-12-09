@@ -2,7 +2,8 @@
 using System.Linq;
 using Data.Objects;
 using HIDLib;
-using HIDLib.EndPoints;
+using HIDLib.IO;
+using HIDLib.Scheduling;
 using Serilog;
 
 namespace TestApp;
@@ -19,7 +20,7 @@ public class SchedulingController
 
     public bool TrySetFilePaths(string[] paths, out string errorMessage)
     {
-        var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
+        var courseInfo = paths.Where(CsvReadUtil.HeaderMatchesCourseInfo).ToList();
         if (courseInfo.Count == 0) {
             errorMessage = "No files found matching required headers for course info data.";
             return false;
@@ -29,7 +30,7 @@ public class SchedulingController
             return false;
         }
 
-        var courseSchedule = paths.Where(CsvUtil.HeaderMatchesCourseSchedule).ToList();
+        var courseSchedule = paths.Where(CsvReadUtil.HeaderMatchesCourseSchedule).ToList();
         if (courseSchedule.Count == 0) {
             errorMessage = "No files found matching required headers for course schedule data.";
             return false;
@@ -39,7 +40,7 @@ public class SchedulingController
             return false;
         }
 
-        var studentInfo = paths.Where(CsvUtil.HeaderMatchesStudentInfo).ToList();
+        var studentInfo = paths.Where(CsvReadUtil.HeaderMatchesStudentInfo).ToList();
         if (studentInfo.Count == 0) {
             errorMessage = "No files found matching required headers for student info data.";
             return false;
@@ -49,7 +50,7 @@ public class SchedulingController
             return false;
         }
 
-        var studentRankings = paths.Where(CsvUtil.HeaderMatchesStudentCourseRankings).ToList();
+        var studentRankings = paths.Where(CsvReadUtil.HeaderMatchesStudentCourseRankings).ToList();
         if (studentRankings.Count == 0) {
             errorMessage = "No files found matching required headers for students' course ranking data.";
             return false;
@@ -93,22 +94,22 @@ public class SchedulingController
         string error;
         inputData = null;
 
-        if (TryLoad(StudentInfoFilePath, CsvUtil.ReadStudentInfo, out var infoRows, out error) == false) {
+        if (TryLoad(StudentInfoFilePath, CsvReadUtil.ReadStudentInfo, out var infoRows, out error) == false) {
             errorMessage = $"Error parsing student info file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(StudentCourseRankingsFilePath, CsvUtil.ReadStudentCourseRankings, out var rankingRows, out error) == false) {
+        if (TryLoad(StudentCourseRankingsFilePath, CsvReadUtil.ReadStudentCourseRankings, out var rankingRows, out error) == false) {
             errorMessage = $"Error parsing student ranking file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(CourseInfoFilePath, CsvUtil.ReadCourseInfo, out var courseInfoRows, out error) == false) {
+        if (TryLoad(CourseInfoFilePath, CsvReadUtil.ReadCourseInfo, out var courseInfoRows, out error) == false) {
             errorMessage = $"Error parsing course info file:{Environment.NewLine}{error}";
             return false;
         }
 
-        if (TryLoad(CourseScheduleFilePath, CsvUtil.ReadCourseSchedule, out var scheduleRows, out error) == false) {
+        if (TryLoad(CourseScheduleFilePath, CsvReadUtil.ReadCourseSchedule, out var scheduleRows, out error) == false) {
             errorMessage = $"Error parsing course schedule file:{Environment.NewLine}{error}";
             return false;
         }

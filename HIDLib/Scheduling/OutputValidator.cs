@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Objects;
 
-namespace HIDLib.EndPoints;
+namespace HIDLib.Scheduling;
 
 public static class OutputValidator
 {

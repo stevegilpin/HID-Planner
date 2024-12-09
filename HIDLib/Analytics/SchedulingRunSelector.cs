@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Data.Objects;
+using HIDLib.Scheduling;
 
-namespace HIDLib.EndPoints;
+namespace HIDLib.Analytics;
 
 public static class SchedulingRunSelector
 {

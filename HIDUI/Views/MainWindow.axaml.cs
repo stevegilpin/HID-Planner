@@ -12,8 +12,9 @@ using Data;
 using Data.Objects;
 using DynamicData;
 using HIDLib;
-using HIDLib.EndPoints;
+using HIDLib.Analytics;
 using HIDLib.HTML;
+using HIDLib.IO;
 using HIDLib.ReportGenerators;
 using HIDUI.ViewModels;
 
@@ -63,18 +64,14 @@ namespace HIDUI.Views {
             var data = DataManager.LoadDataSet(Int32.Parse(runId));
             var docs = GetHtmlDocs(data);
 
-            ExportData(docs, data, FilePaths.ReportsFolder);
-            Console.WriteLine($"Reports written to: {FilePaths.ReportsFolder}");
+            var outputFolder = SettingsManager.GetDefaultOutputFolder();
+            CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
+            foreach (var doc in docs)
+                doc.WriteToFile(outputFolder);
+            Console.WriteLine($"Reports written to: {outputFolder}");
         }
         
         // TODO: These static functions could be moved to a service
-        public static void ExportData(List<HtmlDoc> htmlDocs, AssignmentDataSet data, string outputFolder)
-        {
-            ReportGenerator.WriteRawData(data, outputFolder);
-            foreach (var doc in htmlDocs)
-                doc.WriteToFile(outputFolder);
-        }
-
         public static List<HtmlDoc> GetHtmlDocs(AssignmentDataSet data)
         {
             var generators = new IHtmlGenerator[] {
@@ -91,7 +88,7 @@ namespace HIDUI.Views {
         public async Task<string[]> ChooseFilePath(string title) {
             var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
                 Title = title,
-                AllowMultiple = true
+                AllowMultiple = true,
             });
             return files.Select(file => file.Path.LocalPath).ToArray();
         }
@@ -266,25 +263,25 @@ namespace HIDUI.Views {
         ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
         public bool TrySetFilePaths(string[] paths, out string errorMessage) {
-            var courseInfo = paths.Where(CsvUtil.HeaderMatchesCourseInfo).ToList();
+            var courseInfo = paths.Where(CsvReadUtil.HeaderMatchesCourseInfo).ToList();
             if (courseInfo.Count > 1) {
                 errorMessage = "Multiple files found matching required headers for course info data.";
                 return false;
             }
 
-            var courseSchedule = paths.Where(CsvUtil.HeaderMatchesCourseSchedule).ToList();
+            var courseSchedule = paths.Where(CsvReadUtil.HeaderMatchesCourseSchedule).ToList();
             if (courseSchedule.Count > 1) {
                 errorMessage = "Multiple files found matching required headers for course schedule data.";
                 return false;
             }
 
-            var studentInfo = paths.Where(CsvUtil.HeaderMatchesStudentInfo).ToList();
+            var studentInfo = paths.Where(CsvReadUtil.HeaderMatchesStudentInfo).ToList();
             if (studentInfo.Count > 1) {
                 errorMessage = "Multiple files found matching required headers for student info data.";
                 return false;
             }
 
-            var studentChoices = paths.Where(CsvUtil.HeaderMatchesStudentCourseRankings).ToList();
+            var studentChoices = paths.Where(CsvReadUtil.HeaderMatchesStudentCourseRankings).ToList();
             if (studentChoices.Count > 1) {
                 errorMessage = "Multiple files found matching required headers for students' course ranking data.";
                 return false;
