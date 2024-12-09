@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
 using Data.Objects;
+using HIDLib;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data;
@@ -95,33 +96,5 @@ public static class DataManager
             Console.WriteLine($"Database deleted. A backup was saved at {backupLocation}.");
         else
             Console.WriteLine("Database delete failed.");
-    }
-
-    public static List<Settings> GetSettings()
-    {
-        using var db = DbProvider.GetDbContext();
-        return db.Settings.ToList();
-    }
-
-    public static string GetSettingValue(string name)
-    {
-        using var db = DbProvider.GetDbContext();
-        return db.Settings.Single(x => x.Name == name).Value;
-    }
-    
-    public static void UpdateSetting(string name, string value)
-    {
-        using var db = DbProvider.GetDbContext();
-        var row = db.Settings.Single(x => x.Name == name);
-        row.Value = value;
-        db.SaveChanges();
-    }
-
-    public static void ResetSettings()
-    {
-        using (var db = DbProvider.GetDbContext())
-            db.Database.ExecuteSqlRaw($"TRUNCATE TABLE {nameof(Settings)}");
-
-        DefaultSettings.PopulateSettingsTable();
     }
 }

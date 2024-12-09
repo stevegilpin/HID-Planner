@@ -10,11 +10,10 @@ namespace HIDLib.ReportGenerators;
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
 public class ProblematicAssignmentsReport(
     AssignmentDataSet reportData,
-    int rankingThreshold = ProblematicAssignmentsReport.DEFAULT_RANK_THRESHOLD)
+    int? rankingThreshold = null)
     : IHtmlGenerator
 {
-    public const int DEFAULT_RANK_THRESHOLD = 7; // todo move this to settings table
-    private int WorstCourseRankThreshold = rankingThreshold;
+    private int WorstCourseRankThreshold = rankingThreshold ?? SettingsManager.GetBadCourseRankCutoff();
     private readonly AssignmentDataSet ReportData = reportData;
 
     public HtmlDoc CreateDoc()
@@ -42,13 +41,14 @@ public class ProblematicAssignmentsReport(
         return doc;
     }
 
-    public static List<BadAssignment> FindProblematicAssignments(AssignmentDataSet reportData, int courseRankCutoff = DEFAULT_RANK_THRESHOLD)
+    public static List<BadAssignment> FindProblematicAssignments(AssignmentDataSet reportData, int? courseRankCutoff = null)
     {
+        var cutoff = courseRankCutoff ?? SettingsManager.GetBadCourseRankCutoff();
         var rankings = reportData.InputData.StudentCourseRanking.ToDictionary(x => x.Key, x => x.Value.ToDictionary(y => y.CourseCode, y => y.Rank));
         var assignments = new List<BadAssignment>();
         foreach (var course in reportData.AssignmentResults) {
             var rank = rankings[course.StudentId][course.CourseCode];
-            if (rank < courseRankCutoff)
+            if (rank < cutoff)
                 continue;
 
             var student = reportData.InputData.StudentInfo[course.StudentId];

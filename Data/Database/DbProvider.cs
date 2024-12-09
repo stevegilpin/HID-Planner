@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Data.Objects;
+using HIDLib;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ internal static class DbProvider
         var dbFilePath = GetDbFilePath();
         if (File.Exists(dbFilePath) == false) {
             CreateDatabase();
-            DefaultSettings.PopulateSettingsTable();
+            SettingsManager.PopulateSettingsTable(); // todo circular reference is kinda ugly
         }
 
         var optionBuilder = new DbContextOptionsBuilder();
@@ -30,7 +31,7 @@ internal static class DbProvider
         return new HidDbContext(optionBuilder.Options);
     }
 
-    private static string GetDbFilePath()
+    internal static string GetDbFilePath()
     {
         return Path.Combine(DB_FOLDER, DB_FILE_NAME);
     }

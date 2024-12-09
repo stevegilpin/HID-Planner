@@ -12,9 +12,10 @@ public static class SchedulingRunSelector
     {
         var runs = DataManager.AllRuns();
         var data = new List<SchedulingRunAnalyticData>();
+        var rankCutoff = SettingsManager.GetBadCourseRankCutoff();
         foreach (var run in runs) {
             var outputData = DataManager.LoadDataSet(run.RunId);
-            data.Add(GetAnalyticData(outputData, 7));
+            data.Add(GetAnalyticData(outputData, rankCutoff));
         }
 
         return data;
