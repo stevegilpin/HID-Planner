@@ -1,0 +1,17 @@
+<UserControl x:Class="HIDUI.Views.SurveyView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:HIDUI.ViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="True"
+             x:DataType="vm:SurveyViewModel"
+             mc:Ignorable="d">
+
+	<StackPanel VerticalAlignment="Center">
+        <TextBlock>I am the Survey view</TextBlock>
+	</StackPanel>
+    
+</UserControl>
