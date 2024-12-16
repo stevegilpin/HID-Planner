@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Data;
 using DynamicData;
 using HIDLib.Analytics;
 using HIDLib.IO;
+
 namespace HIDUI.ViewModels
 {
     public class SchedulingViewModel : PageViewModelBase
@@ -19,7 +22,7 @@ namespace HIDUI.ViewModels
             get => isSettingsShown;
             set {
                 isSettingsShown = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSettingsShown)));
+                OnPropertyChanged(nameof(IsSettingsShown));
             }
         }
 
@@ -29,7 +32,7 @@ namespace HIDUI.ViewModels
             get => isCoursesFileSet;
             set {
                 isCoursesFileSet = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCoursesFileSet)));
+                OnPropertyChanged(nameof(IsCoursesFileSet));
             }
         }
         private string coursesFileName;
@@ -37,7 +40,7 @@ namespace HIDUI.ViewModels
             get => coursesFileName;
             set {
                 coursesFileName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesFileName)));
+                OnPropertyChanged(nameof(CoursesFileName));
             }
         }
 
@@ -49,7 +52,7 @@ namespace HIDUI.ViewModels
                 CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
                 IsCoursesFileSet = true;
                 CoursesStatusColor = "Green";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesFilePath)));
+                OnPropertyChanged(nameof(CoursesFilePath));
             }
         }
 
@@ -58,7 +61,7 @@ namespace HIDUI.ViewModels
             get => coursesStatusColor;
             set {
                 coursesStatusColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CoursesStatusColor)));
+                OnPropertyChanged(nameof(CoursesStatusColor));
             }
         }
         
@@ -68,7 +71,7 @@ namespace HIDUI.ViewModels
             get => isScheduleFileSet;
             set {
                 isScheduleFileSet = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsScheduleFileSet)));
+                OnPropertyChanged(nameof(IsScheduleFileSet));
             }
         }
         private string scheduleFileName;
@@ -76,7 +79,7 @@ namespace HIDUI.ViewModels
             get => scheduleFileName;
             set {
                 scheduleFileName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleFileName)));
+                OnPropertyChanged(nameof(ScheduleFileName));
             }
         }
 
@@ -88,7 +91,7 @@ namespace HIDUI.ViewModels
                 ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
                 IsScheduleFileSet = true;
                 ScheduleStatusColor = "Green";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleFilePath)));
+               OnPropertyChanged(nameof(ScheduleFilePath));
             }
         }
 
@@ -97,7 +100,7 @@ namespace HIDUI.ViewModels
             get => scheduleStatusColor;
             set {
                 scheduleStatusColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScheduleStatusColor)));
+                OnPropertyChanged(nameof(ScheduleStatusColor));
             }
         }
 
@@ -107,7 +110,7 @@ namespace HIDUI.ViewModels
             get => isStudentsFileSet;
             set {
                 isStudentsFileSet = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStudentsFileSet)));
+                OnPropertyChanged(nameof(IsStudentsFileSet));
             }
         }
         private string studentsFileName;
@@ -115,7 +118,7 @@ namespace HIDUI.ViewModels
             get => studentsFileName;
             set {
                 studentsFileName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFileName)));
+                OnPropertyChanged(nameof(StudentsFileName));
             }
         }
         private string studentsFilePath;
@@ -126,7 +129,7 @@ namespace HIDUI.ViewModels
                 StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
                 IsStudentsFileSet = true;
                 StudentsStatusColor = "Green";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsFilePath)));
+                OnPropertyChanged(nameof(StudentsFilePath));
             }
         }
 
@@ -135,7 +138,7 @@ namespace HIDUI.ViewModels
             get => studentsStatusColor;
             set {
                 studentsStatusColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentsStatusColor)));
+                OnPropertyChanged(nameof(StudentsStatusColor));
             }
         }
 
@@ -145,7 +148,7 @@ namespace HIDUI.ViewModels
             get => isStudentChoicesFileSet;
             set {
                 isStudentChoicesFileSet = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStudentChoicesFileSet)));
+                OnPropertyChanged(nameof(IsStudentChoicesFileSet));
             }
         }
         private string studentChoicesFileName;
@@ -153,7 +156,7 @@ namespace HIDUI.ViewModels
             get => studentChoicesFileName;
             set {
                 studentChoicesFileName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFileName)));
+                OnPropertyChanged(nameof(StudentChoicesFileName));
             }
         }
         private string studentChoicesFilePath;
@@ -164,7 +167,7 @@ namespace HIDUI.ViewModels
                 StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
                 IsStudentChoicesFileSet = true;
                 StudentChoicesStatusColor = "Green";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesFilePath)));
+                OnPropertyChanged(nameof(StudentChoicesFilePath));
             }
         }
 
@@ -173,7 +176,7 @@ namespace HIDUI.ViewModels
             get => studentChoicesStatusColor;
             set {
                 studentChoicesStatusColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StudentChoicesStatusColor)));
+                OnPropertyChanged(nameof(StudentChoicesStatusColor));
             }
         }
 
@@ -270,8 +273,11 @@ namespace HIDUI.ViewModels
             }
         }
 
-        private static List<SchedulingRunAnalyticData> LoadRunData() => SchedulingRunSelector.GetSchedulingRunData()
-            .OrderByDescending(x => x.RunId).ToList();
+        public void ClearDatabase() {
+            DataManager.ClearApplicationData();
+        }
+
+        private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
         
         public void ToggleIsSettingsShown() {
             IsSettingsShown = !IsSettingsShown;

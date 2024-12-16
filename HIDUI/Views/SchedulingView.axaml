@@ -39,6 +39,11 @@
                     <TextBlock Padding="12" FontSize="12">Default Input Folder</TextBlock>
                     <TextBlock Padding="12" FontSize="12">Default Output Folder</TextBlock>
                     <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report</TextBlock>
+                    <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
+                        <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                            Clear Database
+                        </TextBlock>
+                    </Button>
                 </StackPanel>
             </DockPanel>
         </SplitView.Pane>
@@ -49,7 +54,6 @@
                 <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
                     <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
                 </Button>
-
                 <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
                     <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
                         <StackPanel>
@@ -108,23 +112,21 @@
                 </Button>
 
                 <DataGrid Margin="20" 
-                        ItemsSource="{Binding Runs}"
+                        ItemsSource="{ Binding Runs }"
                         IsReadOnly="True"
                         CanUserResizeColumns="True"
                         GridLinesVisibility="All"
                         BorderThickness="1">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                    <!-- <DataGridTextColumn Header="Name" Binding="{ Binding Name }" /> -->
                     <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
                     <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
                     <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                    <!-- <DataGridTextColumn Header="Accuracy" Binding="{ Binding Accuracy }" /> -->
                     <DataGridTemplateColumn Width="*" Header="View">
                             <DataTemplate>
                                 <Button Click="TableRowViewReports" 
                                         x:Name="Check" 
-                                        Name="{Binding RunId}">
+                                        Name="{ Binding RunId }">
                                     View
                                 </Button>
                             </DataTemplate>
@@ -133,7 +135,7 @@
                             <DataTemplate>
                                 <Button Click="TableRowSaveData" 
                                         x:Name="Check" 
-                                        Name="{Binding RunId}">
+                                        Name="{ Binding RunId }">
                                     Save
                                 </Button>
                             </DataTemplate>
@@ -145,23 +147,18 @@
             <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
             <TabControl Margin="5" Grid.Column="2">
                 <TabItem Header="Tab 1">
-                    <!-- <TextBlock Margin="5">This is tab 1 content</TextBlock> -->
                     <av:HtmlPanel x:Name="_htmlPanel1"/>
                 </TabItem>
                 <TabItem Header="Tab 2">
-                    <!-- <TextBlock Margin="5">This is tab 2 content</TextBlock> -->
                     <av:HtmlPanel x:Name="_htmlPanel2"/>
                 </TabItem>
                 <TabItem Header="Tab 3">
-                    <!-- <TextBlock Margin="5">This is tab 3 content</TextBlock> -->
                     <av:HtmlPanel x:Name="_htmlPanel3"/>
                 </TabItem>
                 <TabItem Header="Tab 4">
-                    <!-- <TextBlock Margin="5">This is tab 4 content</TextBlock> -->
                     <av:HtmlPanel x:Name="_htmlPanel4"/>
                 </TabItem>
                 <TabItem Header="Tab 5">
-                    <!-- <TextBlock Margin="5">This is tab 5 content</TextBlock> -->
                     <av:HtmlPanel x:Name="_htmlPanel5"/>
                 </TabItem>
             </TabControl>

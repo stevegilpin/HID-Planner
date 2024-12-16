@@ -4,7 +4,6 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using HIDUI.ViewModels;
 using HIDUI.Views;
-using MainWindow = HIDUI.Views.MainWindow;
 
 namespace HIDUI;
 

@@ -3,6 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:HIDUI.Views"
+        xmlns:vm="clr-namespace:HIDUI.ViewModels"
+        xmlns:dt="using:HIDUI.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HIDUI.Views.MainWindow"
         x:CompileBindings="False"
@@ -20,7 +22,8 @@
     <StackPanel>
         <!-- <views:SchedulingView DataContext="{ Binding CurrentPage }"/> -->
         <!-- DataContext="{ Binding CurrentPage }" tried adding this into TransitioningContentControl-->
-        <UserControl Content="{ Binding CurrentPage }"/>
+        
+        <ContentControl Content="{ Binding CurrentPage }"/>
         <Button Command="{ Binding GoToSchedulingView }" Content="Scheduling View &gt;"></Button>
         <Button Command="{ Binding GoToSurveyView }" Content="&lt; Survey View"></Button>
     </StackPanel>

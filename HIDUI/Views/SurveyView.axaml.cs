@@ -20,7 +20,7 @@ using HIDUI.ViewModels;
 
 namespace HIDUI.Views
 {
-    public partial class SurveyView : UserControl
+    public partial class SurveyView : ContentControl
     {
         public SurveyView()
         {

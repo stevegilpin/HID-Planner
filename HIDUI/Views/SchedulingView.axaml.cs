@@ -16,7 +16,7 @@ using HIDUI.ViewModels;
 
 namespace HIDUI.Views {
 
-    public partial class SchedulingView : UserControl
+    public partial class SchedulingView : ContentControl
     {
 
         private SchedulingViewModel ViewModel => DataContext as SchedulingViewModel;
