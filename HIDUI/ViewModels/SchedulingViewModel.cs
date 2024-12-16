@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data;
 using DynamicData;
+using HIDLib;
 using HIDLib.Analytics;
 using HIDLib.IO;
 
@@ -180,6 +181,51 @@ namespace HIDUI.ViewModels
             }
         }
 
+        private string dbFileLocation;
+        public string DbFileLocation {
+            get => dbFileLocation;
+            set {
+                dbFileLocation = value;
+                OnPropertyChanged(nameof(DbFileLocation));
+            }
+        }
+
+        private string defaultInputsFolder;
+        public string DefaultInputsFolder {
+            get => defaultInputsFolder;
+            set {
+                defaultInputsFolder = value;
+                OnPropertyChanged(nameof(DefaultInputsFolder));
+            }
+        }
+
+        private string defaultOutputsFolder;
+        public string DefaultOutputsFolder {
+            get => defaultOutputsFolder;
+            set {
+                defaultOutputsFolder = value;
+                OnPropertyChanged(nameof(DefaultOutputsFolder));
+            }
+        }
+
+        private int costFunctionExponent;
+        public int CostFunctionExponent {
+            get => costFunctionExponent;
+            set {
+                costFunctionExponent = value;
+                OnPropertyChanged(nameof(CostFunctionExponent));
+            }
+        }
+
+        private int badCourseRankCutoff;
+        public int BadCourseRankCutoff {
+            get => badCourseRankCutoff;
+            set {
+                badCourseRankCutoff = value;
+                OnPropertyChanged(nameof(BadCourseRankCutoff));
+            }
+        }
+
         ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
         public bool TrySetFilePaths(string[] paths, out string errorMessage) {
@@ -281,6 +327,16 @@ namespace HIDUI.ViewModels
         
         public void ToggleIsSettingsShown() {
             IsSettingsShown = !IsSettingsShown;
+            if (IsSettingsShown)
+                PopulateSettings();
+        }
+
+        private void PopulateSettings() {
+            DbFileLocation = SettingsManager.GetDatabaseFileLocation();
+            DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
+            DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
+            CostFunctionExponent = SettingsManager.GetCostFunctionExponent();
+            BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff();
         }
         
         public override bool CanNavigateNext 

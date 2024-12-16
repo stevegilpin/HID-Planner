@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
 using Data.Objects;
-using HIDLib;
-using Microsoft.EntityFrameworkCore;
 
 namespace Data;
 

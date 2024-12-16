@@ -35,10 +35,26 @@
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Left" IsVisible="{ Binding IsSettingsShown }">
                     <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="16" FontWeight="SemiBold">Options</TextBlock>
-                    <TextBlock Padding="12" FontSize="12">Database File Location</TextBlock>
-                    <TextBlock Padding="12" FontSize="12">Default Input Folder</TextBlock>
-                    <TextBlock Padding="12" FontSize="12">Default Output Folder</TextBlock>
-                    <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report</TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="12" FontSize="12">Database File Location: </TextBlock>
+                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="12" FontSize="12">Default Input Folder: </TextBlock>
+                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="12" FontSize="12">Default Output Folder: </TextBlock>
+                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
+                        <TextBlock Padding="12" FontSize="12" Text="{ Binding CostFunctionExponent }"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
+                        <TextBlock Padding="12" FontSize="12" Text="{ Binding BadCourseRankCutoff }"/>
+                    </StackPanel>
                     <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
                         <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                             Clear Database
