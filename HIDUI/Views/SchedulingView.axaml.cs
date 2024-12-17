@@ -25,11 +25,6 @@ namespace HIDUI.Views {
         {
             InitializeComponent();
             // DataContext = new SchedulingViewModel();
-            _htmlPanel1.Text = "";
-            _htmlPanel2.Text = "";
-            _htmlPanel3.Text = "";
-            _htmlPanel4.Text = "";
-            _htmlPanel5.Text = "";
         }
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
@@ -44,14 +39,6 @@ namespace HIDUI.Views {
             // todo store this data behind the scenes in Runs so we don't load it repeatedly
             var data = DataManager.LoadDataSet(Int32.Parse(runId));
             var docs = GetHtmlDocs(data);
-            
-            Dispatcher.UIThread.Invoke(new Action(() => {
-                _htmlPanel1.Text = (docs[0].ToString() + "<head><style>body { color: white; }</style></head>");
-                _htmlPanel2.Text = (docs[1].ToString() + "<head><style>body { color: white; }</style></head>");
-                _htmlPanel3.Text = (docs[2].ToString() + "<head><style>body { color: white; }</style></head>");
-                _htmlPanel4.Text = (docs[3].ToString() + "<head><style>body { color: white; }</style></head>");
-                _htmlPanel5.Text = (docs[4].ToString() + "<head><style>body { color: white; }</style></head>");
-            }));
         }
 
         public async void TableRowSaveData(object sender, RoutedEventArgs args) {

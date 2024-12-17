@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:av="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer"
              xmlns:vm="using:HIDUI.ViewModels"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -133,51 +132,35 @@
                         CanUserResizeColumns="True"
                         GridLinesVisibility="All"
                         BorderThickness="1">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                    <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                    <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                    <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                    <DataGridTemplateColumn Width="*" Header="View">
-                            <DataTemplate>
-                                <Button Click="TableRowViewReports" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    View
-                                </Button>
-                            </DataTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Header="Save">
-                            <DataTemplate>
-                                <Button Click="TableRowSaveData" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    Save
-                                </Button>
-                            </DataTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                        <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                        <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                        <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
+                        <DataGridTemplateColumn Width="*" Header="View">
+                                <DataTemplate>
+                                    <Button Click="TableRowViewReports" 
+                                            x:Name="Check" 
+                                            Name="{ Binding RunId }">
+                                        View
+                                    </Button>
+                                </DataTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="*" Header="Save">
+                                <DataTemplate>
+                                    <Button Click="TableRowSaveData" 
+                                            x:Name="Check" 
+                                            Name="{ Binding RunId }">
+                                        Save
+                                    </Button>
+                                </DataTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
 
             <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
-            <TabControl Margin="5" Grid.Column="2">
-                <TabItem Header="Tab 1">
-                    <av:HtmlPanel x:Name="_htmlPanel1"/>
-                </TabItem>
-                <TabItem Header="Tab 2">
-                    <av:HtmlPanel x:Name="_htmlPanel2"/>
-                </TabItem>
-                <TabItem Header="Tab 3">
-                    <av:HtmlPanel x:Name="_htmlPanel3"/>
-                </TabItem>
-                <TabItem Header="Tab 4">
-                    <av:HtmlPanel x:Name="_htmlPanel4"/>
-                </TabItem>
-                <TabItem Header="Tab 5">
-                    <av:HtmlPanel x:Name="_htmlPanel5"/>
-                </TabItem>
-            </TabControl>
+
         </Grid>
     </SplitView>
 </UserControl>

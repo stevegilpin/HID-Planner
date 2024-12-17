@@ -226,7 +226,7 @@ namespace HIDUI.ViewModels
             }
         }
 
-        ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
+        public ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
         public bool TrySetFilePaths(string[] paths, out string errorMessage) {
             var courseInfo = paths.Where(CsvReadUtil.HeaderMatchesCourseInfo).ToList();
