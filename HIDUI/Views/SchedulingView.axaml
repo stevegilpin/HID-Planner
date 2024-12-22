@@ -65,6 +65,11 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
                             <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
+                            <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultOutputFolderOnClick">
+                                <TextBlock HorizontalAlignment="Center">
+                                    Change
+                                </TextBlock>
+                            </Button>
                         </StackPanel>
                     </Expander>
                     <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">

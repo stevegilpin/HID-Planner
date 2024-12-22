@@ -37,6 +37,11 @@ namespace HIDUI.Views {
             ViewModel.TrySetDefaultInputFolderLocation(defaultInputsFolder, out string errorMessage);
         }
 
+        public async void ChangeDefaultOutputFolderOnClick(object sender, RoutedEventArgs args) {
+            var defaultOutputsFolder = await ChooseFolderPath("Change Default Output Folder Location");
+            ViewModel.TrySetDefaultOutputFolderLocation(defaultOutputsFolder, out string errorMessage);
+        }
+
         public async void TableRowViewReports(object sender, RoutedEventArgs args) {
             string runId = string.Empty;
             await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
@@ -96,15 +101,15 @@ namespace HIDUI.Views {
         }
 
         public async Task<string> ChooseFolderPath(string title) {
-            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            var folder = await TopLevel.GetTopLevel(this).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
                 Title = title,
                 AllowMultiple = false,
             });
-            var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
-            if (filesArray.Length == 0) {
+            var folderPaths = folder.Select(folder => folder.Path.LocalPath).ToArray();
+            if (folderPaths.Length == 0) {
                 return null;
             }
-            return filesArray[0];
+            return folderPaths[0];
         }
     }
 

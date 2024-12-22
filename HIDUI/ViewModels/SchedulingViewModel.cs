@@ -281,6 +281,18 @@ namespace HIDUI.ViewModels
             }            
         }
 
+        public bool TrySetDefaultOutputFolderLocation(string path, out string errorMessage) {
+            if (string.IsNullOrEmpty(path)) {
+                errorMessage = "Cannot set default output folder path to empty string.";
+                return false;
+            } else {
+                DefaultOutputsFolder = path;
+                SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
+                errorMessage = null;
+                return true;
+            }            
+        }
+
         private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
                                       && !string.IsNullOrEmpty(ScheduleFilePath)
                                       && !string.IsNullOrEmpty(StudentsFilePath)
