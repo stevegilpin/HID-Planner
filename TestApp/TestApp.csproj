@@ -8,6 +8,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
       <ProjectReference Include="..\HIDLib\HIDLib.csproj" />        
+      <ProjectReference Include="..\HIDUI\HIDUI.csproj" />        
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Serilog" Version="4.0.2" />

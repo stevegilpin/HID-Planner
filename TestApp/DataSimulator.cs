@@ -5,6 +5,7 @@ using HIDLib;
 using HIDLib.HTML;
 using HIDLib.IO;
 using HIDLib.ReportGenerators;
+using HIDUI.ViewModels;
 
 namespace TestApp;
 
@@ -20,15 +21,15 @@ public static class DataSimulator
 
     public static void RunScheduling(string courseInfoFilePath, string scheduleFilePath, string studentInfoFilePath, string rankingFilePath)
     {
-        var controller = new SchedulingController { RunName = "Manual test run" };
-
-        if (controller.TrySetFilePaths([courseInfoFilePath, scheduleFilePath, studentInfoFilePath, rankingFilePath], out var error) == false) {
-            Console.WriteLine(error);
-            return;
-        }
-
-        var message = controller.RunScheduling();
-        Console.WriteLine(message);
+        var mgr = new SchedulingManager {
+            RunName = "Manual test run", // todo set from UI
+            CourseInfoFilePath = courseInfoFilePath,
+            CourseScheduleFilePath = scheduleFilePath,
+            StudentInfoFilePath = studentInfoFilePath,
+            StudentCourseRankingsFilePath = rankingFilePath,
+        };
+        var msg = mgr.RunScheduling();
+        mgr.Logger.Information(msg);
     }
 
     public static void CreateReports()
