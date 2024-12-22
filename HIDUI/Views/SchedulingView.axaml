@@ -35,26 +35,57 @@
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Left" IsVisible="{ Binding IsSettingsShown }">
                     <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="16" FontWeight="SemiBold">Options</TextBlock>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Padding="12" FontSize="12">Database File Location: </TextBlock>
-                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Padding="12" FontSize="12">Default Input Folder: </TextBlock>
-                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Padding="12" FontSize="12">Default Output Folder: </TextBlock>
-                        <TextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
-                        <TextBlock Padding="12" FontSize="12" Text="{ Binding CostFunctionExponent }"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
-                        <TextBlock Padding="12" FontSize="12" Text="{ Binding BadCourseRankCutoff }"/>
-                    </StackPanel>
+                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            Database File Location
+                        </Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="12" FontSize="12">File Path: </TextBlock>
+                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            Default Input Folder
+                        </Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
+                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
+                            <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultInputFolderOnClick">
+                                <TextBlock HorizontalAlignment="Center">
+                                    Change
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
+                    </Expander>
+                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            Default Output Folder
+                        </Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
+                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            Cost Function Exponent
+                        </Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
+                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding CostFunctionExponent }"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            Course Rank Cutoff for 'Problematic Assignments'
+                        </Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
+                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding BadCourseRankCutoff }"/>
+                        </StackPanel>
+                    </Expander>
+                    
                     <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
                         <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                             Clear Database

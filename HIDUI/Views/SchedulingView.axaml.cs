@@ -28,8 +28,13 @@ namespace HIDUI.Views {
         }
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
-            var filePaths = await ChooseFilePath("Select Import Files");
+            var filePaths = await ChooseMultipleFilePaths("Select Import Files");
             ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
+        }
+
+        public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {
+            var defaultInputsFolder = await ChooseFolderPath("Change Default Input Folder Location");
+            ViewModel.TrySetDefaultInputFolderLocation(defaultInputsFolder, out string errorMessage);
         }
 
         public async void TableRowViewReports(object sender, RoutedEventArgs args) {
@@ -70,12 +75,36 @@ namespace HIDUI.Views {
             return generators.Select(x => x.CreateDoc()).ToList();
         }
 
-        public async Task<string[]> ChooseFilePath(string title) {
+        public async Task<string[]> ChooseMultipleFilePaths(string title) {
             var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
                 Title = title,
                 AllowMultiple = true,
             });
             return files.Select(file => file.Path.LocalPath).ToArray();
+        }
+
+        public async Task<string> ChooseOneFilePath(string title) {
+            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+                Title = title,
+                AllowMultiple = false,
+            });
+            var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
+            if (filesArray.Length == 0) {
+                return null;
+            }
+            return filesArray[0];
+        }
+
+        public async Task<string> ChooseFolderPath(string title) {
+            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+                Title = title,
+                AllowMultiple = false,
+            });
+            var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
+            if (filesArray.Length == 0) {
+                return null;
+            }
+            return filesArray[0];
         }
     }
 

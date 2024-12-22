@@ -269,6 +269,18 @@ namespace HIDUI.ViewModels
             return true;
         }
 
+        public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {
+            if (string.IsNullOrEmpty(path)) {
+                errorMessage = "Cannot set default input folder path to empty string.";
+                return false;
+            } else {
+                DefaultInputsFolder = path;
+                SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
+                errorMessage = null;
+                return true;
+            }            
+        }
+
         private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
                                       && !string.IsNullOrEmpty(ScheduleFilePath)
                                       && !string.IsNullOrEmpty(StudentsFilePath)
