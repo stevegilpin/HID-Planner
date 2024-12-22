@@ -24,10 +24,10 @@
                     <Button VerticalAlignment = "Top"
                             HorizontalAlignment = "Right"
                             Margin="5"
-                            Height = "35"
-                            Width = "35"
-                            Background = "Transparent"
-                            Command = "{ Binding ToggleIsSettingsShown }">
+                            Height="35"
+                            Width="35"
+                            Background="Transparent"
+                            Command="{ Binding ToggleIsSettingsShown }">
                             <TextBlock FontSize="18"
                                         HorizontalAlignment = "Center"
                                         VerticalAlignment = "Center">☰</TextBlock>
@@ -102,7 +102,7 @@
             </DockPanel>
         </SplitView.Pane>
         <Grid ColumnDefinitions="*, 2, *">
-            <StackPanel Grid.Column="0">
+            <StackPanel>
                 <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
                 
                 <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
@@ -164,38 +164,39 @@
                         Run Scheduling
                     </TextBlock>
                 </Button>
-
-                <DataGrid Margin="20" 
-                        ItemsSource="{ Binding Runs }"
-                        IsReadOnly="True"
-                        CanUserResizeColumns="True"
-                        GridLinesVisibility="All"
-                        BorderThickness="1">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                        <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                        <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                        <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                        <DataGridTemplateColumn Width="*" Header="View">
-                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                <Button Click="TableRowViewReports" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    View
-                                </Button>
-                            </DataTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Width="*" Header="Save">
-                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                <Button Click="TableRowSaveData" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    Save
-                                </Button>
-                            </DataTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <ScrollViewer Height="400">
+                    <DataGrid Margin="20" 
+                            ItemsSource="{ Binding Runs }"
+                            IsReadOnly="True"
+                            CanUserResizeColumns="True"
+                            GridLinesVisibility="All"
+                            BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                            <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                            <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                            <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
+                            <DataGridTemplateColumn Width="*" Header="View">
+                                <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                    <Button Click="TableRowViewReports" 
+                                            x:Name="Check" 
+                                            Name="{ Binding RunId }">
+                                        View
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="*" Header="Save">
+                                <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                    <Button Click="TableRowSaveData" 
+                                            x:Name="Check" 
+                                            Name="{ Binding RunId }">
+                                        Save
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
             </StackPanel>
 
             <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
