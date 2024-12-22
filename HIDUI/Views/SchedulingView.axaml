@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:HIDUI.ViewModels"
+             xmlns:analytics="clr-namespace:HIDLib.Analytics;assembly=HIDLib"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="True"
@@ -138,22 +139,22 @@
                         <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
                         <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
                         <DataGridTemplateColumn Width="*" Header="View">
-                                <DataTemplate>
-                                    <Button Click="TableRowViewReports" 
-                                            x:Name="Check" 
-                                            Name="{ Binding RunId }">
-                                        View
-                                    </Button>
-                                </DataTemplate>
+                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                <Button Click="TableRowViewReports" 
+                                        x:Name="Check" 
+                                        Name="{ Binding RunId }">
+                                    View
+                                </Button>
+                            </DataTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Width="*" Header="Save">
-                                <DataTemplate>
-                                    <Button Click="TableRowSaveData" 
-                                            x:Name="Check" 
-                                            Name="{ Binding RunId }">
-                                        Save
-                                    </Button>
-                                </DataTemplate>
+                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                <Button Click="TableRowSaveData" 
+                                        x:Name="Check" 
+                                        Name="{ Binding RunId }">
+                                    Save
+                                </Button>
+                            </DataTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
