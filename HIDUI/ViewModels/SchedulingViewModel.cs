@@ -208,8 +208,8 @@ namespace HIDUI.ViewModels
             }
         }
 
-        private int costFunctionExponent;
-        public int CostFunctionExponent {
+        private string costFunctionExponent;
+        public string CostFunctionExponent {
             get => costFunctionExponent;
             set {
                 costFunctionExponent = value;
@@ -217,8 +217,8 @@ namespace HIDUI.ViewModels
             }
         }
 
-        private int badCourseRankCutoff;
-        public int BadCourseRankCutoff {
+        private string badCourseRankCutoff;
+        public string BadCourseRankCutoff {
             get => badCourseRankCutoff;
             set {
                 badCourseRankCutoff = value;
@@ -293,6 +293,28 @@ namespace HIDUI.ViewModels
             }            
         }
 
+        public void SaveCostFunctionExponent() {
+            if (CostFunctionExponent != "" && CostFunctionExponent.All(char.IsDigit)) {
+                // int parseResult;
+                if (int.TryParse(CostFunctionExponent, out _)) {
+                    SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
+                } else {
+                    // TODO
+                }
+            }
+        }
+
+        public void SaveBadCourseRankCutoff() {
+            if (BadCourseRankCutoff != "" && BadCourseRankCutoff.All(char.IsDigit)) {
+                // int parseResult;
+                if (int.TryParse(BadCourseRankCutoff, out _)) {
+                    SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
+                } else{
+                    // TODO
+                }
+            }
+        }
+
         private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
                                       && !string.IsNullOrEmpty(ScheduleFilePath)
                                       && !string.IsNullOrEmpty(StudentsFilePath)
@@ -359,8 +381,8 @@ namespace HIDUI.ViewModels
             DbFileLocation = SettingsManager.GetDatabaseFileLocation();
             DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
             DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
-            CostFunctionExponent = SettingsManager.GetCostFunctionExponent();
-            BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff();
+            CostFunctionExponent = SettingsManager.GetCostFunctionExponent().ToString();
+            BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
         }
         
         public override bool CanNavigateNext 

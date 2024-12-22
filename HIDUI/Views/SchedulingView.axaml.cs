@@ -94,10 +94,10 @@ namespace HIDUI.Views {
                 AllowMultiple = false,
             });
             var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
-            if (filesArray.Length == 0) {
+            if (filesArray.Length == 0)
                 return null;
-            }
-            return filesArray[0];
+            else
+                return filesArray[0];
         }
 
         public async Task<string> ChooseFolderPath(string title) {
@@ -106,10 +106,10 @@ namespace HIDUI.Views {
                 AllowMultiple = false,
             });
             var folderPaths = folder.Select(folder => folder.Path.LocalPath).ToArray();
-            if (folderPaths.Length == 0) {
+            if (folderPaths.Length == 0)
                 return null;
-            }
-            return folderPaths[0];
+            else
+                return folderPaths[0];
         }
     }
 

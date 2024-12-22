@@ -52,9 +52,7 @@
                             <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
                             <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
                             <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultInputFolderOnClick">
-                                <TextBlock HorizontalAlignment="Center">
-                                    Change
-                                </TextBlock>
+                                <TextBlock Text="Change" HorizontalAlignment="Center"/>
                             </Button>
                         </StackPanel>
                     </Expander>
@@ -66,9 +64,7 @@
                             <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
                             <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
                             <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultOutputFolderOnClick">
-                                <TextBlock HorizontalAlignment="Center">
-                                    Change
-                                </TextBlock>
+                                <TextBlock Text="Change" HorizontalAlignment="Center"/>
                             </Button>
                         </StackPanel>
                     </Expander>
@@ -78,7 +74,10 @@
                         </Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
-                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding CostFunctionExponent }"/>
+                            <TextBox Text="{ Binding CostFunctionExponent }" Watermark="Enter a number" Margin="0 5"/>
+                            <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveCostFunctionExponent }">
+                                <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                            </Button>
                         </StackPanel>
                     </Expander>
                     <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -87,7 +86,10 @@
                         </Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
-                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding BadCourseRankCutoff }"/>
+                            <TextBox Text="{ Binding BadCourseRankCutoff }" Watermark="Enter a number" Margin="0 5"/>
+                            <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveBadCourseRankCutoff }">
+                                <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                            </Button>
                         </StackPanel>
                     </Expander>
                     
