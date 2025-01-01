@@ -19,12 +19,16 @@
         </Style>
     </Window.Styles> -->
 
-    <StackPanel>
-        <!-- <views:SchedulingView DataContext="{ Binding CurrentPage }"/> -->
-        <!-- DataContext="{ Binding CurrentPage }" tried adding this into TransitioningContentControl-->
-        
-        <ContentControl Content="{ Binding CurrentPage }"/>
-        <Button Command="{ Binding GoToSchedulingView }" Content="Scheduling View &gt;"></Button>
-        <Button Command="{ Binding GoToSurveyView }" Content="&lt; Survey View"></Button>
-    </StackPanel>
+    <DockPanel VerticalAlignment="Stretch">
+        <ContentControl Content="{ Binding CurrentPage }" DockPanel.Dock="Top"/>
+
+        <DockPanel VerticalAlignment="Bottom">
+            <Button Command="{ Binding GoToSurveyView }" HorizontalAlignment="Left">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">&lt; Survey View</TextBlock>
+            </Button>
+            <Button Command="{ Binding GoToSchedulingView }" HorizontalAlignment="Right">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View &gt;</TextBlock>
+            </Button>
+        </DockPanel>
+    </DockPanel>
 </Window>

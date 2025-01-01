@@ -158,7 +158,6 @@
                     </Border>
                 </Grid>
 
-                <!-- <TextBlock Text="Import all 4 files, then click run reports"/> -->
                 <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
                     <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                         Run Scheduling
@@ -201,6 +200,19 @@
 
             <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
 
+            <DataGrid Margin="20" 
+                    ItemsSource="{ Binding RunDetails }"
+                    IsReadOnly="True"
+                    CanUserResizeColumns="True"
+                    GridLinesVisibility="All"
+                    BorderThickness="1">
+                <DataGrid.Columns>
+                    <!-- <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                    <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                    <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                    <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" /> -->
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </SplitView>
 </UserControl>

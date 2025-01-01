@@ -48,9 +48,16 @@ namespace HIDUI.Views {
             string runId = string.Empty;
             await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
             
+            ViewModel.ViewRunDetails(runId);
             // todo store this data behind the scenes in Runs so we don't load it repeatedly
-            var data = DataManager.LoadDataSet(Int32.Parse(runId));
-            var docs = GetHtmlDocs(data);
+            // var data = DataManager.LoadDataSet(Int32.Parse(runId));
+            // var docs = GetHtmlDocs(data);
+
+            // Console.WriteLine("REPORT: ");
+            // Console.WriteLine(docs[0]);
+            // ViewModel.Runs.ForEach(Console.WriteLine);
+            // ViewModel.Runs.ForEach(x => Console.WriteLine(x.RunId));
+            // Console.WriteLine(ProblematicAssignmentsReport.FindProblematicAssignments(docs[0], 9));
         }
 
         public async void TableRowSaveData(object sender, RoutedEventArgs args) {
@@ -132,4 +139,15 @@ namespace HIDUI.Views {
         }
     }
 
+}
+
+public static class EnumerableExtensions
+{
+    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+    {
+        foreach (var e in enumerable)
+        {
+            action(e);
+        }
+    }
 }
