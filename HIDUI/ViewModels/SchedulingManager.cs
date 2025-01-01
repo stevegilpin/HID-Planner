@@ -68,6 +68,28 @@ public class SchedulingManager
         Logger.Information($"Read {rankingRows.Count} StudentCourseRanking rows");
         Logger.Information($"Read {courseInfoRows.Count} {nameof(courseInfoRows)} rows");
         Logger.Information($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
+        
+        const string unassigned = "UNASSIGNED";
+        foreach (var student in infoRows)
+            rankingRows.Add(new StudentCourseRanking {
+                StudentId = student.StudentId,
+                CourseCode = unassigned,
+                Rank = (int)10e3,
+            });
+
+        courseInfoRows.Add(new CourseInfo {
+            CourseCode = unassigned,
+            CourseName = unassigned,
+            Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
+            MinGrade = int.MinValue,
+            MaxGrade = int.MaxValue,
+        });
+
+        var sessions = scheduleRows.Select(x => x.SessionId).Distinct().ToList();
+        scheduleRows.AddRange(sessions.Select(x => new CourseSchedule {
+            CourseCode = unassigned,
+            SessionId = x,
+        }));
 
         errorMessage = null;
         inputData = new InputDataSet(courseInfoRows, scheduleRows, infoRows, rankingRows);

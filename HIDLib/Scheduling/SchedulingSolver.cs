@@ -125,6 +125,6 @@ internal static class SchedulingSolver
     private static readonly int CostExponent = SettingsManager.GetCostFunctionExponent();
     public static double GetCourseCost(int courseRank)
     {
-        return courseRank == -1 ? double.NegativeInfinity : Math.Pow(courseRank, CostExponent);
+        return Math.Pow(courseRank, CostExponent);
     }
 }
