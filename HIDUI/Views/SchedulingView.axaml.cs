@@ -31,7 +31,7 @@ namespace HIDUI.Views {
 
         public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
             var filePaths = await ChooseMultipleFilePaths("Select Import Files");
-            ViewModel.TrySetFilePaths(filePaths, out string errorMessage);
+            ViewModel.TrySetFilePaths(filePaths);
         }
 
         public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {

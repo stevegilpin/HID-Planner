@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -5,6 +6,7 @@ using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Data.Objects;
+using Google.Protobuf.Collections;
 
 namespace HIDLib.IO;
 
@@ -28,6 +30,20 @@ public static class CsvReadUtil
     public static bool HeaderMatchesStudentCourseRankings(string filePath)
     {
         return HeaderMatches<StudentCourseRanking, CsvMappers.StudentCourseRankingMapper>(filePath);
+    }
+
+    public static bool HeaderMatchesSurveyResponses(string filePath)
+    {
+        var requiredHeaders = new[] {
+            "Last Name",
+            "First Name",
+            "Grade",
+            "Email Address",
+        };
+        
+        var lines = File.ReadAllLines(filePath);
+        var header = lines[0].Split(',').ToList();
+        return requiredHeaders.All(x => header.Contains(x));
     }
 
     private static bool HeaderMatches<TTable, TMapper>(string filePath) where TMapper : ClassMap<TTable>
@@ -79,6 +95,38 @@ public static class CsvReadUtil
     public static List<CourseAssignmentResult> ReadAssignmentResults(string filePath)
     {
         return ReadFile<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(filePath);
+    }
+
+    public static List<SurveyResponse> ReadSurveyResponses(string filePath)
+    {
+        var lines = File.ReadAllLines(filePath);
+        var header = lines[0].Split(',').ToList();
+        var lastNameIndex = header.IndexOf("Last Name");
+        var firstNameIndex = header.IndexOf("First Name");
+        var gradeIndex = header.IndexOf("Grade");
+        var emailIndex = header.IndexOf("Email Address");
+
+        var rowDataStart = new[] { lastNameIndex, firstNameIndex, gradeIndex, emailIndex }.Max() + 1;
+        var responses = new List<SurveyResponse>();
+        foreach (var line in lines.Skip(1)) {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var data = line.Split(',').ToList();
+            var rankings = data
+                .Where((_, i) => i >= rowDataStart)
+                .Where(x => string.IsNullOrWhiteSpace(x) == false)
+                .ToList();
+
+            responses.Add(new SurveyResponse(
+                data[lastNameIndex],
+                data[firstNameIndex],
+                int.Parse(data[gradeIndex]),
+                data[emailIndex],
+                rankings));
+        }
+
+        return responses;
     }
     
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>

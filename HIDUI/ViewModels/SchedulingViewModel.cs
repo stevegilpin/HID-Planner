@@ -10,7 +10,7 @@ using DynamicData;
 using HIDLib;
 using HIDLib.Analytics;
 using HIDLib.IO;
-using HIDLib.ReportGenerators;
+using HIDUI.BusinessLogic;
 
 namespace HIDUI.ViewModels
 {
@@ -238,45 +238,12 @@ namespace HIDUI.ViewModels
 
         public ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
-        public bool TrySetFilePaths(string[] paths, out string errorMessage) {
-            var courseInfo = paths.Where(CsvReadUtil.HeaderMatchesCourseInfo).ToList();
-            if (courseInfo.Count > 1) {
-                errorMessage = "Multiple files found matching required headers for course info data.";
-                return false;
-            }
-
-            var courseSchedule = paths.Where(CsvReadUtil.HeaderMatchesCourseSchedule).ToList();
-            if (courseSchedule.Count > 1) {
-                errorMessage = "Multiple files found matching required headers for course schedule data.";
-                return false;
-            }
-
-            var studentInfo = paths.Where(CsvReadUtil.HeaderMatchesStudentInfo).ToList();
-            if (studentInfo.Count > 1) {
-                errorMessage = "Multiple files found matching required headers for student info data.";
-                return false;
-            }
-
-            var studentChoices = paths.Where(CsvReadUtil.HeaderMatchesStudentCourseRankings).ToList();
-            if (studentChoices.Count > 1) {
-                errorMessage = "Multiple files found matching required headers for students' course ranking data.";
-                return false;
-            }
-
-            if (courseInfo.Count == 1) {
-                CoursesFilePath = courseInfo.Single();
-            }
-            if (courseSchedule.Count == 1) {
-                ScheduleFilePath = courseSchedule.Single();
-            }
-            if (studentInfo.Count == 1) {
-                StudentsFilePath = studentInfo.Single();
-            }
-            if (studentChoices.Count == 1) {
-                StudentChoicesFilePath = studentChoices.Single();
-            }
-            errorMessage = null;
-            return true;
+        public void TrySetFilePaths(string[] paths)
+        {
+            CoursesFilePath = ControllerUtils.GetMatchingPath(paths, CoursesFilePath, CsvReadUtil.HeaderMatchesCourseInfo);
+            ScheduleFilePath = ControllerUtils.GetMatchingPath(paths, ScheduleFilePath, CsvReadUtil.HeaderMatchesCourseSchedule);
+            StudentsFilePath = ControllerUtils.GetMatchingPath(paths, StudentsFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
+            StudentChoicesFilePath = ControllerUtils.GetMatchingPath(paths, StudentChoicesFilePath, CsvReadUtil.HeaderMatchesStudentCourseRankings);
         }
 
         public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {

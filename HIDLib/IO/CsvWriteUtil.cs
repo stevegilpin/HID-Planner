@@ -27,6 +27,12 @@ public static class CsvWriteUtil
         var assignments = data.AssignmentResults.OrderBy(x => x.StudentId).ThenBy(x => x.SessionId).ToList();
         WriteCsv<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(assignments, Path.Combine(folder, "CourseAssignments.csv"));
     }
+
+    public static void WriteCourseRankings(List<StudentCourseRanking> courseRankings, string folder)
+    {
+        courseRankings = courseRankings.OrderBy(c => c.StudentId).ThenBy(x => x.Rank).ToList();
+        WriteCsv<StudentCourseRanking, CsvMappers.StudentCourseRankingMapper>(courseRankings, Path.Combine(folder, "Inputs", "StudentCourseRankings.csv"));
+    }
     
     private static void WriteCsv<TData, TMapper>(List<TData> data, string filePath) where TMapper : ClassMap<TData>
     {
