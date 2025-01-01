@@ -36,7 +36,8 @@ internal static class DbProvider
         return Path.Combine(DB_FOLDER, DB_FILE_NAME);
     }
 
-    private static string GetConnectionString() => $"Data Source={GetDbFilePath()}";
+    // Pooling=false fixes DB file lock on Windows
+    private static string GetConnectionString() => $"Data Source={GetDbFilePath()}; Pooling=false";
 
     private static void CreateDatabase()
     {
