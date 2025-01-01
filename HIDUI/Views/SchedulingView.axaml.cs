@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -59,11 +61,17 @@ namespace HIDUI.Views {
             var data = DataManager.LoadDataSet(Int32.Parse(runId));
             var docs = GetHtmlDocs(data);
 
-            var outputFolder = SettingsManager.GetDefaultOutputFolder();
+            var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {runId}");
             CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
             foreach (var doc in docs)
                 doc.WriteToFile(outputFolder);
             Console.WriteLine($"Reports written to: {outputFolder}");
+            
+            // open file explorer at output folder
+            if (OperatingSystem.IsWindows())
+                Process.Start("explorer.exe", outputFolder);
+            else if (OperatingSystem.IsMacOS())
+                Process.Start("open", $"-R \"{outputFolder}\"");
         }
         
         // TODO: These static functions could be moved to a service
