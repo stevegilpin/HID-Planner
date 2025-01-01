@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using Data.Objects;
 using HIDLib.HTML;
@@ -25,9 +26,7 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
         doc.Add(new HtmlHeader(DocumentHeader));
         doc.Add(new HtmlParagraph(EventDescription));
 
-        var minGrade = CourseData.Min(x => x.MinGrade);
-        var maxGrade = CourseData.Max(x => x.MaxGrade);
-        var grades = Enumerable.Range(minGrade, maxGrade - minGrade + 1);
+        var grades = GetGrades();
         foreach (var grade in grades) {
             if (string.IsNullOrEmpty(GradeFilter) == false && GradeToString(grade) != GradeFilter)
                 continue;
@@ -37,6 +36,37 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
         }
 
         return doc;
+    }
+
+    public string CreateTextFileContent()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine(DocumentHeader);
+        sb.AppendLine();
+        sb.AppendLine(EventDescription);
+        sb.AppendLine();
+
+        var grades = GetGrades();
+        foreach (var grade in grades) {
+            var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToList();
+            if (eligibleCourses.Count == 0)
+                continue;
+
+            var gradeCode = GradeToString(grade);
+            sb.AppendLine($"Class Options for Grade {gradeCode}");
+
+            foreach (var course in eligibleCourses.OrderBy(x => x.CourseName))
+                sb.AppendLine($"{course.CourseName}: {course.Description}");
+        }
+
+        return sb.ToString();
+    }
+
+    private IEnumerable<int> GetGrades()
+    {
+        var minGrade = CourseData.Min(x => x.MinGrade);
+        var maxGrade = CourseData.Max(x => x.MaxGrade);
+        return Enumerable.Range(minGrade, maxGrade - minGrade + 1);
     }
 
     private XElement GetGradeSection(int grade)
