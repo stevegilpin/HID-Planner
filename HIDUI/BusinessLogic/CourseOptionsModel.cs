@@ -6,7 +6,7 @@ using HIDLib.ReportGenerators;
 
 namespace HIDUI.BusinessLogic;
 
-public class CourseOptionsController
+public class CourseOptionsModel
 {
     public string CourseInfoFilePath { get; private set; }
     public string DocumentHeader { get; set; }
@@ -14,12 +14,12 @@ public class CourseOptionsController
 
     public void SetFilePath(string filePath)
     {
-        CourseInfoFilePath = ControllerUtils.GetMatchingPath([filePath], CourseInfoFilePath, CsvReadUtil.HeaderMatchesCourseInfo);
+        CourseInfoFilePath = ControllerUtils.GetMatchingPath([filePath], null, CsvReadUtil.HeaderMatchesCourseInfo);
     }
 
-    public bool IsInputReady() => string.IsNullOrEmpty(CourseInfoFilePath) ||
-                                  string.IsNullOrEmpty(DocumentHeader) ||
-                                  string.IsNullOrEmpty(EventDescription);
+    public bool IsInputReady() => string.IsNullOrEmpty(CourseInfoFilePath) == false &&
+                                  string.IsNullOrEmpty(DocumentHeader) == false &&
+                                  string.IsNullOrEmpty(EventDescription) == false;
 
     public void SaveHtmlFile(string folder)
     {

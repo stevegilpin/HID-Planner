@@ -6,7 +6,35 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="HIDUI.Views.CourseOptionsView"
              x:DataType="vm:CourseOptionsViewModel">
-    <StackPanel VerticalAlignment="Center">
-        <TextBlock>I am the course options view</TextBlock>
+    <StackPanel>
+        <DockPanel VerticalAlignment="Center">
+            <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
+                <TextBlock Padding="50 8" FontWeight="Bold">Choose File</TextBlock>
+            </Button>
+            <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
+                <StackPanel>
+                    <TextBlock>Courses</TextBlock>
+                    <StackPanel IsVisible="{ Binding IsCourseInfoFilePathSet }" Orientation="Horizontal">
+                        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
+                            <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                        </Button>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding CourseInfoFileName }"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+
+        <TextBlock>Document Header</TextBlock>
+        <TextBox Name="DocumentHeaderBox" TextChanged="SetDocumentHeader"></TextBox>
+
+        <TextBlock>Event Description</TextBlock>
+        <TextBox Name="EventDescriptionBox" TextChanged="SetEventDescription"></TextBox>
+        
+        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveHtmlFileOnClick">
+            <TextBlock Padding="50 8" FontWeight="Bold">Save HTML File</TextBlock>
+        </Button>
+        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveTextFileOnClick">
+            <TextBlock Padding="50 8" FontWeight="Bold">Save Text File</TextBlock>
+        </Button>
     </StackPanel>
 </UserControl>
