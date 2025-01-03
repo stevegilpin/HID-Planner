@@ -344,6 +344,7 @@ namespace HIDUI.ViewModels
 
         public void ClearDatabase() {
             DataManager.ClearApplicationData();
+            Environment.Exit(0);
         }
 
         private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
