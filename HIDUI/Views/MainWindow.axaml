@@ -5,9 +5,10 @@
         xmlns:views="clr-namespace:HIDUI.Views"
         xmlns:vm="clr-namespace:HIDUI.ViewModels"
         xmlns:dt="using:HIDUI.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="450"
         x:Class="HIDUI.Views.MainWindow"
         x:CompileBindings="False"
+        x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="HIDUI"
         Background="#252525"
@@ -22,13 +23,16 @@
     <DockPanel VerticalAlignment="Stretch">
         <ContentControl Content="{ Binding CurrentPage }" DockPanel.Dock="Top"/>
 
-        <DockPanel VerticalAlignment="Bottom">
-            <Button Command="{ Binding GoToSurveyView }" HorizontalAlignment="Left">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">&lt; Survey View</TextBlock>
+        <Grid VerticalAlignment="Bottom">
+            <Button Command="{ Binding GoToCourseOptionsView }" HorizontalAlignment="Left">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Course Options View</TextBlock>
+            </Button>
+            <Button Command="{ Binding GoToSurveyView }" HorizontalAlignment="Center" >
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Survey View</TextBlock>
             </Button>
             <Button Command="{ Binding GoToSchedulingView }" HorizontalAlignment="Right">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View &gt;</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View</TextBlock>
             </Button>
-        </DockPanel>
+        </Grid>
     </DockPanel>
 </Window>

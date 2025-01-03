@@ -32,6 +32,18 @@ public partial class MainWindowViewModel: INotifyPropertyChanged {
             }
         }
 
+        private PageViewModelBase courseOptionsViewModel = new CourseOptionsViewModel();
+        public PageViewModelBase CourseOptionsViewModel
+        {
+            get => courseOptionsViewModel;
+            set {
+                courseOptionsViewModel = value;
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CourseOptionsViewModel)));
+                });
+            }
+        }
         private PageViewModelBase surveyViewModel = new SurveyViewModel();
         public PageViewModelBase SurveyViewModel
         {
@@ -67,5 +79,10 @@ public partial class MainWindowViewModel: INotifyPropertyChanged {
         public void GoToSurveyView() {
             // CurrentPage = Pages[0];
             CurrentPage = SurveyViewModel;
+        }
+
+        public void GoToCourseOptionsView()
+        {
+            CurrentPage = CourseOptionsViewModel;
         }
     }
