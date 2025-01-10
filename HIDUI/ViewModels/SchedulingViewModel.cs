@@ -14,7 +14,7 @@ using HIDUI.BusinessLogic;
 
 namespace HIDUI.ViewModels
 {
-    public class SchedulingViewModel : PageViewModelBase
+    public class SchedulingViewModel : ViewModelBase
     {
 
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -377,18 +377,6 @@ namespace HIDUI.ViewModels
             DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
             CostFunctionExponent = SettingsManager.GetCostFunctionExponent().ToString();
             BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
-        }
-        
-        public override bool CanNavigateNext 
-        { 
-            get => true;
-            protected set => throw new NotSupportedException(); 
-        }
-
-        public override bool CanNavigatePrevious
-        {
-            get => false;
-            protected set => throw new NotSupportedException();
         }
     }
 }

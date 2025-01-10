@@ -28,6 +28,6 @@ public class ViewLocator : IDataTemplate
 
     public bool Match(object data)
     {
-        return data is PageViewModelBase;
+        return data is ViewModelBase;
     }
 }

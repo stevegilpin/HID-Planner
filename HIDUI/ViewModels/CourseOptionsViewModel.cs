@@ -7,20 +7,8 @@ using HIDUI.BusinessLogic;
 
 namespace HIDUI.ViewModels;
 
-public class CourseOptionsViewModel : PageViewModelBase
+public class CourseOptionsViewModel : ViewModelBase
 {
-    public override bool CanNavigateNext
-    {
-        get => false;
-        protected set => throw new NotSupportedException();
-    }
-
-    public override bool CanNavigatePrevious
-    {
-        get => true;
-        protected set => throw new NotSupportedException();
-    }
-
     private readonly CourseOptionsModel Model = new();
 
     public bool IsCourseInfoFilePathSet => string.IsNullOrEmpty(Model.CourseInfoFilePath) == false;

@@ -21,16 +21,18 @@
     </Window.Styles> -->
 
     <DockPanel VerticalAlignment="Stretch">
-        <ContentControl Content="{ Binding CurrentPage }" DockPanel.Dock="Top"/>
+        <views:CourseOptionsView DockPanel.Dock="Top" Name="CourseOptionsView" IsVisible="False" Content="{ Binding CourseOptionsViewModel }"/>
+        <views:SurveyView DockPanel.Dock="Top" Name="SurveyView" IsVisible="False" Content="{ Binding SurveyViewModel }"/>
+        <views:SchedulingView DockPanel.Dock="Top" Name="SchedulingView" IsVisible="True" Content="{ Binding SchedulingViewModel }"/>
 
         <Grid VerticalAlignment="Bottom">
-            <Button Command="{ Binding GoToCourseOptionsView }" HorizontalAlignment="Left">
+            <Button Click="GoToCourseOptionsView_OnClick" HorizontalAlignment="Left">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Course Options View</TextBlock>
             </Button>
-            <Button Command="{ Binding GoToSurveyView }" HorizontalAlignment="Center" >
+            <Button Click="GoToSurveyView_OnClick" HorizontalAlignment="Center" >
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Survey View</TextBlock>
             </Button>
-            <Button Command="{ Binding GoToSchedulingView }" HorizontalAlignment="Right">
+            <Button Click="GoToSchedulingView_OnClick" HorizontalAlignment="Right">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View</TextBlock>
             </Button>
         </Grid>
