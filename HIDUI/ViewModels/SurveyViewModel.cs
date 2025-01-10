@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using Avalonia.Collections;
 using HIDUI.BusinessLogic;
@@ -9,8 +10,6 @@ namespace HIDUI.ViewModels
     public class SurveyViewModel : ViewModelBase
     {
         private readonly SurveyReconModel Model = new ();
-        public AvaloniaList<int> FailureList { get; set; } = [1, 2, 3];
-        public AvaloniaList<int> FailureDetailList { get; set; } = [4, 5, 6];
         
         public bool IsSurveyResponseFilePathSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false;
         public string SurveyFileName => IsSurveyResponseFilePathSet ? Path.GetFileName(Model.SurveyResponsesFilePath) : string.Empty;
@@ -64,5 +63,18 @@ namespace HIDUI.ViewModels
             BroadcastStudentsFileUpdated();
             BroadcastCourseFileUpdated();
         }
+
+        
+        public ObservableCollection<object> FailureList { get; set; }
+        public ObservableCollection<object> FailureDetailList { get; set; }
+
+        public void ReconcileFiles()
+        {
+            Model.LoadAllFailures();
+            OnPropertyChanged(nameof(FailureList));
+            OnPropertyChanged(nameof(FailureDetailList));
+        }
+
+        public void SaveSchedulingInput(string folder) => Model.SaveAsSchedulingInput(folder);
     }
 }
