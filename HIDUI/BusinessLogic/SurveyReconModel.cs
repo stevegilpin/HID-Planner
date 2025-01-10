@@ -6,11 +6,11 @@ using HIDLib.IO;
 
 namespace HIDUI.BusinessLogic;
 
-public class SurveyReconController
+public class SurveyReconModel
 {
-    public string SurveyResponsesFilePath { get; private set; }
-    public string StudentInfoFilePath { get; private set; }
-    public string CourseInfoFilePath { get; private set; }
+    public string SurveyResponsesFilePath { get; set; }
+    public string StudentInfoFilePath { get; set; }
+    public string CourseInfoFilePath { get; set; }
 
     private List<SurveyResponse> SurveyData;
     private List<StudentInfo> StudentData;
