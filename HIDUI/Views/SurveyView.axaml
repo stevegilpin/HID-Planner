@@ -11,7 +11,27 @@
              mc:Ignorable="d">
 
 	<StackPanel VerticalAlignment="Center">
-        <TextBlock>I am the Survey view</TextBlock>
+        <DockPanel>
+	        <Button>Choose Files</Button>
+	        <!-- file selectors go here -->
+        </DockPanel>
+
+		<DockPanel>
+			<Button>View Missing Responses</Button>
+			<Button>View Unexpected Responses</Button>
+			<Button>View Duplicate Responses</Button>
+			<Button>View Invalid Course Choices</Button>
+			<Button>View Incomplete Responses</Button>
+        </DockPanel>
+
+		<DockPanel>
+			<DataGrid
+				ItemsSource="{ Binding FailureList }"/>
+			<DataGrid
+				ItemsSource="{ Binding FailureDetailList }"/>	
+		</DockPanel>
+		
+
 	</StackPanel>
     
 </UserControl>
