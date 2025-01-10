@@ -1,15 +1,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:vm="using:HIDUI.ViewModels"
-                            xmlns:views="clr-namespace:HIDUI.Views"
-                            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                            x:Class="HIDUI.Views.FileSelectionControl"
-                            x:DataType="vm:FileSelectionViewModel">
-    <Border BorderBrush="{ Binding $parent[UserControl].StatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:HIDUI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HIDUI.Views.FileSelectionControl"
+             x:DataType="vm:FileSelectionViewModel">
+    <Border BorderBrush="{ Binding StatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
         <StackPanel>
-            <TextBlock Text="{ Binding $parent[UserControl].DisplayName }"/>
+            <TextBlock Text="{ Binding $parent[UserControl].SelectorName }"/>
             <StackPanel IsVisible="{ Binding IsFileSelected }" Orientation="Horizontal">
                 <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveFileSelection }">
                     <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
