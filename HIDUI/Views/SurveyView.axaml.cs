@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Data.Objects;
 using HIDLib;
+using HIDUI.BusinessLogic;
 using HIDUI.ViewModels;
 
 namespace HIDUI.Views
@@ -50,5 +52,59 @@ namespace HIDUI.Views
         }
 
         private void ReconcileFilesOnClick(object sender, RoutedEventArgs e) => ViewModel.ReconcileFiles();
+
+        private void ViewMissingResponses_OnClick(object sender, RoutedEventArgs e)
+        {
+            NoResponseGrid.IsVisible = true;
+            UnexpectedResponseGrid.IsVisible = false;
+            DuplicateResponseGrid.IsVisible = false;
+            InvalidCourseChoiceGrid.IsVisible = false;
+            IncompleteResponseGrid.IsVisible = false;
+        }
+
+        private void ViewUnexpectedResponses_OnClick(object sender, RoutedEventArgs e)
+        {
+            NoResponseGrid.IsVisible = false;
+            UnexpectedResponseGrid.IsVisible = true;
+            DuplicateResponseGrid.IsVisible = false;
+            InvalidCourseChoiceGrid.IsVisible = false;
+            IncompleteResponseGrid.IsVisible = false;
+        }
+        private void ViewDuplicateResponses_OnClick(object sender, RoutedEventArgs e)
+        {
+            NoResponseGrid.IsVisible = false;
+            UnexpectedResponseGrid.IsVisible = false;
+            DuplicateResponseGrid.IsVisible = true;
+            InvalidCourseChoiceGrid.IsVisible = false;
+            IncompleteResponseGrid.IsVisible = false;
+        }
+        private void ViewInvalidCourseChoices_OnClick(object sender, RoutedEventArgs e)
+        {
+            NoResponseGrid.IsVisible = false;
+            UnexpectedResponseGrid.IsVisible = false;
+            DuplicateResponseGrid.IsVisible = false;
+            InvalidCourseChoiceGrid.IsVisible = true;
+            IncompleteResponseGrid.IsVisible = false;
+        }
+        private void ViewIncompleteResponses_OnClick(object sender, RoutedEventArgs e)
+        {
+            NoResponseGrid.IsVisible = false;
+            UnexpectedResponseGrid.IsVisible = false;
+            DuplicateResponseGrid.IsVisible = false;
+            InvalidCourseChoiceGrid.IsVisible = false;
+            IncompleteResponseGrid.IsVisible = true;
+        }
+
+        private void NoResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = e.AddedItems[0];
+            ViewModel.UpdateNoResponseCandidates((NoResponseFailure)item);
+        }
+
+        private void UnexpectedResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = e.AddedItems[0];
+            ViewModel.UpdateUnexpectedResponseCandidates((UnexpectedRespondentFailure)item);
+        }
     }
 }

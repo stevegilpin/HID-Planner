@@ -85,7 +85,7 @@ public class SurveyReconModel
         return surveyData
             .GroupBy(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), x.Grade))
             .Where(g => g.Count() > 1)
-            .Select(g => new DuplicateResponseFailure(g.ToList()))
+            .Select(g => new DuplicateResponseFailure(g.First().FirstName, g.First().LastName, g.First().Grade, g.ToList()))
             .ToList();
     }
 
@@ -170,7 +170,7 @@ public record NoResponseFailure(StudentInfo Student, List<SurveyResponse> Possib
 /// <summary> Responses for which a matching student was not found </summary>
 public record UnexpectedRespondentFailure(SurveyResponse Response, List<StudentInfo> PossibleMatches);
 /// <summary> Multiple responses for the same student </summary>
-public record DuplicateResponseFailure(List<SurveyResponse> Responses);
+public record DuplicateResponseFailure(string FirstName, string LastName, int Grade, List<SurveyResponse> Responses);
 /// <summary> Responses ranking a course which is not available to the student </summary>
 public record InvalidCourseChoiceFailure(SurveyResponse Response, string InvalidCourseChoice);
 /// <summary> Responses with fewer course rankings than other students in the same grade </summary>

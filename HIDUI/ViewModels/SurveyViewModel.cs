@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using Avalonia.Collections;
+using Data.Objects;
 using HIDUI.BusinessLogic;
 
 namespace HIDUI.ViewModels
@@ -64,15 +65,46 @@ namespace HIDUI.ViewModels
             BroadcastCourseFileUpdated();
         }
 
-        
-        public ObservableCollection<object> FailureList { get; set; }
-        public ObservableCollection<object> FailureDetailList { get; set; }
+
+        public ObservableCollection<NoResponseFailure> NoResponseFailures { get; } = [];
+        public ObservableCollection<SurveyResponse> NoResponseMatchCandidates { get; } = [];
+        public ObservableCollection<UnexpectedRespondentFailure> UnexpectedRespondentFailures { get; } = [];
+        public ObservableCollection<StudentInfo> UnexpectedRespondentMatchCandidates { get; } = [];
+        public ObservableCollection<DuplicateResponseFailure> DuplicateResponseFailures { get; } = [];
+        public ObservableCollection<InvalidCourseChoiceFailure> InvalidCourseChoiceFailures { get; } = [];
+        public ObservableCollection<IncompleteResponseFailure> IncompleteResponseFailures { get; } = [];
 
         public void ReconcileFiles()
         {
+            NoResponseFailures.Clear();
+            NoResponseMatchCandidates.Clear();
+            UnexpectedRespondentFailures.Clear();
+            UnexpectedRespondentMatchCandidates.Clear();
+            DuplicateResponseFailures.Clear();
+            InvalidCourseChoiceFailures.Clear();
+            IncompleteResponseFailures.Clear();
+
             Model.LoadAllFailures();
-            OnPropertyChanged(nameof(FailureList));
-            OnPropertyChanged(nameof(FailureDetailList));
+
+            Model.NoResponseFailures.ForEach(x => NoResponseFailures.Add(x));
+            Model.UnexpectedRespondentFailures.ForEach(x => UnexpectedRespondentFailures.Add(x));
+            Model.DuplicateResponseFailures.ForEach(x => DuplicateResponseFailures.Add(x));
+            Model.InvalidCourseChoiceFailures.ForEach(x => InvalidCourseChoiceFailures.Add(x));
+            Model.IncompleteResponseFailures.ForEach(x => IncompleteResponseFailures.Add(x));
+        }
+
+        public void UpdateNoResponseCandidates(NoResponseFailure failure)
+        {
+            NoResponseMatchCandidates.Clear();
+            foreach (var candidate in failure.PossibleMatches)
+                NoResponseMatchCandidates.Add(candidate);
+        }
+
+        public void UpdateUnexpectedResponseCandidates(UnexpectedRespondentFailure failure)
+        {
+            UnexpectedRespondentMatchCandidates.Clear();
+            foreach (var candidate in failure.PossibleMatches)
+                UnexpectedRespondentMatchCandidates.Add(candidate);
         }
 
         public void SaveSchedulingInput(string folder) => Model.SaveAsSchedulingInput(folder);

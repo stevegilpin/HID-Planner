@@ -65,21 +65,116 @@
         </StackPanel>
 
 		<DockPanel>
-			<Button>View Missing Responses</Button>
-			<Button>View Unexpected Responses</Button>
-			<Button>View Duplicate Responses</Button>
-			<Button>View Invalid Course Choices</Button>
-			<Button>View Incomplete Responses</Button>
+			<Button Click="ViewMissingResponses_OnClick">View Missing Responses</Button>
+			<Button Click="ViewUnexpectedResponses_OnClick">View Unexpected Responses</Button>
+			<Button Click="ViewDuplicateResponses_OnClick">View Duplicate Responses</Button>
+			<Button Click="ViewInvalidCourseChoices_OnClick">View Invalid Course Choices</Button>
+			<Button Click="ViewIncompleteResponses_OnClick">View Incomplete Responses</Button>
         </DockPanel>
 
 		<DockPanel>
+			<!-- No Response Failures -->
+			<Grid ColumnDefinitions="*, 2, *" Name="NoResponseGrid" IsVisible="True">
+				<DataGrid
+					Grid.Column="0"
+					IsReadOnly="True"
+					SelectionChanged="NoResponseGrid_OnSelectionChanged"
+					ItemsSource="{ Binding NoResponseFailures }">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding Student.FirstName }"/>
+						<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding Student.LastName }"/>
+						<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Student.Grade }"/>
+						<DataGridTextColumn Header="Homeroom" Width="*" Binding="{ Binding Student.Homeroom }"/>
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
+				
+				<DataGrid
+					Grid.Column="2"
+					IsReadOnly="True"
+					ItemsSource="{ Binding NoResponseMatchCandidates }">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }"/>
+						<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
+						<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+
+			<!-- Unexpected Response Failures -->
+			<Grid ColumnDefinitions="*, 2, *" Name="UnexpectedResponseGrid" IsVisible="False">
+				<DataGrid
+					Grid.Column="0"
+					IsReadOnly="True"
+					SelectionChanged="UnexpectedResponseGrid_OnSelectionChanged"
+					ItemsSource="{ Binding UnexpectedRespondentFailures }">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding Response.FirstName }"/>
+						<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding Response.LastName }"/>
+						<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Response.Grade }"/>
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
+
+				<DataGrid
+					Grid.Column="2"
+					IsReadOnly="True"
+					ItemsSource="{ Binding UnexpectedRespondentMatchCandidates }">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }"/>
+						<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
+						<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
+						<DataGridTextColumn Header="Homeroom" Width="*" Binding="{ Binding Homeroom }"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+
+			<!-- Duplicate Response Failures -->
 			<DataGrid
-				ItemsSource="{ Binding FailureList }"/>
+				Name="DuplicateResponseGrid"
+				IsVisible="False"
+				IsReadOnly="True"
+				ItemsSource="{ Binding DuplicateResponseFailures }">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }"/>
+					<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
+					<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
+				</DataGrid.Columns>
+			</DataGrid>
+
+			<!-- Invalid Course Choice Failures -->
 			<DataGrid
-				ItemsSource="{ Binding FailureDetailList }"/>	
+				Name="InvalidCourseChoiceGrid"
+				IsVisible="False"
+				IsReadOnly="True"
+				ItemsSource="{ Binding InvalidCourseChoiceFailures }">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding Response.FirstName }"/>
+					<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding Response.LastName }"/>
+					<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Response.Grade }"/>
+					<DataGridTextColumn Header="Invalid Course" Width="*" Binding="{ Binding InvalidCourseChoice }"/>
+				</DataGrid.Columns>
+			</DataGrid>
+
+			<!-- Incomplete Response Failures -->
+			<DataGrid
+				Name="IncompleteResponseGrid"
+				IsVisible="False"
+				IsReadOnly="True"
+				ItemsSource="{ Binding IncompleteResponseFailures }">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding Response.FirstName }"/>
+					<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding Response.LastName }"/>
+					<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Response.Grade }"/>
+					<DataGridTextColumn Header="Expected Ranking Count" Width="*" Binding="{ Binding ExpectedRankingsCount }"/>
+					<DataGridTextColumn Header="Actual Ranking Count" Width="*" Binding="{ Binding Response.ClassRankings.Count }"/>
+				</DataGrid.Columns>
+			</DataGrid>
+
 		</DockPanel>
 		
-
 	</StackPanel>
     
 </UserControl>
