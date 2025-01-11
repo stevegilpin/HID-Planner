@@ -76,6 +76,8 @@ namespace HIDUI.ViewModels
 
         public bool AllFilePathsSet => IsSurveyResponseFilePathSet && IsStudentInfoFilePathSet && IsCourseInfoFilePathSet;
         public bool FailuresLoaded { get; set; }
+        public string FailureSummary { get; set; } = string.Empty;
+        public string FailureSummaryColor { get; set; } = string.Empty;
 
         public ObservableCollection<NoResponseFailure> NoResponseFailures { get; } = [];
         public ObservableCollection<SurveyResponse> NoResponseMatchCandidates { get; } = [];
@@ -98,6 +100,17 @@ namespace HIDUI.ViewModels
 
             FailuresLoaded = true;
             OnPropertyChanged(nameof(FailuresLoaded));
+
+            int failureCount = Model.NoResponseFailures.Count +
+                               Model.UnexpectedRespondentFailures.Count +
+                               Model.DuplicateResponseFailures.Count +
+                               Model.InvalidCourseChoiceFailures.Count +
+                               Model.IncompleteResponseFailures.Count;
+
+            FailureSummary = failureCount == 0 ? "No failures found" : $"{failureCount} failure(s) found";
+            FailureSummaryColor = failureCount == 0 ? "Green" : "Red";
+            OnPropertyChanged(nameof(FailureSummary));
+            OnPropertyChanged(nameof(FailureSummaryColor));
         }
 
         private void ClearFailures()
@@ -112,6 +125,11 @@ namespace HIDUI.ViewModels
 
             FailuresLoaded = false;
             OnPropertyChanged(nameof(FailuresLoaded));
+            
+            FailureSummary = string.Empty;
+            FailureSummaryColor = string.Empty;
+            OnPropertyChanged(nameof(FailureSummary));
+            OnPropertyChanged(nameof(FailureSummaryColor));
         }
 
         public void UpdateNoResponseCandidates(NoResponseFailure failure)

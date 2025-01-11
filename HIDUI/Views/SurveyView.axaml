@@ -55,6 +55,7 @@
 		        </StackPanel>
 	        </Border>
 	        
+	        <!-- input processing buttons-->
 	        <DockPanel HorizontalAlignment="Center">
 		        <Button
 			        IsEnabled="{Binding IsSurveyResponseFilePathSet}"
@@ -73,6 +74,15 @@
 	        </DockPanel>
         </StackPanel>
 
+		<TextBlock
+			HorizontalAlignment="Center"
+			IsVisible="{ Binding FailuresLoaded }"
+			Text="{Binding FailureSummary }"
+			FontWeight="Bold"
+			Padding="10"
+			Foreground="{Binding FailureSummaryColor }"
+			/>
+		
 		<Grid
 			ColumnDefinitions="*, *, *, *, *"
 			Margin="5 10"
