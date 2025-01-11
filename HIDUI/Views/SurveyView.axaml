@@ -11,77 +11,84 @@
              mc:Ignorable="d">
 
 	<StackPanel VerticalAlignment="Center">
-        <StackPanel>
-	        <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
-		        <TextBlock Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
-	        </Button>
+		<Grid ColumnDefinitions="*, *" Margin="0 10">
+			<StackPanel Grid.Column="0">
+				<Button
+					HorizontalAlignment="Stretch"
+					Margin="5"
+					Padding="0 10"
+					Click="ChooseFileOnClick">
+					<TextBlock HorizontalAlignment="Center" FontWeight="Bold">Choose Files</TextBlock>
+				</Button>
+				<Button
+					IsEnabled="{Binding IsSurveyResponseFilePathSet}"
+					HorizontalAlignment="Stretch"
+					Margin="5"
+					Padding="0 10"
+					Click="ReconcileFilesOnClick">
+					<TextBlock HorizontalAlignment="Center" FontWeight="Bold">Reconcile Files</TextBlock>
+				</Button>
+				<Button
+					IsEnabled="{Binding AllFilePathsSet}"
+					HorizontalAlignment="Stretch"
+					Margin="5"
+					Padding="0 10"
+					Click="SaveSchedulingInputOnClick">
+					<TextBlock HorizontalAlignment="Center" FontWeight="Bold">Save As Scheduling Input</TextBlock>
+				</Button>
+				<TextBlock
+					HorizontalAlignment="Center"
+					IsVisible="{ Binding FailuresLoaded }"
+					Text="{Binding FailureSummary }"
+					FontWeight="Bold"
+					Padding="10"
+					Foreground="{Binding FailureSummaryColor }"
+				/>
+			</StackPanel>
 
-	        <!-- survey file -->
-	        <Border BorderBrush="{ Binding SurveyStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-		        <StackPanel>
-			        <TextBlock>Survey Responses</TextBlock>
-			        <StackPanel IsVisible="{ Binding IsSurveyResponseFilePathSet }" Orientation="Horizontal">
-				        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveSurveyFile }">
-					        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-				        </Button>
-				        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding SurveyFileName }"/>
+			<StackPanel Grid.Column="1">
+		        <!-- survey file -->
+		        <Border BorderBrush="{ Binding SurveyStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
+			        <StackPanel>
+				        <TextBlock>Survey Responses</TextBlock>
+				        <StackPanel IsVisible="{ Binding IsSurveyResponseFilePathSet }" Orientation="Horizontal">
+					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveSurveyFile }">
+						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+					        </Button>
+					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding SurveyFileName }"/>
+				        </StackPanel>
 			        </StackPanel>
-		        </StackPanel>
-	        </Border>
-	        
-	        <!-- students file -->
-	        <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-		        <StackPanel>
-			        <TextBlock>Students</TextBlock>
-			        <StackPanel IsVisible="{ Binding IsStudentInfoFilePathSet }" Orientation="Horizontal">
-				        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
-					        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-				        </Button>
-				        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding StudentInfoFileName }"/>
+		        </Border>
+		        
+		        <!-- students file -->
+		        <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
+			        <StackPanel>
+				        <TextBlock>Students</TextBlock>
+				        <StackPanel IsVisible="{ Binding IsStudentInfoFilePathSet }" Orientation="Horizontal">
+					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
+						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+					        </Button>
+					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding StudentInfoFileName }"/>
+				        </StackPanel>
 			        </StackPanel>
-		        </StackPanel>
-	        </Border>
+		        </Border>
 
-	        <!-- courses file -->
-	        <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-		        <StackPanel>
-			        <TextBlock>Courses</TextBlock>
-			        <StackPanel IsVisible="{ Binding IsCourseInfoFilePathSet }" Orientation="Horizontal">
-				        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
-					        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-				        </Button>
-				        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding CourseInfoFileName }"/>
+		        <!-- courses file -->
+		        <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
+			        <StackPanel>
+				        <TextBlock>Courses</TextBlock>
+				        <StackPanel IsVisible="{ Binding IsCourseInfoFilePathSet }" Orientation="Horizontal">
+					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
+						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+					        </Button>
+					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding CourseInfoFileName }"/>
+				        </StackPanel>
 			        </StackPanel>
-		        </StackPanel>
-	        </Border>
-	        
-	        <!-- input processing buttons-->
-	        <DockPanel HorizontalAlignment="Center">
-		        <Button
-			        IsEnabled="{Binding IsSurveyResponseFilePathSet}"
-			        HorizontalAlignment="Left"
-			        Margin="5 0"
-			        Click="ReconcileFilesOnClick">
-			        <TextBlock Padding="50 8" FontWeight="Bold">Reconcile Files</TextBlock>
-		        </Button>
-		        <Button
-			        IsEnabled="{Binding AllFilePathsSet}"
-			        HorizontalAlignment="Left"
-			        Margin="5 0"
-			        Click="SaveSchedulingInputOnClick">
-			        <TextBlock Padding="50 8" FontWeight="Bold">Save As Scheduling Input</TextBlock>
-		        </Button>
-	        </DockPanel>
-        </StackPanel>
+		        </Border>
+			</StackPanel>
+		</Grid>
 
-		<TextBlock
-			HorizontalAlignment="Center"
-			IsVisible="{ Binding FailuresLoaded }"
-			Text="{Binding FailureSummary }"
-			FontWeight="Bold"
-			Padding="10"
-			Foreground="{Binding FailureSummaryColor }"
-			/>
+		<GridSplitter IsEnabled="False" Background="Gray" ResizeDirection="Rows"/>
 		
 		<Grid
 			ColumnDefinitions="*, *, *, *, *"
