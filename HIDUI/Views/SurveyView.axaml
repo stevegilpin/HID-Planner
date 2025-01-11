@@ -55,13 +55,22 @@
 		        </StackPanel>
 	        </Border>
 	        
-	        <Button HorizontalAlignment="Center" Padding="12" Click="ReconcileFilesOnClick">
-		        <TextBlock Padding="50 8" FontWeight="Bold">Reconcile Files</TextBlock>
-	        </Button>
-	        <Button HorizontalAlignment="Center" Padding="12" Click="SaveSchedulingInputOnClick">
-		        <TextBlock Padding="50 8" FontWeight="Bold">Save As Scheduling Input</TextBlock>
-	        </Button>
-
+	        <DockPanel HorizontalAlignment="Center">
+		        <Button
+			        IsEnabled="{Binding IsSurveyResponseFilePathSet}"
+			        HorizontalAlignment="Left"
+			        Padding="12"
+			        Click="ReconcileFilesOnClick">
+			        <TextBlock Padding="50 8" FontWeight="Bold">Reconcile Files</TextBlock>
+		        </Button>
+		        <Button
+			        IsEnabled="{Binding AllFilePathsSet}"
+			        HorizontalAlignment="Left"
+			        Padding="12"
+			        Click="SaveSchedulingInputOnClick">
+			        <TextBlock Padding="50 8" FontWeight="Bold">Save As Scheduling Input</TextBlock>
+		        </Button>
+	        </DockPanel>
         </StackPanel>
 
 		<DockPanel>

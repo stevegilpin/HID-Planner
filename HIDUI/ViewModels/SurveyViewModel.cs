@@ -23,6 +23,7 @@ namespace HIDUI.ViewModels
         private void BroadcastSurveyFileUpdated()
         {
             OnPropertyChanged(nameof(IsSurveyResponseFilePathSet));
+            OnPropertyChanged(nameof(AllFilePathsSet));
             OnPropertyChanged(nameof(SurveyStatusColor));
             OnPropertyChanged(nameof(SurveyFileName));
         }
@@ -38,6 +39,7 @@ namespace HIDUI.ViewModels
         private void BroadcastStudentsFileUpdated()
         {
             OnPropertyChanged(nameof(IsStudentInfoFilePathSet));
+            OnPropertyChanged(nameof(AllFilePathsSet));
             OnPropertyChanged(nameof(StudentsStatusColor));
             OnPropertyChanged(nameof(StudentInfoFileName));
         }
@@ -53,6 +55,7 @@ namespace HIDUI.ViewModels
         private void BroadcastCourseFileUpdated()
         {
             OnPropertyChanged(nameof(IsCourseInfoFilePathSet));
+            OnPropertyChanged(nameof(AllFilePathsSet));
             OnPropertyChanged(nameof(CoursesStatusColor));
             OnPropertyChanged(nameof(CourseInfoFileName));
         }
@@ -65,6 +68,7 @@ namespace HIDUI.ViewModels
             BroadcastCourseFileUpdated();
         }
 
+        public bool AllFilePathsSet => IsSurveyResponseFilePathSet && IsStudentInfoFilePathSet && IsCourseInfoFilePathSet;
 
         public ObservableCollection<NoResponseFailure> NoResponseFailures { get; } = [];
         public ObservableCollection<SurveyResponse> NoResponseMatchCandidates { get; } = [];
