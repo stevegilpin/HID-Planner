@@ -75,7 +75,8 @@
 
 		<Grid
 			ColumnDefinitions="*, *, *, *, *"
-			Margin="5 10">
+			Margin="5 10"
+			IsEnabled="{ Binding FailuresLoaded }">
 			<Button
 				Grid.Column = "0"
 				Margin="5 0"
@@ -119,6 +120,7 @@
 				<DataGrid
 					Grid.Column="0"
 					IsReadOnly="True"
+					SelectionMode="Single"
 					SelectionChanged="NoResponseGrid_OnSelectionChanged"
 					ItemsSource="{ Binding NoResponseFailures }">
 					<DataGrid.Columns>
@@ -148,6 +150,7 @@
 				<DataGrid
 					Grid.Column="0"
 					IsReadOnly="True"
+					SelectionMode="Single"
 					SelectionChanged="UnexpectedResponseGrid_OnSelectionChanged"
 					ItemsSource="{ Binding UnexpectedRespondentFailures }">
 					<DataGrid.Columns>

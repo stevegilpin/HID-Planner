@@ -97,12 +97,18 @@ namespace HIDUI.Views
 
         private void NoResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+                return;
+            
             var item = e.AddedItems[0];
             ViewModel.UpdateNoResponseCandidates((NoResponseFailure)item);
         }
 
         private void UnexpectedResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+                return;
+
             var item = e.AddedItems[0];
             ViewModel.UpdateUnexpectedResponseCandidates((UnexpectedRespondentFailure)item);
         }

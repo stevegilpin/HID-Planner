@@ -19,6 +19,7 @@ namespace HIDUI.ViewModels
         {
             Model.SurveyResponsesFilePath = null;
             BroadcastSurveyFileUpdated();
+            ClearFailures();
         }
         private void BroadcastSurveyFileUpdated()
         {
@@ -35,6 +36,7 @@ namespace HIDUI.ViewModels
         {
             Model.StudentInfoFilePath = null;
             BroadcastStudentsFileUpdated();
+            ClearFailures();
         }
         private void BroadcastStudentsFileUpdated()
         {
@@ -51,6 +53,7 @@ namespace HIDUI.ViewModels
         {
             Model.CourseInfoFilePath = null;
             BroadcastCourseFileUpdated();
+            ClearFailures();
         }
         private void BroadcastCourseFileUpdated()
         {
@@ -63,12 +66,16 @@ namespace HIDUI.ViewModels
         public void SetFilePaths(string[] filePaths)
         {
             Model.SetFilePaths(filePaths);
+
             BroadcastSurveyFileUpdated();
             BroadcastStudentsFileUpdated();
             BroadcastCourseFileUpdated();
+
+            ClearFailures();
         }
 
         public bool AllFilePathsSet => IsSurveyResponseFilePathSet && IsStudentInfoFilePathSet && IsCourseInfoFilePathSet;
+        public bool FailuresLoaded { get; set; }
 
         public ObservableCollection<NoResponseFailure> NoResponseFailures { get; } = [];
         public ObservableCollection<SurveyResponse> NoResponseMatchCandidates { get; } = [];
@@ -80,6 +87,21 @@ namespace HIDUI.ViewModels
 
         public void ReconcileFiles()
         {
+            ClearFailures();
+            Model.LoadAllFailures();
+
+            Model.NoResponseFailures.ForEach(x => NoResponseFailures.Add(x));
+            Model.UnexpectedRespondentFailures.ForEach(x => UnexpectedRespondentFailures.Add(x));
+            Model.DuplicateResponseFailures.ForEach(x => DuplicateResponseFailures.Add(x));
+            Model.InvalidCourseChoiceFailures.ForEach(x => InvalidCourseChoiceFailures.Add(x));
+            Model.IncompleteResponseFailures.ForEach(x => IncompleteResponseFailures.Add(x));
+
+            FailuresLoaded = true;
+            OnPropertyChanged(nameof(FailuresLoaded));
+        }
+
+        private void ClearFailures()
+        {
             NoResponseFailures.Clear();
             NoResponseMatchCandidates.Clear();
             UnexpectedRespondentFailures.Clear();
@@ -88,13 +110,8 @@ namespace HIDUI.ViewModels
             InvalidCourseChoiceFailures.Clear();
             IncompleteResponseFailures.Clear();
 
-            Model.LoadAllFailures();
-
-            Model.NoResponseFailures.ForEach(x => NoResponseFailures.Add(x));
-            Model.UnexpectedRespondentFailures.ForEach(x => UnexpectedRespondentFailures.Add(x));
-            Model.DuplicateResponseFailures.ForEach(x => DuplicateResponseFailures.Add(x));
-            Model.InvalidCourseChoiceFailures.ForEach(x => InvalidCourseChoiceFailures.Add(x));
-            Model.IncompleteResponseFailures.ForEach(x => IncompleteResponseFailures.Add(x));
+            FailuresLoaded = false;
+            OnPropertyChanged(nameof(FailuresLoaded));
         }
 
         public void UpdateNoResponseCandidates(NoResponseFailure failure)
