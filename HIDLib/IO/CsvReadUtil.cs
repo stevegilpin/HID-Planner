@@ -19,7 +19,8 @@ public static class CsvReadUtil
 
     public static bool HeaderMatchesCourseSchedule(string filePath)
     {
-        return HeaderMatches<CourseSchedule, CsvMappers.CourseScheduleMapper>(filePath);
+        return HeaderMatches<CourseSchedule, CsvMappers.CourseScheduleMapper>(filePath) &&
+               HeaderMatches<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(filePath) == false;
     }
     
     public static bool HeaderMatchesStudentInfo(string filePath)
@@ -30,6 +31,11 @@ public static class CsvReadUtil
     public static bool HeaderMatchesStudentCourseRankings(string filePath)
     {
         return HeaderMatches<StudentCourseRanking, CsvMappers.StudentCourseRankingMapper>(filePath);
+    }
+
+    public static bool HeaderMatchesSchedulingResults(string filePath)
+    {
+        return HeaderMatches<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(filePath);
     }
 
     public static bool HeaderMatchesSurveyResponses(string filePath)

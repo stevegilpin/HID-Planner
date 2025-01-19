@@ -38,9 +38,15 @@ public class SchedulingViewModel : ViewModelBase
         get => coursesFilePath;
         set {
             coursesFilePath = value;
-            CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
-            IsCoursesFileSet = true;
-            CoursesStatusColor = "Green";
+            IsCoursesFileSet = string.IsNullOrEmpty(value) == false;
+            if (IsCoursesFileSet) {
+                CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
+                CoursesStatusColor = "Green";
+            }
+            else {
+                CoursesFileName = null;
+                CoursesStatusColor = "Gray";
+            }
             OnPropertyChanged(nameof(CoursesFilePath));
         }
     }
@@ -77,9 +83,15 @@ public class SchedulingViewModel : ViewModelBase
         get => scheduleFilePath;
         set {
             scheduleFilePath = value;
-            ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
-            IsScheduleFileSet = true;
-            ScheduleStatusColor = "Green";
+            IsScheduleFileSet = string.IsNullOrEmpty(value) == false;
+            if (IsScheduleFileSet) {
+                ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
+                ScheduleStatusColor = "Green";
+            }
+            else {
+                ScheduleFileName = null;
+                ScheduleStatusColor = "Gray";
+            }
            OnPropertyChanged(nameof(ScheduleFilePath));
         }
     }
@@ -115,9 +127,15 @@ public class SchedulingViewModel : ViewModelBase
         get => studentsFilePath;
         set {
             studentsFilePath = value;
-            StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
-            IsStudentsFileSet = true;
-            StudentsStatusColor = "Green";
+            IsStudentsFileSet = string.IsNullOrEmpty(value) == false;
+            if (IsStudentsFileSet) {
+                StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
+                StudentsStatusColor = "Green";
+            }
+            else {
+                StudentsFileName = null;
+                StudentsStatusColor = "Gray";
+            }
             OnPropertyChanged(nameof(StudentsFilePath));
         }
     }
@@ -153,9 +171,15 @@ public class SchedulingViewModel : ViewModelBase
         get => studentChoicesFilePath;
         set {
             studentChoicesFilePath = value;
-            StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
-            IsStudentChoicesFileSet = true;
-            StudentChoicesStatusColor = "Green";
+            IsStudentChoicesFileSet = string.IsNullOrEmpty(value) == false;
+            if (IsStudentChoicesFileSet) {
+                StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
+                StudentChoicesStatusColor = "Green";
+            }
+            else {
+                StudentChoicesFileName = null;
+                StudentChoicesStatusColor = "Gray";
+            }
             OnPropertyChanged(nameof(StudentChoicesFilePath));
         }
     }
@@ -166,6 +190,50 @@ public class SchedulingViewModel : ViewModelBase
         set {
             studentChoicesStatusColor = value;
             OnPropertyChanged(nameof(StudentChoicesStatusColor));
+        }
+    }
+
+    // Scheduling Results
+    private bool isSchedulingResultsFileSet = false;
+    public bool IsSchedulingResultsFileSet {
+        get => isSchedulingResultsFileSet;
+        set {
+            isSchedulingResultsFileSet = value;
+            OnPropertyChanged(nameof(IsSchedulingResultsFileSet));
+        }
+    }
+    private string schedulingResultsFileName;
+    public string SchedulingResultsFileName {
+        get => schedulingResultsFileName;
+        set {
+            schedulingResultsFileName = value;
+            OnPropertyChanged(nameof(SchedulingResultsFileName));
+        }
+    }
+    private string schedulingResultsFilePath;
+    public string SchedulingResultsFilePath {
+        get => schedulingResultsFilePath;
+        set {
+            schedulingResultsFilePath = value;
+            IsSchedulingResultsFileSet = string.IsNullOrEmpty(value) == false;
+            if (IsSchedulingResultsFileSet) {
+                SchedulingResultsFileName = System.IO.Path.GetFileName(SchedulingResultsFilePath);
+                SchedulingResultsStatusColor = "Green";
+            }
+            else {
+                SchedulingResultsFileName = null;
+                SchedulingResultsStatusColor = "Gray";
+            }
+            OnPropertyChanged(nameof(SchedulingResultsFilePath));
+        }
+    }
+
+    private string schedulingResultsStatusColor = "Gray";
+    public string SchedulingResultsStatusColor {
+        get => schedulingResultsStatusColor;
+        set {
+            schedulingResultsStatusColor = value;
+            OnPropertyChanged(nameof(SchedulingResultsStatusColor));
         }
     }
 
@@ -186,6 +254,7 @@ public class SchedulingViewModel : ViewModelBase
         ScheduleFilePath = ControllerUtils.GetMatchingPath(paths, ScheduleFilePath, CsvReadUtil.HeaderMatchesCourseSchedule);
         StudentsFilePath = ControllerUtils.GetMatchingPath(paths, StudentsFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
         StudentChoicesFilePath = ControllerUtils.GetMatchingPath(paths, StudentChoicesFilePath, CsvReadUtil.HeaderMatchesStudentCourseRankings);
+        SchedulingResultsFilePath = ControllerUtils.GetMatchingPath(paths, SchedulingResultsFilePath, CsvReadUtil.HeaderMatchesSchedulingResults);
     }
 
     private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
@@ -217,25 +286,58 @@ public class SchedulingViewModel : ViewModelBase
         StudentChoicesStatusColor = "Gray";
     }
 
-    public async void RunScheduling() {
-        if (InputsAreReady()) {
-            await Task.Run(() => {
-                    var mgr = new SchedulingManager {
-                        RunName = "Manual test run", // todo set from UI
-                        CourseInfoFilePath = CoursesFilePath,
-                        CourseScheduleFilePath = ScheduleFilePath,
-                        StudentInfoFilePath = StudentsFilePath,
-                        StudentCourseRankingsFilePath = StudentChoicesFilePath,
-                    };
-                    var msg = mgr.RunScheduling();
-                    mgr.Logger.Information(msg);
+    public void RemoveScheduingResultsFile()
+    {
+        SchedulingResultsFilePath = null;
+        IsSchedulingResultsFileSet = false;
+        SchedulingResultsStatusColor = "Gray";
+    }
 
-                }
-            );
+    public async void RunScheduling()
+    {
+        if (InputsAreReady() == false)
+            return;
 
-            Runs.Clear();
-            Runs.AddRange(LoadRunData());
-        }
+        await Task.Run(() => {
+                var mgr = new SchedulingManager {
+                    RunName = "Manual test run", // todo set from UI
+                    CourseInfoFilePath = CoursesFilePath,
+                    CourseScheduleFilePath = ScheduleFilePath,
+                    StudentInfoFilePath = StudentsFilePath,
+                    StudentCourseRankingsFilePath = StudentChoicesFilePath,
+                };
+                var msg = mgr.RunScheduling();
+                mgr.Logger.Information(msg);
+
+            }
+        );
+
+        Runs.Clear();
+        Runs.AddRange(LoadRunData());
+    }
+
+    public async void SaveManualScheduling()
+    {
+        if (InputsAreReady() == false)
+            return;
+        
+        await Task.Run(() => {
+                var mgr = new SchedulingManager {
+                    RunName = "Manual scheduling test run", // todo set from UI
+                    CourseInfoFilePath = CoursesFilePath,
+                    CourseScheduleFilePath = ScheduleFilePath,
+                    StudentInfoFilePath = StudentsFilePath,
+                    StudentCourseRankingsFilePath = StudentChoicesFilePath,
+                    ManualSchedulingResultsFilePath = SchedulingResultsFilePath,
+                };
+                var msg = mgr.SaveManualSchedulingResults();
+                mgr.Logger.Information(msg);
+
+            }
+        );
+
+        Runs.Clear();
+        Runs.AddRange(LoadRunData());
     }
 
     private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];

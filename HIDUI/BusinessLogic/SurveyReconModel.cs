@@ -156,7 +156,7 @@ public class SurveyReconModel
         return surveyResponse.LastName.ToUpper() == student.LastName.ToUpper();
     }
     
-    private static int GradeToInt(string gradeCode)
+    public static int GradeToInt(string gradeCode)
     {
         if (int.TryParse(gradeCode, out var grade))
             return grade;

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using CsvHelper;
 using Data.Objects;
-using HIDLib;
 using HIDLib.IO;
 using HIDLib.Scheduling;
+using HIDUI.BusinessLogic;
 using Serilog;
 
 namespace HIDUI.ViewModels;
@@ -17,6 +19,7 @@ public class SchedulingManager
     public required string CourseScheduleFilePath { get; init; }
     public required string StudentInfoFilePath { get; init; }
     public required string StudentCourseRankingsFilePath { get; init; }
+    public string ManualSchedulingResultsFilePath { get; init; }
 
     public string RunScheduling()
     {
@@ -37,6 +40,36 @@ public class SchedulingManager
         catch (Exception e) {
             return $"The course assignment algorithm encountered an error:{Environment.NewLine}{e}";
         }
+    }
+
+    public string SaveManualSchedulingResults()
+    {
+        if (TryLoadInputs(out var inputData, out var loadError) == false)
+            return loadError;
+
+        var results = CsvReadUtil.ReadAssignmentResults(ManualSchedulingResultsFilePath);
+        
+        if (ValidateInputs(inputData, out var inputError) == false)
+            return inputError;
+
+        var dataSet = new AssignmentDataSet {
+            InputData = inputData,
+            AssignmentResults = results,
+            RunInfo = new RunInfo {
+                RunTimeStamp = DateTime.Now,
+                ManuallyCreatedResults = true,
+                Name = RunName,
+            }
+        };
+
+        if (ValidateOutputs(dataSet, out var errorMessage) == false)
+            return errorMessage;
+
+        if (ValidateManualResults(dataSet, out var manualResErrorMessage) == false)
+            return manualResErrorMessage;
+
+        var runId = CourseScheduler.Save(dataSet, RunName);
+        return $"Results saved with ID {runId}";
     }
 
     private bool TryLoadInputs(out InputDataSet inputData, out string errorMessage)
@@ -70,26 +103,28 @@ public class SchedulingManager
         Logger.Information($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
         
         const string unassigned = "UNASSIGNED";
-        foreach (var student in infoRows)
-            rankingRows.Add(new StudentCourseRanking {
-                StudentId = student.StudentId,
+        if (courseInfoRows.All(x => x.CourseCode != unassigned)) {
+            foreach (var student in infoRows)
+                rankingRows.Add(new StudentCourseRanking {
+                    StudentId = student.StudentId,
+                    CourseCode = unassigned,
+                    Rank = (int)10e3,
+                });
+
+            courseInfoRows.Add(new CourseInfo {
                 CourseCode = unassigned,
-                Rank = (int)10e3,
+                CourseName = unassigned,
+                Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
+                MinGrade = int.MinValue,
+                MaxGrade = int.MaxValue,
             });
 
-        courseInfoRows.Add(new CourseInfo {
-            CourseCode = unassigned,
-            CourseName = unassigned,
-            Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
-            MinGrade = int.MinValue,
-            MaxGrade = int.MaxValue,
-        });
-
-        var sessions = scheduleRows.Select(x => x.SessionId).Distinct().ToList();
-        scheduleRows.AddRange(sessions.Select(x => new CourseSchedule {
-            CourseCode = unassigned,
-            SessionId = x,
-        }));
+            var sessions = scheduleRows.Select(x => x.SessionId).Distinct().ToList();
+            scheduleRows.AddRange(sessions.Select(x => new CourseSchedule {
+                CourseCode = unassigned,
+                SessionId = x,
+            }));
+        }
 
         errorMessage = null;
         inputData = new InputDataSet(courseInfoRows, scheduleRows, infoRows, rankingRows);
@@ -177,6 +212,49 @@ public class SchedulingManager
             return false;
         }
 
+        errorMessage = null;
+        return true;
+    }
+
+    private static bool ValidateManualResults(AssignmentDataSet outputData, out string errorMessage)
+    {
+        // each course / session assignment exists in the inputs
+        // each student exists in the inputs
+        // students are assigned to valid classes based on the class's min/max grade
+
+        var inputSessions = new HashSet<(string, int)>();
+        foreach (var session in outputData.InputData.CourseSchedule.Values.SelectMany(g => g)) {
+            inputSessions.Add((session.CourseCode, session.SessionId));
+        }
+
+        foreach (var course in outputData.AssignmentResults) {
+            if (inputSessions.Contains((course.CourseCode, course.SessionId)))
+                continue;
+            
+            errorMessage = $"Course code {course.CourseCode} does not exist in the course schedule for session {course.SessionId}.";
+            return false;
+        }
+
+        foreach (var course in outputData.AssignmentResults) {
+            if (outputData.InputData.StudentInfo.ContainsKey(course.StudentId))
+                continue;
+
+            errorMessage = $"Student ID {course.StudentId} not found in input data";
+            return false;
+        }
+        
+
+        // TODO add this check after constraining the scheduling algorithm for this condition
+        // foreach (var course in outputData.AssignmentResults) {
+        //     var courseInfo = outputData.InputData.CourseInfo[course.CourseCode];
+        //     var studentInfo = outputData.InputData.StudentInfo[course.StudentId];
+        //     var grade = SurveyReconModel.GradeToInt(studentInfo.Grade);
+        //     if (grade < courseInfo.MinGrade || grade > courseInfo.MaxGrade) {
+        //         errorMessage = $"{course.CourseCode} is not permitted for student {course.StudentId} in grade {studentInfo.Grade}";
+        //         return false;
+        //     }
+        // }
+        
         errorMessage = null;
         return true;
     }

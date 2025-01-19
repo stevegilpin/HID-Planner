@@ -18,7 +18,7 @@
             <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
             </Button>
-            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
                 <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
                     <StackPanel>
                         <TextBlock>Courses</TextBlock>
@@ -66,13 +66,33 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-            </Grid>
 
-            <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
-                    Run Scheduling
-                </TextBlock>
-            </Button>
+                <Border BorderBrush="{ Binding SchedulingResultsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="2" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock>Scheduling Results (optional)</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsSchedulingResultsFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduingResultsFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding SchedulingResultsFileName }"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            
+            <DockPanel>
+                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
+                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                        Run Scheduling
+                    </TextBlock>
+                </Button>
+                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding SaveManualScheduling }">
+                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                        Save Manual Scheduling
+                    </TextBlock>
+                </Button>
+            </DockPanel>
+            
             <ScrollViewer Height="400">
                 <DataGrid Margin="20" 
                         ItemsSource="{ Binding Runs }"
