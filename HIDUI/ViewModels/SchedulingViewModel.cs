@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Data;
@@ -12,371 +11,370 @@ using HIDLib.Analytics;
 using HIDLib.IO;
 using HIDUI.BusinessLogic;
 
-namespace HIDUI.ViewModels
+namespace HIDUI.ViewModels;
+
+public class SchedulingViewModel : ViewModelBase
 {
-    public class SchedulingViewModel : ViewModelBase
+
+    public new event PropertyChangedEventHandler PropertyChanged;
+
+    private bool isSettingsShown = false;
+    public bool IsSettingsShown {
+        get => isSettingsShown;
+        set {
+            isSettingsShown = value;
+            OnPropertyChanged(nameof(IsSettingsShown));
+        }
+    }
+
+    // Courses
+    private bool isCoursesFileSet = false;
+    public bool IsCoursesFileSet {
+        get => isCoursesFileSet;
+        set {
+            isCoursesFileSet = value;
+            OnPropertyChanged(nameof(IsCoursesFileSet));
+        }
+    }
+    private string coursesFileName;
+    public string CoursesFileName {
+        get => coursesFileName;
+        set {
+            coursesFileName = value;
+            OnPropertyChanged(nameof(CoursesFileName));
+        }
+    }
+
+    private string coursesFilePath;
+    public string CoursesFilePath {
+        get => coursesFilePath;
+        set {
+            coursesFilePath = value;
+            CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
+            IsCoursesFileSet = true;
+            CoursesStatusColor = "Green";
+            OnPropertyChanged(nameof(CoursesFilePath));
+        }
+    }
+
+    private string coursesStatusColor = "Gray";
+    public string CoursesStatusColor {
+        get => coursesStatusColor;
+        set {
+            coursesStatusColor = value;
+            OnPropertyChanged(nameof(CoursesStatusColor));
+        }
+    }
+    
+    // Schedule
+    private bool isScheduleFileSet = false;
+    public bool IsScheduleFileSet {
+        get => isScheduleFileSet;
+        set {
+            isScheduleFileSet = value;
+            OnPropertyChanged(nameof(IsScheduleFileSet));
+        }
+    }
+    private string scheduleFileName;
+    public string ScheduleFileName {
+        get => scheduleFileName;
+        set {
+            scheduleFileName = value;
+            OnPropertyChanged(nameof(ScheduleFileName));
+        }
+    }
+
+    private string scheduleFilePath;
+    public string ScheduleFilePath {
+        get => scheduleFilePath;
+        set {
+            scheduleFilePath = value;
+            ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
+            IsScheduleFileSet = true;
+            ScheduleStatusColor = "Green";
+           OnPropertyChanged(nameof(ScheduleFilePath));
+        }
+    }
+
+    private string scheduleStatusColor = "Gray";
+    public string ScheduleStatusColor {
+        get => scheduleStatusColor;
+        set {
+            scheduleStatusColor = value;
+            OnPropertyChanged(nameof(ScheduleStatusColor));
+        }
+    }
+
+    // Students
+    private bool isStudentsFileSet = false;
+    public bool IsStudentsFileSet {
+        get => isStudentsFileSet;
+        set {
+            isStudentsFileSet = value;
+            OnPropertyChanged(nameof(IsStudentsFileSet));
+        }
+    }
+    private string studentsFileName;
+    public string StudentsFileName {
+        get => studentsFileName;
+        set {
+            studentsFileName = value;
+            OnPropertyChanged(nameof(StudentsFileName));
+        }
+    }
+    private string studentsFilePath;
+    public string StudentsFilePath {
+        get => studentsFilePath;
+        set {
+            studentsFilePath = value;
+            StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
+            IsStudentsFileSet = true;
+            StudentsStatusColor = "Green";
+            OnPropertyChanged(nameof(StudentsFilePath));
+        }
+    }
+
+    private string studentsStatusColor = "Gray";
+    public string StudentsStatusColor {
+        get => studentsStatusColor;
+        set {
+            studentsStatusColor = value;
+            OnPropertyChanged(nameof(StudentsStatusColor));
+        }
+    }
+
+    // Student Choices
+    private bool isStudentChoicesFileSet = false;
+    public bool IsStudentChoicesFileSet {
+        get => isStudentChoicesFileSet;
+        set {
+            isStudentChoicesFileSet = value;
+            OnPropertyChanged(nameof(IsStudentChoicesFileSet));
+        }
+    }
+    private string studentChoicesFileName;
+    public string StudentChoicesFileName {
+        get => studentChoicesFileName;
+        set {
+            studentChoicesFileName = value;
+            OnPropertyChanged(nameof(StudentChoicesFileName));
+        }
+    }
+    private string studentChoicesFilePath;
+    public string StudentChoicesFilePath {
+        get => studentChoicesFilePath;
+        set {
+            studentChoicesFilePath = value;
+            StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
+            IsStudentChoicesFileSet = true;
+            StudentChoicesStatusColor = "Green";
+            OnPropertyChanged(nameof(StudentChoicesFilePath));
+        }
+    }
+
+    private string studentChoicesStatusColor = "Gray";
+    public string StudentChoicesStatusColor {
+        get => studentChoicesStatusColor;
+        set {
+            studentChoicesStatusColor = value;
+            OnPropertyChanged(nameof(StudentChoicesStatusColor));
+        }
+    }
+
+    private string dbFileLocation;
+    public string DbFileLocation {
+        get => dbFileLocation;
+        set {
+            dbFileLocation = value;
+            OnPropertyChanged(nameof(DbFileLocation));
+        }
+    }
+
+    private string defaultInputsFolder;
+    public string DefaultInputsFolder {
+        get => defaultInputsFolder;
+        set {
+            defaultInputsFolder = value;
+            OnPropertyChanged(nameof(DefaultInputsFolder));
+        }
+    }
+
+    private string defaultOutputsFolder;
+    public string DefaultOutputsFolder {
+        get => defaultOutputsFolder;
+        set {
+            defaultOutputsFolder = value;
+            OnPropertyChanged(nameof(DefaultOutputsFolder));
+        }
+    }
+
+    private string costFunctionExponent;
+    public string CostFunctionExponent {
+        get => costFunctionExponent;
+        set {
+            costFunctionExponent = value;
+            OnPropertyChanged(nameof(CostFunctionExponent));
+        }
+    }
+
+    private string badCourseRankCutoff;
+    public string BadCourseRankCutoff {
+        get => badCourseRankCutoff;
+        set {
+            badCourseRankCutoff = value;
+            OnPropertyChanged(nameof(BadCourseRankCutoff));
+        }
+    }
+
+    private SchedulingRunAnalyticData runDetails;
+    public SchedulingRunAnalyticData RunDetails {
+        get => runDetails;
+        set {
+            runDetails = value;
+            OnPropertyChanged(nameof(RunDetails));
+        }
+    }
+
+    public ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
+
+    public void TrySetFilePaths(string[] paths)
     {
+        CoursesFilePath = ControllerUtils.GetMatchingPath(paths, CoursesFilePath, CsvReadUtil.HeaderMatchesCourseInfo);
+        ScheduleFilePath = ControllerUtils.GetMatchingPath(paths, ScheduleFilePath, CsvReadUtil.HeaderMatchesCourseSchedule);
+        StudentsFilePath = ControllerUtils.GetMatchingPath(paths, StudentsFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
+        StudentChoicesFilePath = ControllerUtils.GetMatchingPath(paths, StudentChoicesFilePath, CsvReadUtil.HeaderMatchesStudentCourseRankings);
+    }
 
-        public new event PropertyChangedEventHandler PropertyChanged;
+    public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {
+        if (string.IsNullOrEmpty(path)) {
+            errorMessage = "Cannot set default input folder path to empty string.";
+            return false;
+        } else {
+            DefaultInputsFolder = path;
+            SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
+            errorMessage = null;
+            return true;
+        }            
+    }
 
-        private bool isSettingsShown = false;
-        public bool IsSettingsShown {
-            get => isSettingsShown;
-            set {
-                isSettingsShown = value;
-                OnPropertyChanged(nameof(IsSettingsShown));
-            }
-        }
+    public bool TrySetDefaultOutputFolderLocation(string path, out string errorMessage) {
+        if (string.IsNullOrEmpty(path)) {
+            errorMessage = "Cannot set default output folder path to empty string.";
+            return false;
+        } else {
+            DefaultOutputsFolder = path;
+            SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
+            errorMessage = null;
+            return true;
+        }            
+    }
 
-        // Courses
-        private bool isCoursesFileSet = false;
-        public bool IsCoursesFileSet {
-            get => isCoursesFileSet;
-            set {
-                isCoursesFileSet = value;
-                OnPropertyChanged(nameof(IsCoursesFileSet));
-            }
-        }
-        private string coursesFileName;
-        public string CoursesFileName {
-            get => coursesFileName;
-            set {
-                coursesFileName = value;
-                OnPropertyChanged(nameof(CoursesFileName));
-            }
-        }
-
-        private string coursesFilePath;
-        public string CoursesFilePath {
-            get => coursesFilePath;
-            set {
-                coursesFilePath = value;
-                CoursesFileName = System.IO.Path.GetFileName(CoursesFilePath);
-                IsCoursesFileSet = true;
-                CoursesStatusColor = "Green";
-                OnPropertyChanged(nameof(CoursesFilePath));
-            }
-        }
-
-        private string coursesStatusColor = "Gray";
-        public string CoursesStatusColor {
-            get => coursesStatusColor;
-            set {
-                coursesStatusColor = value;
-                OnPropertyChanged(nameof(CoursesStatusColor));
-            }
-        }
-        
-        // Schedule
-        private bool isScheduleFileSet = false;
-        public bool IsScheduleFileSet {
-            get => isScheduleFileSet;
-            set {
-                isScheduleFileSet = value;
-                OnPropertyChanged(nameof(IsScheduleFileSet));
-            }
-        }
-        private string scheduleFileName;
-        public string ScheduleFileName {
-            get => scheduleFileName;
-            set {
-                scheduleFileName = value;
-                OnPropertyChanged(nameof(ScheduleFileName));
-            }
-        }
-
-        private string scheduleFilePath;
-        public string ScheduleFilePath {
-            get => scheduleFilePath;
-            set {
-                scheduleFilePath = value;
-                ScheduleFileName = System.IO.Path.GetFileName(ScheduleFilePath);
-                IsScheduleFileSet = true;
-                ScheduleStatusColor = "Green";
-               OnPropertyChanged(nameof(ScheduleFilePath));
-            }
-        }
-
-        private string scheduleStatusColor = "Gray";
-        public string ScheduleStatusColor {
-            get => scheduleStatusColor;
-            set {
-                scheduleStatusColor = value;
-                OnPropertyChanged(nameof(ScheduleStatusColor));
-            }
-        }
-
-        // Students
-        private bool isStudentsFileSet = false;
-        public bool IsStudentsFileSet {
-            get => isStudentsFileSet;
-            set {
-                isStudentsFileSet = value;
-                OnPropertyChanged(nameof(IsStudentsFileSet));
-            }
-        }
-        private string studentsFileName;
-        public string StudentsFileName {
-            get => studentsFileName;
-            set {
-                studentsFileName = value;
-                OnPropertyChanged(nameof(StudentsFileName));
-            }
-        }
-        private string studentsFilePath;
-        public string StudentsFilePath {
-            get => studentsFilePath;
-            set {
-                studentsFilePath = value;
-                StudentsFileName = System.IO.Path.GetFileName(StudentsFilePath);
-                IsStudentsFileSet = true;
-                StudentsStatusColor = "Green";
-                OnPropertyChanged(nameof(StudentsFilePath));
-            }
-        }
-
-        private string studentsStatusColor = "Gray";
-        public string StudentsStatusColor {
-            get => studentsStatusColor;
-            set {
-                studentsStatusColor = value;
-                OnPropertyChanged(nameof(StudentsStatusColor));
-            }
-        }
-
-        // Student Choices
-        private bool isStudentChoicesFileSet = false;
-        public bool IsStudentChoicesFileSet {
-            get => isStudentChoicesFileSet;
-            set {
-                isStudentChoicesFileSet = value;
-                OnPropertyChanged(nameof(IsStudentChoicesFileSet));
-            }
-        }
-        private string studentChoicesFileName;
-        public string StudentChoicesFileName {
-            get => studentChoicesFileName;
-            set {
-                studentChoicesFileName = value;
-                OnPropertyChanged(nameof(StudentChoicesFileName));
-            }
-        }
-        private string studentChoicesFilePath;
-        public string StudentChoicesFilePath {
-            get => studentChoicesFilePath;
-            set {
-                studentChoicesFilePath = value;
-                StudentChoicesFileName = System.IO.Path.GetFileName(StudentChoicesFilePath);
-                IsStudentChoicesFileSet = true;
-                StudentChoicesStatusColor = "Green";
-                OnPropertyChanged(nameof(StudentChoicesFilePath));
-            }
-        }
-
-        private string studentChoicesStatusColor = "Gray";
-        public string StudentChoicesStatusColor {
-            get => studentChoicesStatusColor;
-            set {
-                studentChoicesStatusColor = value;
-                OnPropertyChanged(nameof(StudentChoicesStatusColor));
-            }
-        }
-
-        private string dbFileLocation;
-        public string DbFileLocation {
-            get => dbFileLocation;
-            set {
-                dbFileLocation = value;
-                OnPropertyChanged(nameof(DbFileLocation));
-            }
-        }
-
-        private string defaultInputsFolder;
-        public string DefaultInputsFolder {
-            get => defaultInputsFolder;
-            set {
-                defaultInputsFolder = value;
-                OnPropertyChanged(nameof(DefaultInputsFolder));
-            }
-        }
-
-        private string defaultOutputsFolder;
-        public string DefaultOutputsFolder {
-            get => defaultOutputsFolder;
-            set {
-                defaultOutputsFolder = value;
-                OnPropertyChanged(nameof(DefaultOutputsFolder));
-            }
-        }
-
-        private string costFunctionExponent;
-        public string CostFunctionExponent {
-            get => costFunctionExponent;
-            set {
-                costFunctionExponent = value;
-                OnPropertyChanged(nameof(CostFunctionExponent));
-            }
-        }
-
-        private string badCourseRankCutoff;
-        public string BadCourseRankCutoff {
-            get => badCourseRankCutoff;
-            set {
-                badCourseRankCutoff = value;
-                OnPropertyChanged(nameof(BadCourseRankCutoff));
-            }
-        }
-
-        private SchedulingRunAnalyticData runDetails;
-        public SchedulingRunAnalyticData RunDetails {
-            get => runDetails;
-            set {
-                runDetails = value;
-                OnPropertyChanged(nameof(RunDetails));
-            }
-        }
-
-        public ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
-
-        public void TrySetFilePaths(string[] paths)
-        {
-            CoursesFilePath = ControllerUtils.GetMatchingPath(paths, CoursesFilePath, CsvReadUtil.HeaderMatchesCourseInfo);
-            ScheduleFilePath = ControllerUtils.GetMatchingPath(paths, ScheduleFilePath, CsvReadUtil.HeaderMatchesCourseSchedule);
-            StudentsFilePath = ControllerUtils.GetMatchingPath(paths, StudentsFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
-            StudentChoicesFilePath = ControllerUtils.GetMatchingPath(paths, StudentChoicesFilePath, CsvReadUtil.HeaderMatchesStudentCourseRankings);
-        }
-
-        public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {
-            if (string.IsNullOrEmpty(path)) {
-                errorMessage = "Cannot set default input folder path to empty string.";
-                return false;
+    public void SaveCostFunctionExponent() {
+        if (CostFunctionExponent != "" && CostFunctionExponent.All(char.IsDigit)) {
+            // int parseResult;
+            if (int.TryParse(CostFunctionExponent, out _)) {
+                SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
             } else {
-                DefaultInputsFolder = path;
-                SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
-                errorMessage = null;
-                return true;
-            }            
+                // TODO
+            }
         }
+    }
 
-        public bool TrySetDefaultOutputFolderLocation(string path, out string errorMessage) {
-            if (string.IsNullOrEmpty(path)) {
-                errorMessage = "Cannot set default output folder path to empty string.";
-                return false;
-            } else {
-                DefaultOutputsFolder = path;
-                SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
-                errorMessage = null;
-                return true;
-            }            
+    public void SaveBadCourseRankCutoff() {
+        if (BadCourseRankCutoff != "" && BadCourseRankCutoff.All(char.IsDigit)) {
+            // int parseResult;
+            if (int.TryParse(BadCourseRankCutoff, out _)) {
+                SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
+            } else{
+                // TODO
+            }
         }
+    }
 
-        public void SaveCostFunctionExponent() {
-            if (CostFunctionExponent != "" && CostFunctionExponent.All(char.IsDigit)) {
-                // int parseResult;
-                if (int.TryParse(CostFunctionExponent, out _)) {
-                    SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
-                } else {
-                    // TODO
+    private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
+                                  && !string.IsNullOrEmpty(ScheduleFilePath)
+                                  && !string.IsNullOrEmpty(StudentsFilePath)
+                                  && !string.IsNullOrEmpty(StudentChoicesFilePath);
+
+    public void RemoveCoursesFile() {
+        CoursesFilePath = null;
+        IsCoursesFileSet = false;
+        CoursesStatusColor = "Gray";
+    }
+
+    public void RemoveScheduleFile() {
+        ScheduleFilePath = null;
+        IsScheduleFileSet = false;
+        ScheduleStatusColor = "Gray";
+    }
+
+    public void RemoveStudentsFile() {
+        StudentsFilePath = null;
+        IsStudentsFileSet = false;
+        StudentsStatusColor = "Gray";
+    }
+
+    public void RemoveStudentChoicesFile() {
+        StudentChoicesFilePath = null;
+        IsStudentChoicesFileSet = false;
+        StudentChoicesStatusColor = "Gray";
+    }
+
+    public async void RunScheduling() {
+        if (InputsAreReady()) {
+            await Task.Run(() => {
+                    var mgr = new SchedulingManager {
+                        RunName = "Manual test run", // todo set from UI
+                        CourseInfoFilePath = CoursesFilePath,
+                        CourseScheduleFilePath = ScheduleFilePath,
+                        StudentInfoFilePath = StudentsFilePath,
+                        StudentCourseRankingsFilePath = StudentChoicesFilePath,
+                    };
+                    var msg = mgr.RunScheduling();
+                    mgr.Logger.Information(msg);
+
                 }
-            }
+            );
+
+            Runs.Clear();
+            Runs.AddRange(LoadRunData());
         }
+    }
 
-        public void SaveBadCourseRankCutoff() {
-            if (BadCourseRankCutoff != "" && BadCourseRankCutoff.All(char.IsDigit)) {
-                // int parseResult;
-                if (int.TryParse(BadCourseRankCutoff, out _)) {
-                    SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
-                } else{
-                    // TODO
-                }
-            }
-        }
+    public void ClearDatabase() {
+        DataManager.ClearApplicationData();
+        Environment.Exit(0);
+    }
 
-        private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
-                                      && !string.IsNullOrEmpty(ScheduleFilePath)
-                                      && !string.IsNullOrEmpty(StudentsFilePath)
-                                      && !string.IsNullOrEmpty(StudentChoicesFilePath);
+    private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
 
-        public void RemoveCoursesFile() {
-            CoursesFilePath = null;
-            IsCoursesFileSet = false;
-            CoursesStatusColor = "Gray";
-        }
-
-        public void RemoveScheduleFile() {
-            ScheduleFilePath = null;
-            IsScheduleFileSet = false;
-            ScheduleStatusColor = "Gray";
-        }
-
-        public void RemoveStudentsFile() {
-            StudentsFilePath = null;
-            IsStudentsFileSet = false;
-            StudentsStatusColor = "Gray";
-        }
-
-        public void RemoveStudentChoicesFile() {
-            StudentChoicesFilePath = null;
-            IsStudentChoicesFileSet = false;
-            StudentChoicesStatusColor = "Gray";
-        }
-
-        public async void RunScheduling() {
-            if (InputsAreReady()) {
-                await Task.Run(() => {
-                        var mgr = new SchedulingManager {
-                            RunName = "Manual test run", // todo set from UI
-                            CourseInfoFilePath = CoursesFilePath,
-                            CourseScheduleFilePath = ScheduleFilePath,
-                            StudentInfoFilePath = StudentsFilePath,
-                            StudentCourseRankingsFilePath = StudentChoicesFilePath,
-                        };
-                        var msg = mgr.RunScheduling();
-                        mgr.Logger.Information(msg);
-
-                    }
-                );
-
-                Runs.Clear();
-                Runs.AddRange(LoadRunData());
-            }
-        }
-
-        public void ClearDatabase() {
-            DataManager.ClearApplicationData();
-            Environment.Exit(0);
-        }
-
-        private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
-
-        public void ViewRunDetails(string runId) {
-            // string runId = string.Empty;
-            // await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
-            
-            // todo store this data behind the scenes in Runs so we don't load it repeatedly
-            // var data = DataManager.LoadDataSet(Int32.Parse(runId));
-            // Console.WriteLine(data.)
-            // var docs = GetHtmlDocs(data);
-            
-
-            // Console.WriteLine("REPORT: ");
-            // // Console.WriteLine(docs[0]);
-            // Runs.ForEach(Console.WriteLine);
-            // Runs.ForEach(x => Console.WriteLine(x.RunId));
-        }
+    public void ViewRunDetails(string runId) {
+        // string runId = string.Empty;
+        // await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
         
-        public void ToggleIsSettingsShown() {
-            IsSettingsShown = !IsSettingsShown;
-            if (IsSettingsShown)
-                PopulateSettings();
-        }
+        // todo store this data behind the scenes in Runs so we don't load it repeatedly
+        // var data = DataManager.LoadDataSet(Int32.Parse(runId));
+        // Console.WriteLine(data.)
+        // var docs = GetHtmlDocs(data);
+        
 
-        private void PopulateSettings() {
-            DbFileLocation = SettingsManager.GetDatabaseFileLocation();
-            DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
-            DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
-            CostFunctionExponent = SettingsManager.GetCostFunctionExponent().ToString();
-            BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
-        }
+        // Console.WriteLine("REPORT: ");
+        // // Console.WriteLine(docs[0]);
+        // Runs.ForEach(Console.WriteLine);
+        // Runs.ForEach(x => Console.WriteLine(x.RunId));
+    }
+    
+    public void ToggleIsSettingsShown() {
+        IsSettingsShown = !IsSettingsShown;
+        if (IsSettingsShown)
+            PopulateSettings();
+    }
+
+    private void PopulateSettings() {
+        DbFileLocation = SettingsManager.GetDatabaseFileLocation();
+        DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
+        DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
+        CostFunctionExponent = SettingsManager.GetCostFunctionExponent().ToString();
+        BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
     }
 }
