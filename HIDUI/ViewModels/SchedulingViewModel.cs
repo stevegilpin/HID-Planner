@@ -15,18 +15,6 @@ namespace HIDUI.ViewModels;
 
 public class SchedulingViewModel : ViewModelBase
 {
-
-    public new event PropertyChangedEventHandler PropertyChanged;
-
-    private bool isSettingsShown = false;
-    public bool IsSettingsShown {
-        get => isSettingsShown;
-        set {
-            isSettingsShown = value;
-            OnPropertyChanged(nameof(IsSettingsShown));
-        }
-    }
-
     // Courses
     private bool isCoursesFileSet = false;
     public bool IsCoursesFileSet {
@@ -181,51 +169,6 @@ public class SchedulingViewModel : ViewModelBase
         }
     }
 
-    private string dbFileLocation;
-    public string DbFileLocation {
-        get => dbFileLocation;
-        set {
-            dbFileLocation = value;
-            OnPropertyChanged(nameof(DbFileLocation));
-        }
-    }
-
-    private string defaultInputsFolder;
-    public string DefaultInputsFolder {
-        get => defaultInputsFolder;
-        set {
-            defaultInputsFolder = value;
-            OnPropertyChanged(nameof(DefaultInputsFolder));
-        }
-    }
-
-    private string defaultOutputsFolder;
-    public string DefaultOutputsFolder {
-        get => defaultOutputsFolder;
-        set {
-            defaultOutputsFolder = value;
-            OnPropertyChanged(nameof(DefaultOutputsFolder));
-        }
-    }
-
-    private string costFunctionExponent;
-    public string CostFunctionExponent {
-        get => costFunctionExponent;
-        set {
-            costFunctionExponent = value;
-            OnPropertyChanged(nameof(CostFunctionExponent));
-        }
-    }
-
-    private string badCourseRankCutoff;
-    public string BadCourseRankCutoff {
-        get => badCourseRankCutoff;
-        set {
-            badCourseRankCutoff = value;
-            OnPropertyChanged(nameof(BadCourseRankCutoff));
-        }
-    }
-
     private SchedulingRunAnalyticData runDetails;
     public SchedulingRunAnalyticData RunDetails {
         get => runDetails;
@@ -243,52 +186,6 @@ public class SchedulingViewModel : ViewModelBase
         ScheduleFilePath = ControllerUtils.GetMatchingPath(paths, ScheduleFilePath, CsvReadUtil.HeaderMatchesCourseSchedule);
         StudentsFilePath = ControllerUtils.GetMatchingPath(paths, StudentsFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
         StudentChoicesFilePath = ControllerUtils.GetMatchingPath(paths, StudentChoicesFilePath, CsvReadUtil.HeaderMatchesStudentCourseRankings);
-    }
-
-    public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {
-        if (string.IsNullOrEmpty(path)) {
-            errorMessage = "Cannot set default input folder path to empty string.";
-            return false;
-        } else {
-            DefaultInputsFolder = path;
-            SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
-            errorMessage = null;
-            return true;
-        }            
-    }
-
-    public bool TrySetDefaultOutputFolderLocation(string path, out string errorMessage) {
-        if (string.IsNullOrEmpty(path)) {
-            errorMessage = "Cannot set default output folder path to empty string.";
-            return false;
-        } else {
-            DefaultOutputsFolder = path;
-            SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
-            errorMessage = null;
-            return true;
-        }            
-    }
-
-    public void SaveCostFunctionExponent() {
-        if (CostFunctionExponent != "" && CostFunctionExponent.All(char.IsDigit)) {
-            // int parseResult;
-            if (int.TryParse(CostFunctionExponent, out _)) {
-                SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
-            } else {
-                // TODO
-            }
-        }
-    }
-
-    public void SaveBadCourseRankCutoff() {
-        if (BadCourseRankCutoff != "" && BadCourseRankCutoff.All(char.IsDigit)) {
-            // int parseResult;
-            if (int.TryParse(BadCourseRankCutoff, out _)) {
-                SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
-            } else{
-                // TODO
-            }
-        }
     }
 
     private bool InputsAreReady() => !string.IsNullOrEmpty(CoursesFilePath)
@@ -341,11 +238,6 @@ public class SchedulingViewModel : ViewModelBase
         }
     }
 
-    public void ClearDatabase() {
-        DataManager.ClearApplicationData();
-        Environment.Exit(0);
-    }
-
     private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
 
     public void ViewRunDetails(string runId) {
@@ -362,19 +254,5 @@ public class SchedulingViewModel : ViewModelBase
         // // Console.WriteLine(docs[0]);
         // Runs.ForEach(Console.WriteLine);
         // Runs.ForEach(x => Console.WriteLine(x.RunId));
-    }
-    
-    public void ToggleIsSettingsShown() {
-        IsSettingsShown = !IsSettingsShown;
-        if (IsSettingsShown)
-            PopulateSettings();
-    }
-
-    private void PopulateSettings() {
-        DbFileLocation = SettingsManager.GetDatabaseFileLocation();
-        DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
-        DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();
-        CostFunctionExponent = SettingsManager.GetCostFunctionExponent().ToString();
-        BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
     }
 }

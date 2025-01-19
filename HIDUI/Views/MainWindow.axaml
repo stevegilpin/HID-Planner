@@ -14,26 +14,24 @@
         Background="#252525"
         WindowState="Maximized">
 
-    <!-- <Window.Styles>
-        <Style Selector="Button">
-            <Setter Property="Foreground" Value="Red" />
-        </Style>
-    </Window.Styles> -->
-
     <DockPanel VerticalAlignment="Stretch">
         <views:CourseOptionsView DockPanel.Dock="Top" Name="CourseOptionsView" IsVisible="False" Content="{ Binding CourseOptionsViewModel }"/>
         <views:SurveyView DockPanel.Dock="Top" Name="SurveyView" IsVisible="False" Content="{ Binding SurveyViewModel }"/>
         <views:SchedulingView DockPanel.Dock="Top" Name="SchedulingView" IsVisible="True" Content="{ Binding SchedulingViewModel }"/>
+        <views:SettingsView DockPanel.Dock="Top" Name="SettingsView" IsVisible="False" Content="{ Binding SettingsViewModel }"/>
 
-        <Grid VerticalAlignment="Bottom">
-            <Button Click="GoToCourseOptionsView_OnClick" HorizontalAlignment="Left">
+        <Grid VerticalAlignment="Bottom" ColumnDefinitions="*, *, *, *">
+            <Button Grid.Column="0" Click="GoToCourseOptionsView_OnClick">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Course Options View</TextBlock>
             </Button>
-            <Button Click="GoToSurveyView_OnClick" HorizontalAlignment="Center" >
+            <Button Grid.Column="1" Click="GoToSurveyView_OnClick">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Survey View</TextBlock>
             </Button>
-            <Button Click="GoToSchedulingView_OnClick" HorizontalAlignment="Right">
+            <Button Grid.Column="2" Click="GoToSchedulingView_OnClick">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View</TextBlock>
+            </Button>
+            <Button Grid.Column="3" Click="GoToSettingsView_OnClick">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Settings View</TextBlock>
             </Button>
         </Grid>
     </DockPanel>

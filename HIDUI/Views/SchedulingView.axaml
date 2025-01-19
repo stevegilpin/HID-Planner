@@ -10,209 +10,118 @@
              x:CompileBindings="True"
              x:DataType="vm:SchedulingViewModel"
              mc:Ignorable="d">
-
-    <SplitView 
-        IsPaneOpen="{ Binding IsSettingsShown }"
-        DisplayMode="CompactOverlay"
-        PanePlacement="Right"
-        OpenPaneLength="700"
-        CompactPaneLength="45">
-        <SplitView.Pane>
-            <DockPanel VerticalAlignment="Top"
-                        HorizontalAlignment="Stretch">
-                <StackPanel DockPanel.Dock="Right">
-                    <Button VerticalAlignment = "Top"
-                            HorizontalAlignment = "Right"
-                            Margin="5"
-                            Height="35"
-                            Width="35"
-                            Background="Transparent"
-                            Command="{ Binding ToggleIsSettingsShown }">
-                            <TextBlock FontSize="18"
-                                        HorizontalAlignment = "Center"
-                                        VerticalAlignment = "Center">☰</TextBlock>
-                    </Button>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Left" IsVisible="{ Binding IsSettingsShown }">
-                    <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="16" FontWeight="SemiBold">Options</TextBlock>
-                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            Database File Location
-                        </Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Padding="12" FontSize="12">File Path: </TextBlock>
-                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
-                        </StackPanel>
-                    </Expander>
-                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            Default Input Folder
-                        </Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
-                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
-                            <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultInputFolderOnClick">
-                                <TextBlock Text="Change" HorizontalAlignment="Center"/>
+    
+    <Grid ColumnDefinitions="*, 2, *">
+        <StackPanel>
+            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
+            
+            <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
+            </Button>
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock>Courses</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsCoursesFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
                             </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding CoursesFileName }"/>
                         </StackPanel>
-                    </Expander>
-                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            Default Output Folder
-                        </Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
-                            <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
-                            <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultOutputFolderOnClick">
-                                <TextBlock Text="Change" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding ScheduleStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock>Schedule</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsScheduleFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduleFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
                             </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding ScheduleFileName }" ToolTip.Tip="{ Binding ScheduleFilePath }"/>
                         </StackPanel>
-                    </Expander>
-                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            Cost Function Exponent
-                        </Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
-                            <TextBox Text="{ Binding CostFunctionExponent }" Watermark="Enter a number" Margin="0 5"/>
-                            <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveCostFunctionExponent }">
-                                <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock>Students</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsStudentsFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
                             </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentsFileName }"/>
                         </StackPanel>
-                    </Expander>
-                    <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            Course Rank Cutoff for 'Problematic Assignments'
-                        </Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
-                            <TextBox Text="{ Binding BadCourseRankCutoff }" Watermark="Enter a number" Margin="0 5"/>
-                            <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveBadCourseRankCutoff }">
-                                <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{ Binding StudentChoicesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock>Student Choices</TextBlock>
+                        <StackPanel IsVisible="{ Binding IsStudentChoicesFileSet }" Orientation="Horizontal">
+                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentChoicesFile }">
+                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
                             </Button>
+                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentChoicesFileName }"/>
                         </StackPanel>
-                    </Expander>
-                    
-                    <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
-                        <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
-                            Clear Database
-                        </TextBlock>
-                    </Button>
-                </StackPanel>
-            </DockPanel>
-        </SplitView.Pane>
-        <Grid ColumnDefinitions="*, 2, *">
-            <StackPanel>
-                <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
-                
-                <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
-                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
-                </Button>
-                <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
-                    <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
-                        <StackPanel>
-                            <TextBlock>Courses</TextBlock>
-                            <StackPanel IsVisible="{ Binding IsCoursesFileSet }" Orientation="Horizontal">
-                                <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
-                                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
+                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                    Run Scheduling
+                </TextBlock>
+            </Button>
+            <ScrollViewer Height="400">
+                <DataGrid Margin="20" 
+                        ItemsSource="{ Binding Runs }"
+                        IsReadOnly="True"
+                        CanUserResizeColumns="True"
+                        GridLinesVisibility="All"
+                        BorderThickness="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                        <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                        <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                        <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
+                        <DataGridTemplateColumn Width="*" Header="View">
+                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                <Button Click="TableRowViewReports" 
+                                        x:Name="Check" 
+                                        Name="{ Binding RunId }">
+                                    View
                                 </Button>
-                                <TextBlock VerticalAlignment="Center" Text="{ Binding CoursesFileName }"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <Border BorderBrush="{ Binding ScheduleStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="1">
-                        <StackPanel>
-                            <TextBlock>Schedule</TextBlock>
-                            <StackPanel IsVisible="{ Binding IsScheduleFileSet }" Orientation="Horizontal">
-                                <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduleFile }">
-                                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="*" Header="Save">
+                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
+                                <Button Click="TableRowSaveData" 
+                                        x:Name="Check" 
+                                        Name="{ Binding RunId }">
+                                    Save
                                 </Button>
-                                <TextBlock VerticalAlignment="Center" Text="{ Binding ScheduleFileName }" ToolTip.Tip="{ Binding ScheduleFilePath }"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </ScrollViewer>
+        </StackPanel>
 
-                    <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="0">
-                        <StackPanel>
-                            <TextBlock>Students</TextBlock>
-                            <StackPanel IsVisible="{ Binding IsStudentsFileSet }" Orientation="Horizontal">
-                                <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
-                                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                                </Button>
-                                <TextBlock VerticalAlignment="Center" Text="{ Binding StudentsFileName }"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+        <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
 
-                    <Border BorderBrush="{ Binding StudentChoicesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="1">
-                        <StackPanel>
-                            <TextBlock>Student Choices</TextBlock>
-                            <StackPanel IsVisible="{ Binding IsStudentChoicesFileSet }" Orientation="Horizontal">
-                                <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentChoicesFile }">
-                                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                                </Button>
-                                <TextBlock VerticalAlignment="Center" Text="{ Binding StudentChoicesFileName }"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-
-                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
-                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
-                        Run Scheduling
-                    </TextBlock>
-                </Button>
-                <ScrollViewer Height="400">
-                    <DataGrid Margin="20" 
-                            ItemsSource="{ Binding Runs }"
-                            IsReadOnly="True"
-                            CanUserResizeColumns="True"
-                            GridLinesVisibility="All"
-                            BorderThickness="1">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                            <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                            <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                            <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                            <DataGridTemplateColumn Width="*" Header="View">
-                                <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                    <Button Click="TableRowViewReports" 
-                                            x:Name="Check" 
-                                            Name="{ Binding RunId }">
-                                        View
-                                    </Button>
-                                </DataTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Save">
-                                <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                    <Button Click="TableRowSaveData" 
-                                            x:Name="Check" 
-                                            Name="{ Binding RunId }">
-                                        Save
-                                    </Button>
-                                </DataTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </ScrollViewer>
-            </StackPanel>
-
-            <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
-
-            <DataGrid Margin="20" 
-                    ItemsSource="{ Binding RunDetails }"
-                    IsReadOnly="True"
-                    CanUserResizeColumns="True"
-                    GridLinesVisibility="All"
-                    BorderThickness="1">
-                <DataGrid.Columns>
-                    <!-- <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                    <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                    <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                    <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" /> -->
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
-    </SplitView>
+        <DataGrid Margin="20" 
+                ItemsSource="{ Binding RunDetails }"
+                IsReadOnly="True"
+                CanUserResizeColumns="True"
+                GridLinesVisibility="All"
+                BorderThickness="1">
+            <DataGrid.Columns>
+                <!-- <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" /> -->
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

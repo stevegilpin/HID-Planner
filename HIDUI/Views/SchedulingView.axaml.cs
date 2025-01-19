@@ -34,16 +34,6 @@ public partial class SchedulingView : ContentControl
         ViewModel.TrySetFilePaths(filePaths);
     }
 
-    public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {
-        var defaultInputsFolder = await ChooseFolderPath("Change Default Input Folder Location");
-        ViewModel.TrySetDefaultInputFolderLocation(defaultInputsFolder, out string errorMessage);
-    }
-
-    public async void ChangeDefaultOutputFolderOnClick(object sender, RoutedEventArgs args) {
-        var defaultOutputsFolder = await ChooseFolderPath("Change Default Output Folder Location");
-        ViewModel.TrySetDefaultOutputFolderLocation(defaultOutputsFolder, out string errorMessage);
-    }
-
     public async void TableRowViewReports(object sender, RoutedEventArgs args) {
         string runId = string.Empty;
         await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
@@ -103,27 +93,4 @@ public partial class SchedulingView : ContentControl
         return files.Select(file => file.Path.LocalPath).ToArray();
     }
 
-    public async Task<string> ChooseOneFilePath(string title) {
-        var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = title,
-            AllowMultiple = false,
-        });
-        var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
-        if (filesArray.Length == 0)
-            return null;
-        else
-            return filesArray[0];
-    }
-
-    public async Task<string> ChooseFolderPath(string title) {
-        var folder = await TopLevel.GetTopLevel(this).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
-            Title = title,
-            AllowMultiple = false,
-        });
-        var folderPaths = folder.Select(folder => folder.Path.LocalPath).ToArray();
-        if (folderPaths.Length == 0)
-            return null;
-        else
-            return folderPaths[0];
-    }
 }

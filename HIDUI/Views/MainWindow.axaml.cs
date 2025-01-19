@@ -23,10 +23,12 @@ namespace HIDUI.Views {
             CourseOptionsView.IsVisible = page == ChildPages.CourseOptions;
             SurveyView.IsVisible = page == ChildPages.Survey;
             SchedulingView.IsVisible = page == ChildPages.Scheduling;
+            SettingsView.IsVisible = page == ChildPages.Settings;
         }
 
         private void GoToCourseOptionsView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.CourseOptions);
         private void GoToSurveyView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.Survey);
         private void GoToSchedulingView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.Scheduling);
+        private void GoToSettingsView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.Settings);
     }
 }

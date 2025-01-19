@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:HIDUI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="HIDUI.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+    
+    <StackPanel DockPanel.Dock="Left">
+        <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="16" FontWeight="SemiBold">Options</TextBlock>
+        <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Expander.Header>
+                Database File Location
+            </Expander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Padding="12" FontSize="12">File Path: </TextBlock>
+                <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
+            </StackPanel>
+        </Expander>
+        <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Expander.Header>
+                Default Input Folder
+            </Expander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
+                <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultInputsFolder }"/>
+                <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultInputFolderOnClick">
+                    <TextBlock Text="Change" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Expander>
+        <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Expander.Header>
+                Default Output Folder
+            </Expander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Padding="12" FontSize="12">Folder Path: </TextBlock>
+                <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DefaultOutputsFolder }"/>
+                <Button HorizontalAlignment="Center" Padding="5" Click="ChangeDefaultOutputFolderOnClick">
+                    <TextBlock Text="Change" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Expander>
+        <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Expander.Header>
+                Cost Function Exponent
+            </Expander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
+                <TextBox Text="{ Binding CostFunctionExponent }" Watermark="Enter a number" Margin="0 5"/>
+                <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveCostFunctionExponent }">
+                    <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Expander>
+        <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Expander.Header>
+                Course Rank Cutoff for 'Problematic Assignments'
+            </Expander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
+                <TextBox Text="{ Binding BadCourseRankCutoff }" Watermark="Enter a number" Margin="0 5"/>
+                <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveBadCourseRankCutoff }">
+                    <TextBlock Text="Save" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Expander>
+        
+        <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
+            <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
+                Clear Database
+            </TextBlock>
+        </Button>
+    </StackPanel>
+
+</UserControl>
