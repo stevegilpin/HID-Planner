@@ -5,33 +5,28 @@ namespace HIDUI.Views {
 
     public partial class MainWindow: Window
     {
-        // private MainWindowViewModel ViewModel => DataContext as MainWindowViewModel;
-        
         public MainWindow() {
             InitializeComponent();
-            // needed?
-            // DataContext = new MainWindowViewModel(new SchedulingViewModel());
         }
 
-        private void GoToCourseOptionsView_OnClick(object sender, RoutedEventArgs e)
+        private enum ChildPages
         {
-            CourseOptionsView.IsVisible = true;
-            SurveyView.IsVisible = false;
-            SchedulingView.IsVisible = false;
+            Unspecified,
+            CourseOptions,
+            Survey,
+            Scheduling,
+            Settings,
         }
 
-        private void GoToSurveyView_OnClick(object sender, RoutedEventArgs e)
+        private void SelectPage(ChildPages page)
         {
-            SurveyView.IsVisible = true;
-            CourseOptionsView.IsVisible = false;
-            SchedulingView.IsVisible = false;
+            CourseOptionsView.IsVisible = page == ChildPages.CourseOptions;
+            SurveyView.IsVisible = page == ChildPages.Survey;
+            SchedulingView.IsVisible = page == ChildPages.Scheduling;
         }
 
-        private void GoToSchedulingView_OnClick(object sender, RoutedEventArgs e)
-        {
-            SchedulingView.IsVisible = true;
-            CourseOptionsView.IsVisible = false;
-            SurveyView.IsVisible = false;
-        }
+        private void GoToCourseOptionsView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.CourseOptions);
+        private void GoToSurveyView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.Survey);
+        private void GoToSchedulingView_OnClick(object sender, RoutedEventArgs e) => SelectPage(ChildPages.Scheduling);
     }
 }
