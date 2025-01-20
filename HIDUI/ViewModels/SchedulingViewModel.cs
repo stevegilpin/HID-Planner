@@ -136,7 +136,7 @@ public class SchedulingViewModel : ViewModelBase
 
     public async void SaveManualScheduling()
     {
-        if (InputsAreReady() == false)
+        if (InputsAreReady() == false || string.IsNullOrEmpty(SchedulingResultsFilePath))
             return;
         
         await Task.Run(() => {
