@@ -70,21 +70,13 @@
                         IsReadOnly="True"
                         CanUserResizeColumns="True"
                         GridLinesVisibility="All"
-                        BorderThickness="1">
+                        BorderThickness="1"
+                        SelectionChanged="DataGrid_OnSelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
                         <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
                         <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
                         <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                        <DataGridTemplateColumn Width="*" Header="View">
-                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                <Button Click="TableRowViewReports" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    View
-                                </Button>
-                            </DataTemplate>
-                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn Width="*" Header="Save">
                             <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
                                 <Button Click="TableRowSaveData" 
@@ -101,17 +93,18 @@
 
         <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
 
-        <DataGrid Margin="20" 
-                ItemsSource="{ Binding RunDetails }"
-                IsReadOnly="True"
-                CanUserResizeColumns="True"
-                GridLinesVisibility="All"
-                BorderThickness="1">
+        <DataGrid Grid.Column="2"
+                  Margin="20" 
+                  ItemsSource="{ Binding RunDetails }"
+                  IsReadOnly="True"
+                  CanUserResizeColumns="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1">
             <DataGrid.Columns>
-                <!-- <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" /> -->
+                <DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }" />
+                <DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }" />
+                <DataGridTextColumn Header="Course Rank" Width="*" Binding="{ Binding Rank }" />
+                <DataGridTextColumn Header="Course Code" Width="*" Binding="{ Binding CourseCode }" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

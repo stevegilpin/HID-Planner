@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using Data;
 using Data.Objects;
 using HIDLib;
+using HIDLib.Analytics;
 using HIDLib.HTML;
 using HIDLib.IO;
 using HIDLib.ReportGenerators;
@@ -32,22 +33,6 @@ public partial class SchedulingView : ContentControl
     public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
         var filePaths = await ChooseMultipleFilePaths("Select Import Files");
         ViewModel.TrySetFilePaths(filePaths);
-    }
-
-    public async void TableRowViewReports(object sender, RoutedEventArgs args) {
-        string runId = string.Empty;
-        await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
-        
-        ViewModel.ViewRunDetails(runId);
-        // todo store this data behind the scenes in Runs so we don't load it repeatedly
-        // var data = DataManager.LoadDataSet(Int32.Parse(runId));
-        // var docs = GetHtmlDocs(data);
-
-        // Console.WriteLine("REPORT: ");
-        // Console.WriteLine(docs[0]);
-        // ViewModel.Runs.ForEach(Console.WriteLine);
-        // ViewModel.Runs.ForEach(x => Console.WriteLine(x.RunId));
-        // Console.WriteLine(ProblematicAssignmentsReport.FindProblematicAssignments(docs[0], 9));
     }
 
     public async void TableRowSaveData(object sender, RoutedEventArgs args) {
@@ -93,4 +78,12 @@ public partial class SchedulingView : ContentControl
         return files.Select(file => file.Path.LocalPath).ToArray();
     }
 
+    private void DataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count == 0)
+            return;
+
+        var runInfo = (SchedulingRunAnalyticData)e.AddedItems[0];
+        ViewModel.ViewRunDetails(runInfo!.RunId);
+    }
 }

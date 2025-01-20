@@ -9,6 +9,7 @@ using DynamicData;
 using HIDLib;
 using HIDLib.Analytics;
 using HIDLib.IO;
+using HIDLib.ReportGenerators;
 using HIDUI.BusinessLogic;
 
 namespace HIDUI.ViewModels;
@@ -65,14 +66,7 @@ public class SchedulingViewModel : ViewModelBase
         }
     }
 
-    private SchedulingRunAnalyticData runDetails;
-    public SchedulingRunAnalyticData RunDetails {
-        get => runDetails;
-        set {
-            runDetails = value;
-            OnPropertyChanged(nameof(RunDetails));
-        }
-    }
+    public ObservableCollection<ProblematicAssignmentsReport.BadAssignment> RunDetails { get; } = [];
 
     public ObservableCollection<SchedulingRunAnalyticData> Runs { get; } = new(LoadRunData());
 
@@ -160,19 +154,13 @@ public class SchedulingViewModel : ViewModelBase
 
     private static List<SchedulingRunAnalyticData> LoadRunData() => [.. SchedulingRunSelector.GetSchedulingRunData().OrderByDescending(x => x.RunId)];
 
-    public void ViewRunDetails(string runId) {
+    public void ViewRunDetails(int runId) {
         // string runId = string.Empty;
         // await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
         
         // todo store this data behind the scenes in Runs so we don't load it repeatedly
-        // var data = DataManager.LoadDataSet(Int32.Parse(runId));
-        // Console.WriteLine(data.)
-        // var docs = GetHtmlDocs(data);
-        
-
-        // Console.WriteLine("REPORT: ");
-        // // Console.WriteLine(docs[0]);
-        // Runs.ForEach(Console.WriteLine);
-        // Runs.ForEach(x => Console.WriteLine(x.RunId));
+        var data = DataManager.LoadDataSet(runId);
+        RunDetails.Clear();
+        ProblematicAssignmentsReport.FindProblematicAssignments(data).ForEach(x => RunDetails.Add(x));
     }
 }
