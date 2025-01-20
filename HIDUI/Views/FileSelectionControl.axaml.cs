@@ -25,6 +25,9 @@ public partial class FileSelectionControl : UserControl
 
     private void HandleFilePathChanged(Interactive sender, AvaloniaPropertyChangedEventArgs eventArgs)
     {
+        if (sender != this)
+            return;
+        
         var filePath = sender.GetValue(FilePathProperty);
         if (string.IsNullOrEmpty(filePath) == false)
             OnFileSelected(filePath);

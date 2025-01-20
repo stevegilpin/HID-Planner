@@ -12,69 +12,47 @@ namespace HIDUI.ViewModels
     {
         private readonly SurveyReconModel Model = new ();
         
-        public bool IsSurveyResponseFilePathSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false;
-        public string SurveyFileName => IsSurveyResponseFilePathSet ? Path.GetFileName(Model.SurveyResponsesFilePath) : string.Empty;
-        public string SurveyStatusColor => IsSurveyResponseFilePathSet ? "Green" : "Gray";
+        public string SurveyFilePath => Model.SurveyResponsesFilePath;
         public void RemoveSurveyFile()
         {
             Model.SurveyResponsesFilePath = null;
-            BroadcastSurveyFileUpdated();
-            ClearFailures();
-        }
-        private void BroadcastSurveyFileUpdated()
-        {
-            OnPropertyChanged(nameof(IsSurveyResponseFilePathSet));
-            OnPropertyChanged(nameof(AllFilePathsSet));
-            OnPropertyChanged(nameof(SurveyStatusColor));
-            OnPropertyChanged(nameof(SurveyFileName));
+            OnFileInputChanged();
         }
 
-        public bool IsStudentInfoFilePathSet => string.IsNullOrEmpty(Model.StudentInfoFilePath) == false;
-        public string StudentInfoFileName => IsStudentInfoFilePathSet ? Path.GetFileName(Model.StudentInfoFilePath) : string.Empty;
-        public string StudentsStatusColor => IsStudentInfoFilePathSet ? "Green" : "Gray";
+        public string StudentsFilePath => Model.StudentInfoFilePath;
         public void RemoveStudentsFile()
         {
             Model.StudentInfoFilePath = null;
-            BroadcastStudentsFileUpdated();
-            ClearFailures();
-        }
-        private void BroadcastStudentsFileUpdated()
-        {
-            OnPropertyChanged(nameof(IsStudentInfoFilePathSet));
-            OnPropertyChanged(nameof(AllFilePathsSet));
-            OnPropertyChanged(nameof(StudentsStatusColor));
-            OnPropertyChanged(nameof(StudentInfoFileName));
+            OnFileInputChanged();
         }
 
-        public bool IsCourseInfoFilePathSet => string.IsNullOrEmpty(Model.CourseInfoFilePath) == false;
-        public string CourseInfoFileName => IsCourseInfoFilePathSet ? Path.GetFileName(Model.CourseInfoFilePath) : string.Empty;
-        public string CoursesStatusColor => IsCourseInfoFilePathSet ? "Green" : "Gray";
+        public string CoursesFilePath => Model.CourseInfoFilePath;
         public void RemoveCoursesFile()
         {
             Model.CourseInfoFilePath = null;
-            BroadcastCourseFileUpdated();
-            ClearFailures();
-        }
-        private void BroadcastCourseFileUpdated()
-        {
-            OnPropertyChanged(nameof(IsCourseInfoFilePathSet));
-            OnPropertyChanged(nameof(AllFilePathsSet));
-            OnPropertyChanged(nameof(CoursesStatusColor));
-            OnPropertyChanged(nameof(CourseInfoFileName));
+            OnFileInputChanged();
         }
 
         public void SetFilePaths(string[] filePaths)
         {
             Model.SetFilePaths(filePaths);
+            OnFileInputChanged();
+        }
 
-            BroadcastSurveyFileUpdated();
-            BroadcastStudentsFileUpdated();
-            BroadcastCourseFileUpdated();
-
+        private void OnFileInputChanged()
+        {
+            OnPropertyChanged(nameof(IsSurveyResponseFilePathSet));
+            OnPropertyChanged(nameof(AllFilePathsSet));
+            OnPropertyChanged(nameof(SurveyFilePath));
+            OnPropertyChanged(nameof(StudentsFilePath));
+            OnPropertyChanged(nameof(CoursesFilePath));
             ClearFailures();
         }
 
-        public bool AllFilePathsSet => IsSurveyResponseFilePathSet && IsStudentInfoFilePathSet && IsCourseInfoFilePathSet;
+        public bool IsSurveyResponseFilePathSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false;
+        public bool AllFilePathsSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false &&
+                                       string.IsNullOrEmpty(Model.StudentInfoFilePath) == false &&
+                                       string.IsNullOrEmpty(Model.CourseInfoFilePath) == false;
         public bool FailuresLoaded { get; set; }
         public string FailureSummary { get; set; } = string.Empty;
         public string FailureSummaryColor { get; set; } = string.Empty;

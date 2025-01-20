@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:HIDUI.ViewModels"
+             xmlns:views="clr-namespace:HIDUI.Views"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="True"
@@ -48,43 +49,22 @@
 
 			<StackPanel Grid.Column="1">
 		        <!-- survey file -->
-		        <Border BorderBrush="{ Binding SurveyStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-			        <StackPanel>
-				        <TextBlock>Survey Responses</TextBlock>
-				        <StackPanel IsVisible="{ Binding IsSurveyResponseFilePathSet }" Orientation="Horizontal">
-					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveSurveyFile }">
-						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-					        </Button>
-					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding SurveyFileName }"/>
-				        </StackPanel>
-			        </StackPanel>
-		        </Border>
+		        <views:FileSelectionControl 
+			        DisplayName="Survey Responses"
+			        FilePath="{Binding SurveyFilePath }"
+					RemoveFileCommand="{Binding RemoveSurveyFile }"/>
 		        
 		        <!-- students file -->
-		        <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-			        <StackPanel>
-				        <TextBlock>Students</TextBlock>
-				        <StackPanel IsVisible="{ Binding IsStudentInfoFilePathSet }" Orientation="Horizontal">
-					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
-						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-					        </Button>
-					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding StudentInfoFileName }"/>
-				        </StackPanel>
-			        </StackPanel>
-		        </Border>
+		        <views:FileSelectionControl 
+			        DisplayName="Students"
+		            FilePath="{Binding StudentsFilePath }"
+		            RemoveFileCommand="{Binding RemoveStudentsFile }"/>
 
 		        <!-- courses file -->
-		        <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-			        <StackPanel>
-				        <TextBlock>Courses</TextBlock>
-				        <StackPanel IsVisible="{ Binding IsCourseInfoFilePathSet }" Orientation="Horizontal">
-					        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
-						        <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-					        </Button>
-					        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding CourseInfoFileName }"/>
-				        </StackPanel>
-			        </StackPanel>
-		        </Border>
+		        <views:FileSelectionControl 
+			        DisplayName="Courses"
+		            FilePath="{Binding CoursesFilePath }"
+		            RemoveFileCommand="{Binding RemoveCoursesFile }"/>
 			</StackPanel>
 		</Grid>
 
