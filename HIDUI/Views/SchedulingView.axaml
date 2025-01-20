@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:HIDUI.ViewModels"
              xmlns:analytics="clr-namespace:HIDLib.Analytics;assembly=HIDLib"
+             xmlns:views="clr-namespace:HIDUI.Views"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="True"
@@ -19,65 +20,35 @@
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
             </Button>
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
-                <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="0">
-                    <StackPanel>
-                        <TextBlock>Courses</TextBlock>
-                        <StackPanel IsVisible="{ Binding IsCoursesFileSet }" Orientation="Horizontal">
-                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
-                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                            </Button>
-                            <TextBlock VerticalAlignment="Center" Text="{ Binding CoursesFileName }"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <views:FileSelectionControl
+                    Grid.Row="0" Grid.Column="0"
+                    DisplayName="Courses"
+                    FilePath="{Binding CoursesFilePath }"
+                    RemoveFileCommand="{Binding RemoveCoursesFile }"/>
 
-                <Border BorderBrush="{ Binding ScheduleStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="0" Grid.Column="1">
-                    <StackPanel>
-                        <TextBlock>Schedule</TextBlock>
-                        <StackPanel IsVisible="{ Binding IsScheduleFileSet }" Orientation="Horizontal">
-                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduleFile }">
-                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                            </Button>
-                            <TextBlock VerticalAlignment="Center" Text="{ Binding ScheduleFileName }" ToolTip.Tip="{ Binding ScheduleFilePath }"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <views:FileSelectionControl
+                    Grid.Row="0" Grid.Column="1"
+                    DisplayName="Schedule"
+                    FilePath="{Binding ScheduleFilePath }"
+                    RemoveFileCommand="{Binding RemoveScheduleFile }"/>
 
-                <Border BorderBrush="{ Binding StudentsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="0">
-                    <StackPanel>
-                        <TextBlock>Students</TextBlock>
-                        <StackPanel IsVisible="{ Binding IsStudentsFileSet }" Orientation="Horizontal">
-                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentsFile }">
-                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                            </Button>
-                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentsFileName }"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <views:FileSelectionControl
+                    Grid.Row="1" Grid.Column="0"
+                    DisplayName="Students"
+                    FilePath="{Binding StudentsFilePath }"
+                    RemoveFileCommand="{Binding RemoveStudentsFile }"/>
 
-                <Border BorderBrush="{ Binding StudentChoicesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="1" Grid.Column="1">
-                    <StackPanel>
-                        <TextBlock>Student Choices</TextBlock>
-                        <StackPanel IsVisible="{ Binding IsStudentChoicesFileSet }" Orientation="Horizontal">
-                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveStudentChoicesFile }">
-                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                            </Button>
-                            <TextBlock VerticalAlignment="Center" Text="{ Binding StudentChoicesFileName }"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <views:FileSelectionControl
+                    Grid.Row="1" Grid.Column="1"
+                    DisplayName="Student Choices"
+                    FilePath="{Binding StudentChoicesFilePath }"
+                    RemoveFileCommand="{Binding RemoveStudentChoicesFile }"/>
 
-                <Border BorderBrush="{ Binding SchedulingResultsStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5" Grid.Row="2" Grid.Column="1">
-                    <StackPanel>
-                        <TextBlock>Scheduling Results (optional)</TextBlock>
-                        <StackPanel IsVisible="{ Binding IsSchedulingResultsFileSet }" Orientation="Horizontal">
-                            <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveScheduingResultsFile }">
-                                <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                            </Button>
-                            <TextBlock VerticalAlignment="Center" Text="{ Binding SchedulingResultsFileName }"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                <views:FileSelectionControl
+                    Grid.Row="2" Grid.Column="1"
+                    DisplayName="Scheduling Results (optional)"
+                    FilePath="{Binding SchedulingResultsFilePath }"
+                    RemoveFileCommand="{Binding RemoveSchedulingResultsFile }"/>
             </Grid>
             
             <DockPanel>

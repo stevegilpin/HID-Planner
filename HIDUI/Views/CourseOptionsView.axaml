@@ -12,9 +12,10 @@
             <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
                 <TextBlock Padding="50 8" FontWeight="Bold">Choose File</TextBlock>
             </Button>
-            <view:FileSelectionControl DisplayName="Courses"
-                                       FilePath="{Binding FilePath }"
-                                       RemoveFileCommand="{Binding RemoveCoursesFile }"/>
+            <view:FileSelectionControl 
+                DisplayName="Courses"
+                FilePath="{Binding FilePath }"
+                RemoveFileCommand="{Binding RemoveCoursesFile }"/>
         </DockPanel>
 
         <TextBlock>Document Header</TextBlock>
