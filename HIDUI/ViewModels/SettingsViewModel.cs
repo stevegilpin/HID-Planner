@@ -13,7 +13,7 @@ public class SettingsViewModel : ViewModelBase
     public string CostFunctionExponent { get; set; } = string.Empty;
     public string BadCourseRankCutoff { get; set; } = string.Empty;
     
-    private void PopulateSettings() {
+    public void PopulateSettings() {
         DbFileLocation = SettingsManager.GetDatabaseFileLocation();
         DefaultInputsFolder = SettingsManager.GetDefaultInputsFolder();
         DefaultOutputsFolder = SettingsManager.GetDefaultOutputFolder();

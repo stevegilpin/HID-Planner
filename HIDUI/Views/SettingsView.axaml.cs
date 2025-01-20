@@ -13,8 +13,8 @@ public partial class SettingsView : UserControl
     public SettingsView()
     {
         InitializeComponent();
+        DataContextChanged += (_, _) => ViewModel?.PopulateSettings();
     }
-    
     
     public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {
         var defaultInputsFolder = await this.ChooseFolderPath("Change Default Input Folder Location");
