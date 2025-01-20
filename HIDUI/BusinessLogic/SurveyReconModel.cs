@@ -49,7 +49,7 @@ public class SurveyReconModel
         var respondents = surveyData.Select(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), x.Grade)).ToHashSet();
         var responsesByGrade = surveyData.GroupBy(x => x.Grade).ToDictionary(g => g.Key, g => g.ToList());
         foreach (var student in studentData) {
-            var grade = GradeToInt(student.Grade);
+            var grade = CsvReadUtil.GradeToInt(student.Grade);
             var key = (student.FirstName.ToUpper(), student.LastName.ToUpper(), grade);
             if (respondents.Contains(key))
                 continue;
@@ -65,8 +65,8 @@ public class SurveyReconModel
     private static List<UnexpectedRespondentFailure> LoadUnexpectedRespondentFailures(List<SurveyResponse> surveyData, List<StudentInfo> studentData)
     {
         var failures = new List<UnexpectedRespondentFailure>();
-        var students = studentData.Select(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), GradeToInt(x.Grade))).ToHashSet();
-        var studentsByGrade = studentData.GroupBy(x => x.Grade).ToDictionary(g => GradeToInt(g.Key), g => g.ToList());
+        var students = studentData.Select(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), CsvReadUtil.GradeToInt(x.Grade))).ToHashSet();
+        var studentsByGrade = studentData.GroupBy(x => x.Grade).ToDictionary(g => CsvReadUtil.GradeToInt(g.Key), g => g.ToList());
         foreach (var response in surveyData) {
             var key = (response.FirstName.ToUpper(), response.LastName.ToUpper(), response.Grade);
             if (students.Contains(key))
@@ -135,7 +135,7 @@ public class SurveyReconModel
         var studentInfoMap = studentData.ToDictionary(x => (x.LastName, x.FirstName));
         foreach (var response in surveyData) {
             var studentInfo = studentInfoMap[(response.LastName, response.FirstName)];
-            var grade = GradeToInt(studentInfo.Grade);
+            var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
             var eligibleCourses = courseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
             rankings.AddRange(response.ClassRankings.Select((x, i) => new StudentCourseRanking {
                 CourseCode = eligibleCourses[x].CourseCode,
@@ -154,14 +154,6 @@ public class SurveyReconModel
     private static bool IsPossibleNameMatch(SurveyResponse surveyResponse, StudentInfo student)
     {
         return surveyResponse.LastName.ToUpper() == student.LastName.ToUpper();
-    }
-    
-    public static int GradeToInt(string gradeCode)
-    {
-        if (int.TryParse(gradeCode, out var grade))
-            return grade;
-
-        return int.Parse(gradeCode!.Replace("K", string.Empty)) - 5;
     }
 }
 

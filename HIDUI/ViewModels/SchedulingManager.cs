@@ -244,16 +244,15 @@ public class SchedulingManager
         }
         
 
-        // TODO add this check after constraining the scheduling algorithm for this condition
-        // foreach (var course in outputData.AssignmentResults) {
-        //     var courseInfo = outputData.InputData.CourseInfo[course.CourseCode];
-        //     var studentInfo = outputData.InputData.StudentInfo[course.StudentId];
-        //     var grade = SurveyReconModel.GradeToInt(studentInfo.Grade);
-        //     if (grade < courseInfo.MinGrade || grade > courseInfo.MaxGrade) {
-        //         errorMessage = $"{course.CourseCode} is not permitted for student {course.StudentId} in grade {studentInfo.Grade}";
-        //         return false;
-        //     }
-        // }
+        foreach (var course in outputData.AssignmentResults) {
+            var courseInfo = outputData.InputData.CourseInfo[course.CourseCode];
+            var studentInfo = outputData.InputData.StudentInfo[course.StudentId];
+            var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
+            if (grade < courseInfo.MinGrade || grade > courseInfo.MaxGrade) {
+                errorMessage = $"{course.CourseCode} is not permitted for student {course.StudentId} in grade {studentInfo.Grade}";
+                return false;
+            }
+        }
         
         errorMessage = null;
         return true;

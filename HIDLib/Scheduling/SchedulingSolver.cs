@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Objects;
 using Google.OrTools.LinearSolver;
+using HIDLib.IO;
 
 namespace HIDLib.Scheduling;
 
@@ -25,6 +26,7 @@ internal static class SchedulingSolver
         AddConstraints_OneCoursePerSession(solver, variables);
         AddConstraints_CourseCapacity(solver, inputData, variables);
         AddConstraints_NoDupeCourses(solver, variables);
+        AddConstraints_CourseMinMaxGrades(solver, inputData, variables);
         SetObjectiveFunction(solver, variables);
 
         var res = solver.Solve();
@@ -101,6 +103,19 @@ internal static class SchedulingSolver
         foreach (var courseGroup in studentCourseGroups) {
             var name = $"{courseGroup.Key.StudentId}_{courseGroup.Key.CourseName}_Const3";
             AddConstraint(solver, 0, 1, courseGroup.ToList(), name);
+        }
+    }
+    
+    // a student cannot take a course which is not offered for their grade
+    private static void AddConstraints_CourseMinMaxGrades(Solver solver, InputDataSet inputData, List<VariableData> variables)
+    {
+        foreach (var variable in variables) {
+            var studentInfo = inputData.StudentInfo[variable.StudentRanking.StudentId];
+            var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
+            if (grade < variable.CourseInfo.MinGrade || grade > variable.CourseInfo.MaxGrade) {
+                var name = $"{variable.CourseInfo.CourseCode}_{studentInfo.StudentId}_Const4";
+                AddConstraint(solver, 0, 0, [variable], name);
+            }
         }
     }
 

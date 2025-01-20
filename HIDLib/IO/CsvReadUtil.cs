@@ -145,4 +145,12 @@ public static class CsvReadUtil
 
         return records;
     }
+
+    public static int GradeToInt(string gradeCode)
+    {
+        if (int.TryParse(gradeCode, out var grade))
+            return grade;
+
+        return int.Parse(gradeCode!.Replace("K", string.Empty)) - 5;
+    }
 }
