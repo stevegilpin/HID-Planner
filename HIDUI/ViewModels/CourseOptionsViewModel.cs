@@ -10,20 +10,17 @@ namespace HIDUI.ViewModels;
 public class CourseOptionsViewModel : ViewModelBase
 {
     private readonly CourseOptionsModel Model = new();
-
-    public bool IsCourseInfoFilePathSet => string.IsNullOrEmpty(Model.CourseInfoFilePath) == false;
+    
     public bool IsInputReady => Model.IsInputReady();
-    public string CourseInfoFileName => IsCourseInfoFilePathSet ? Path.GetFileName(Model.CourseInfoFilePath) : string.Empty;
-    public string CoursesStatusColor => IsCourseInfoFilePathSet ? "Green" : "Gray";
+    public string FilePath => Model.CourseInfoFilePath;
 
     public void SetCoursesFile(string filePath)
     {
         Model.SetFilePath(filePath);
-        OnPropertyChanged(nameof(IsCourseInfoFilePathSet));
-        OnPropertyChanged(nameof(CoursesStatusColor));
-        OnPropertyChanged(nameof(CourseInfoFileName));
         OnPropertyChanged(nameof(IsInputReady));
+        OnPropertyChanged(nameof(FilePath));
     }
+    
     public void RemoveCoursesFile() => SetCoursesFile(null);
 
     public void SetDocumentHeader(string text)

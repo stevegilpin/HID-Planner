@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:HIDUI.ViewModels"
+             xmlns:view="using:HIDUI.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="HIDUI.Views.CourseOptionsView"
              x:DataType="vm:CourseOptionsViewModel">
@@ -11,17 +12,9 @@
             <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
                 <TextBlock Padding="50 8" FontWeight="Bold">Choose File</TextBlock>
             </Button>
-            <Border BorderBrush="{ Binding CoursesStatusColor }" BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
-                <StackPanel>
-                    <TextBlock>Courses</TextBlock>
-                    <StackPanel IsVisible="{ Binding IsCourseInfoFilePathSet }" Orientation="Horizontal">
-                        <Button Classes="delete" Background="Transparent" Command="{ Binding RemoveCoursesFile }">
-                            <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
-                        </Button>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{ Binding CourseInfoFileName }"/>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+            <view:FileSelectionControl DisplayName="Courses"
+                                       FilePath="{Binding FilePath }"
+                                       RemoveFileCommand="{Binding RemoveCoursesFile }"/>
         </DockPanel>
 
         <TextBlock>Document Header</TextBlock>
