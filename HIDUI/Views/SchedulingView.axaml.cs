@@ -78,12 +78,26 @@ public partial class SchedulingView : ContentControl
         return files.Select(file => file.Path.LocalPath).ToArray();
     }
 
+    private SchedulingRunAnalyticData SelectedRunInfo => RunGrid.SelectedItem as SchedulingRunAnalyticData;
     private void DataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems.Count == 0)
+        if (SelectedRunInfo == null) {
+            ViewModel.RunDetails.Clear();
+            RunNameTextBox.Text = string.Empty;
+            RunNotesTextBox.Text = string.Empty;
+            return;
+        }
+
+        ViewModel.ViewRunDetails(SelectedRunInfo.RunId);
+        RunNameTextBox.Text = SelectedRunInfo.Name;
+        RunNotesTextBox.Text = SelectedRunInfo.Notes;
+    }
+
+    private void SaveRunNotesButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (SelectedRunInfo == null)
             return;
 
-        var runInfo = (SchedulingRunAnalyticData)e.AddedItems[0];
-        ViewModel.ViewRunDetails(runInfo!.RunId);
+        ViewModel.UpdateRunNameAndNotes(SelectedRunInfo.RunId, RunNameTextBox.Text, RunNotesTextBox.Text);
     }
 }

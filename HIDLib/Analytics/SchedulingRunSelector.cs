@@ -38,6 +38,8 @@ public static class SchedulingRunSelector
         return new SchedulingRunAnalyticData {
             RunId = data.RunInfo.RunId,
             TimeStamp = data.RunInfo.RunTimeStamp,
+            Name = data.RunInfo.Name,
+            Notes = data.RunInfo.Notes,
             TotalObjectiveScore = total,
             BadAssignmentsCount = badAssignments,
         };
@@ -48,6 +50,8 @@ public class SchedulingRunAnalyticData
 {
     public required int RunId { get; init; }
     public required DateTime TimeStamp { get; init; }
+    public required string Name { get; init; }
+    public required string Notes { get; init; }
     public required double TotalObjectiveScore { get; init; }
     public required int BadAssignmentsCount { get; init; }
 }

@@ -163,4 +163,12 @@ public class SchedulingViewModel : ViewModelBase
         RunDetails.Clear();
         ProblematicAssignmentsReport.FindProblematicAssignments(data).ForEach(x => RunDetails.Add(x));
     }
+
+    public void UpdateRunNameAndNotes(int runId, string name, string notes)
+    {
+        DataManager.UpdateRunName(runId, name);
+        DataManager.UpdateRunNotes(runId, notes);
+        Runs.Clear();
+        Runs.AddRange(LoadRunData());
+    }
 }
