@@ -103,7 +103,10 @@ public class SchedulingManager
         Logger.Information($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
         
         const string unassigned = "UNASSIGNED";
-        if (courseInfoRows.All(x => x.CourseCode != unassigned)) {
+        bool hasUnassigned = courseInfoRows.Any(x => x.CourseCode == unassigned) ||
+                             scheduleRows.Any(x => x.CourseCode == unassigned) ||
+                             rankingRows.Any(x => x.CourseCode == unassigned);
+        if (hasUnassigned == false) {
             foreach (var student in infoRows)
                 rankingRows.Add(new StudentCourseRanking {
                     StudentId = student.StudentId,
@@ -177,6 +180,7 @@ public class SchedulingManager
 
         
         // TODO more validation later
+        // check for violations of implicit foreign keys (e.g. Do all courses in CourseSchedule have a row in CourseInfo?)
         // all students have at least as many rankings as there are sessions
         // all students have ranked classes such that they can at least take one class per session
 
