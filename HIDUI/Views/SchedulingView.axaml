@@ -52,7 +52,7 @@
             </Grid>
             
             <DockPanel>
-                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }">
+                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
                     <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                         Run Scheduling
                     </TextBlock>
