@@ -14,25 +14,18 @@
         Background="#252525"
         WindowState="Maximized">
 
-    <DockPanel VerticalAlignment="Stretch">
-        <views:CourseOptionsView DockPanel.Dock="Top" Name="CourseOptionsView" IsVisible="False" Content="{ Binding CourseOptionsViewModel }"/>
-        <views:SurveyView DockPanel.Dock="Top" Name="SurveyView" IsVisible="False" Content="{ Binding SurveyViewModel }"/>
-        <views:SchedulingView DockPanel.Dock="Top" Name="SchedulingView" IsVisible="True" Content="{ Binding SchedulingViewModel }"/>
-        <views:SettingsView DockPanel.Dock="Top" Name="SettingsView" IsVisible="False" Content="{ Binding SettingsViewModel }"/>
-
-        <Grid VerticalAlignment="Bottom" ColumnDefinitions="*, *, *, *">
-            <Button Grid.Column="0" Click="GoToCourseOptionsView_OnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Course Options View</TextBlock>
-            </Button>
-            <Button Grid.Column="1" Click="GoToSurveyView_OnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Survey View</TextBlock>
-            </Button>
-            <Button Grid.Column="2" Click="GoToSchedulingView_OnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Scheduling View</TextBlock>
-            </Button>
-            <Button Grid.Column="3" Click="GoToSettingsView_OnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontSize="20" FontWeight="Bold">Settings View</TextBlock>
-            </Button>
-        </Grid>
-    </DockPanel>
+    <TabControl SelectedIndex="2" Margin="5" TabStripPlacement="Left">
+        <TabItem Header="Course Options">
+            <views:CourseOptionsView DockPanel.Dock="Top" Name="CourseOptionsView" Content="{ Binding CourseOptionsViewModel }"/>
+        </TabItem>
+        <TabItem Header="Survey">
+            <views:SurveyView DockPanel.Dock="Top" Name="SurveyView" Content="{ Binding SurveyViewModel }"/>
+        </TabItem>
+        <TabItem Header="Scheduling">
+            <views:SchedulingView DockPanel.Dock="Top" Name="SchedulingView" Content="{ Binding SchedulingViewModel }"/>
+        </TabItem>
+        <TabItem Header="Settings">
+            <views:SettingsView DockPanel.Dock="Top" Name="SettingsView" Content="{ Binding SettingsViewModel }"/>
+        </TabItem>
+    </TabControl>
 </Window>

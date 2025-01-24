@@ -11,7 +11,7 @@
              x:DataType="vm:SurveyViewModel"
              mc:Ignorable="d">
 
-	<StackPanel VerticalAlignment="Center">
+	<StackPanel VerticalAlignment="Top">
 		<Grid ColumnDefinitions="*, *" Margin="0 10">
 			<StackPanel Grid.Column="0">
 				<Button

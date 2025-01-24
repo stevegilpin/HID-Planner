@@ -12,9 +12,9 @@
              x:DataType="vm:SchedulingViewModel"
              mc:Ignorable="d">
     
-    <Grid ColumnDefinitions="*, 2, *">
+    <Grid ColumnDefinitions=".6*, 2, .4*">
         <StackPanel>
-            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
+            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
             
             <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
                 <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
