@@ -52,12 +52,12 @@
             </Grid>
             
             <DockPanel>
-                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
+                <Button HorizontalAlignment="Center" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
                     <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                         Run Scheduling
                     </TextBlock>
                 </Button>
-                <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding SaveManualScheduling }">
+                <Button HorizontalAlignment="Center" Command="{ Binding SaveManualScheduling }" IsEnabled="{ Binding ManualInputsAreReady }">
                     <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                         Save Manual Scheduling
                     </TextBlock>

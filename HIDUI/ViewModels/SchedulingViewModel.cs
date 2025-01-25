@@ -66,6 +66,7 @@ public class SchedulingViewModel : ViewModelBase
         get => schedulingResultsFilePath;
         set {
             schedulingResultsFilePath = value;
+            checkInputsAreReady();
             OnPropertyChanged(nameof(SchedulingResultsFilePath));
         }
     }
@@ -83,15 +84,6 @@ public class SchedulingViewModel : ViewModelBase
         SchedulingResultsFilePath = ControllerUtils.GetMatchingPath(paths, SchedulingResultsFilePath, CsvReadUtil.HeaderMatchesSchedulingResults);
     }
 
-    private bool isRunSchedulingEnabled;
-    public bool IsRunSchedulingEnabled {
-        get => isRunSchedulingEnabled;
-        set {
-            isRunSchedulingEnabled = value;
-            OnPropertyChanged(nameof(IsRunSchedulingEnabled));
-        }
-    }
-
     private bool inputsAreReady;
     public bool InputsAreReady {
         get => inputsAreReady;
@@ -100,12 +92,21 @@ public class SchedulingViewModel : ViewModelBase
             OnPropertyChanged(nameof(InputsAreReady));
         }
     }
+    private bool manualInputsAreReady;
+    public bool ManualInputsAreReady {
+        get => manualInputsAreReady;
+        set {
+            manualInputsAreReady = value;
+            OnPropertyChanged(nameof(ManualInputsAreReady));
+        }
+    }
 
     private void checkInputsAreReady() {
         InputsAreReady = !string.IsNullOrEmpty(CoursesFilePath)
                       && !string.IsNullOrEmpty(ScheduleFilePath)
                       && !string.IsNullOrEmpty(StudentsFilePath)
                       && !string.IsNullOrEmpty(StudentChoicesFilePath);
+        ManualInputsAreReady = InputsAreReady && !string.IsNullOrEmpty(SchedulingResultsFilePath);
     }
 
     public void RemoveCoursesFile() {
