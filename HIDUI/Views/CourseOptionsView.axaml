@@ -12,7 +12,8 @@
             <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
                 <TextBlock Padding="50 8" FontWeight="Bold">Choose File</TextBlock>
             </Button>
-            <view:FileSelectionControl 
+            <view:FileSelectionControl
+                Name="CoursesFileSelector"
                 DisplayName="Courses"
                 FilePath="{Binding FilePath }"
                 RemoveFileCommand="{Binding RemoveCoursesFile }"/>

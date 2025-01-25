@@ -22,30 +22,35 @@
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
                 <views:FileSelectionControl
                     Grid.Row="0" Grid.Column="0"
+                    Name="CoursesFileSelector"
                     DisplayName="Courses"
                     FilePath="{Binding CoursesFilePath }"
                     RemoveFileCommand="{Binding RemoveCoursesFile }"/>
 
                 <views:FileSelectionControl
                     Grid.Row="0" Grid.Column="1"
+                    Name="ScheduleFileSelector"
                     DisplayName="Schedule"
                     FilePath="{Binding ScheduleFilePath }"
                     RemoveFileCommand="{Binding RemoveScheduleFile }"/>
 
                 <views:FileSelectionControl
                     Grid.Row="1" Grid.Column="0"
+                    Name="StudentsFileSelector"
                     DisplayName="Students"
                     FilePath="{Binding StudentsFilePath }"
                     RemoveFileCommand="{Binding RemoveStudentsFile }"/>
 
                 <views:FileSelectionControl
                     Grid.Row="1" Grid.Column="1"
+                    Name="StudentChoicesFileSelector"
                     DisplayName="Student Choices"
                     FilePath="{Binding StudentChoicesFilePath }"
                     RemoveFileCommand="{Binding RemoveStudentChoicesFile }"/>
 
                 <views:FileSelectionControl
                     Grid.Row="2" Grid.Column="1"
+                    Name="SchedulingResultsFileSelector"
                     DisplayName="Scheduling Results (optional)"
                     FilePath="{Binding SchedulingResultsFilePath }"
                     RemoveFileCommand="{Binding RemoveSchedulingResultsFile }"/>

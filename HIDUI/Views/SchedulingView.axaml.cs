@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using CsvHelper.Configuration;
 using Data;
 using Data.Objects;
 using HIDLib;
@@ -21,13 +23,16 @@ namespace HIDUI.Views;
 
 public partial class SchedulingView : ContentControl
 {
-
     private SchedulingViewModel ViewModel => DataContext as SchedulingViewModel;
 
     public SchedulingView()
     {
         InitializeComponent();
-        // DataContext = new SchedulingViewModel();
+        CoursesFileSelector.InfoText = ViewModelUtilities.GetCoursesCsvInfoText();
+        ScheduleFileSelector.InfoText = ViewModelUtilities.GetCourseScheduleCsvInfoText();
+        StudentsFileSelector.InfoText = ViewModelUtilities.GetStudentsCsvInfoText();
+        StudentChoicesFileSelector.InfoText = ViewModelUtilities.GetStudentChoicesCsvInfoText();
+        SchedulingResultsFileSelector.InfoText = ViewModelUtilities.GetSchedulingResultsCsvInfoText();
     }
 
     public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {

@@ -3,7 +3,9 @@ using System.IO;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -14,6 +16,7 @@ namespace HIDUI.Views;
 public partial class FileSelectionControl : UserControl
 {
     public static readonly StyledProperty<string> DisplayNameProperty = AvaloniaProperty.Register<FileSelectionControl, string>(nameof(DisplayName));
+    public static readonly StyledProperty<string> InfoTextProperty = AvaloniaProperty.Register<FileSelectionControl, string>(nameof(InfoText));
     public static readonly StyledProperty<ICommand> RemoveFileCommandProperty = AvaloniaProperty.Register<FileSelectionControl, ICommand>(nameof(RemoveFileCommand), enableDataValidation: true);
     public static readonly AttachedProperty<string> FilePathProperty = AvaloniaProperty.RegisterAttached<FileSelectionControl, Interactive, string>(nameof(FilePath), default, false, BindingMode.OneWay);
     
@@ -44,6 +47,12 @@ public partial class FileSelectionControl : UserControl
     {
         get { return GetValue(DisplayNameProperty); }
         set { SetValue(DisplayNameProperty, value); }
+    }
+
+    public string InfoText
+    {
+        get { return GetValue(InfoTextProperty); }
+        set { SetValue(InfoTextProperty, value); }
     }
 
     public string FilePath

@@ -51,18 +51,21 @@
 			<StackPanel Grid.Column="1">
 		        <!-- survey file -->
 		        <views:FileSelectionControl 
+			        Name="SurveyResponseFileSelector"
 			        DisplayName="Survey Responses"
 			        FilePath="{Binding SurveyFilePath }"
 					RemoveFileCommand="{Binding RemoveSurveyFile }"/>
 		        
 		        <!-- students file -->
 		        <views:FileSelectionControl 
+			        Name="StudentsFileSelector"
 			        DisplayName="Students"
 		            FilePath="{Binding StudentsFilePath }"
 		            RemoveFileCommand="{Binding RemoveStudentsFile }"/>
 
 		        <!-- courses file -->
 		        <views:FileSelectionControl 
+			        Name="CoursesFileSelector"
 			        DisplayName="Courses"
 		            FilePath="{Binding CoursesFilePath }"
 		            RemoveFileCommand="{Binding RemoveCoursesFile }"/>

@@ -19,6 +19,9 @@ namespace HIDUI.Views
         public SurveyView()
         {
             InitializeComponent();
+            SurveyResponseFileSelector.InfoText = ViewModelUtilities.GetSurveyResponsesCsvInfoText();
+            StudentsFileSelector.InfoText = ViewModelUtilities.GetStudentsCsvInfoText();
+            CoursesFileSelector.InfoText = ViewModelUtilities.GetCoursesCsvInfoText();
         }
         
         private async void ChooseFileOnClick(object sender, RoutedEventArgs e)

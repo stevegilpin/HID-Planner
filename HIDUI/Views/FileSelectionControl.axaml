@@ -10,7 +10,21 @@
         BorderBrush="Gray" 
         BorderThickness="2" CornerRadius="3" Padding="5" Margin="5">
         <StackPanel>
-            <TextBlock Text="{ Binding $parent[views:FileSelectionControl].DisplayName }"/>
+            <DockPanel>
+                <TextBlock Text="{ Binding $parent[views:FileSelectionControl].DisplayName }"/>
+                <Button 
+                    Name="InfoButton"
+                    Background="Transparent" 
+                    HorizontalAlignment="Right">
+                    <ToolTip.Tip>
+                        <StackPanel>
+                            <TextBlock Padding="5" FontSize="16" Text="{Binding $parent[views:FileSelectionControl].DisplayName}"/>
+                            <TextBlock Padding="5" Text="{Binding $parent[views:FileSelectionControl].InfoText}"/>
+                        </StackPanel>
+                    </ToolTip.Tip>
+                    <Image Width="20" Height="20" Source="/Assets/info.png"/>
+                </Button>
+            </DockPanel>
             <StackPanel Name="FileChoicePanel" Orientation="Horizontal" IsVisible="False">
                 <Button Name="DeleteButton" Classes="delete" Background="Transparent" Click="RemoveButton_Click">
                     <Image Width="20" Height="20" Source="/Assets/delete.webp"/>

@@ -17,6 +17,7 @@ public partial class CourseOptionsView : UserControl
     public CourseOptionsView()
     {
         InitializeComponent();
+        CoursesFileSelector.InfoText = ViewModelUtilities.GetCoursesCsvInfoText();
     }
     
     // TODO create a UI utility. Some of these methods were directly copied from scheduling view.
