@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -39,5 +41,14 @@ internal static class ViewUtilities
             return null;
         else
             return folderPaths[0];
+    }
+
+    public static void OpenFolderInExplorer(string folderPath)
+    {
+        // open file explorer at output folder
+        if (OperatingSystem.IsWindows())
+            Process.Start("explorer.exe", folderPath);
+        else if (OperatingSystem.IsMacOS())
+            Process.Start("open", $"-R \"{folderPath}\"");
     }
 }

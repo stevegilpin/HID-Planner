@@ -46,12 +46,7 @@ namespace HIDUI.Views
         {
             var folder = SettingsManager.GetDefaultOutputFolder();
             ViewModel.SaveSchedulingInput(folder);
-
-            // open file explorer at output folder
-            if (OperatingSystem.IsWindows())
-                Process.Start("explorer.exe", folder);
-            else if (OperatingSystem.IsMacOS())
-                Process.Start("open", $"-R \"{folder}\"");
+            ViewUtilities.OpenFolderInExplorer(folder);
         }
 
         private void ReconcileFilesOnClick(object sender, RoutedEventArgs e) => ViewModel.ReconcileFiles();

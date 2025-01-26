@@ -42,24 +42,14 @@ public partial class CourseOptionsView : UserControl
     {
         var folder = SettingsManager.GetDefaultOutputFolder();
         ViewModel.SaveHtmlFile(folder);
-
-        // open file explorer at output folder
-        if (OperatingSystem.IsWindows())
-            Process.Start("explorer.exe", folder);
-        else if (OperatingSystem.IsMacOS())
-            Process.Start("open", $"-R \"{folder}\"");
+        ViewUtilities.OpenFolderInExplorer(folder);
     }
 
     private void SaveTextFileOnClick(object sender, RoutedEventArgs e)
     {
         var folder = SettingsManager.GetDefaultOutputFolder();
         ViewModel.SaveTextFile(folder);
-
-        // open file explorer at output folder
-        if (OperatingSystem.IsWindows())
-            Process.Start("explorer.exe", folder);
-        else if (OperatingSystem.IsMacOS())
-            Process.Start("open", $"-R \"{folder}\"");
+        ViewUtilities.OpenFolderInExplorer(folder);
     }
 
     private void SetEventDescription(object sender, TextChangedEventArgs textChangedEventArgs) => ViewModel.SetEventDescription(EventDescriptionBox.Text);

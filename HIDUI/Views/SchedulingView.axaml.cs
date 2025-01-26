@@ -53,12 +53,7 @@ public partial class SchedulingView : ContentControl
         foreach (var doc in docs)
             doc.WriteToFile(outputFolder);
         Console.WriteLine($"Reports written to: {outputFolder}");
-        
-        // open file explorer at output folder
-        if (OperatingSystem.IsWindows())
-            Process.Start("explorer.exe", outputFolder);
-        else if (OperatingSystem.IsMacOS())
-            Process.Start("open", $"-R \"{outputFolder}\"");
+        ViewUtilities.OpenFolderInExplorer(outputFolder);
     }
     
     // TODO: These static functions could be moved to a service
