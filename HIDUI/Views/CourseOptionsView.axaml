@@ -7,10 +7,15 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="HIDUI.Views.CourseOptionsView"
              x:DataType="vm:CourseOptionsViewModel">
+    
+    <Control.Styles>
+        <StyleInclude Source="/ButtonStyles.axaml" />
+    </Control.Styles>
+    
     <StackPanel>
         <DockPanel VerticalAlignment="Center">
             <Button HorizontalAlignment="Center" Padding="12" Click="ChooseFileOnClick">
-                <TextBlock Padding="50 8" FontWeight="Bold">Choose File</TextBlock>
+                Choose File
             </Button>
             <view:FileSelectionControl
                 Name="CoursesFileSelector"
@@ -19,17 +24,20 @@
                 RemoveFileCommand="{Binding RemoveCoursesFile }"/>
         </DockPanel>
 
-        <TextBlock>Document Header</TextBlock>
-        <TextBox Name="DocumentHeaderBox" TextChanged="SetDocumentHeader"></TextBox>
-
-        <TextBlock>Event Description</TextBlock>
-        <TextBox Name="EventDescriptionBox" TextChanged="SetEventDescription"></TextBox>
+        <DockPanel>
+            <TextBlock Padding="10">Document Header</TextBlock>
+            <TextBox Margin="5" Name="DocumentHeaderBox" TextChanged="SetDocumentHeader"></TextBox>
+        </DockPanel>
+        <DockPanel>
+            <TextBlock Padding="10">Event Description</TextBlock>
+            <TextBox Margin="5" Name="EventDescriptionBox" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="SetEventDescription"></TextBox>
+        </DockPanel>
         
         <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveHtmlFileOnClick">
-            <TextBlock Padding="50 8" FontWeight="Bold">Save HTML File</TextBlock>
+            Save HTML File
         </Button>
         <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveTextFileOnClick">
-            <TextBlock Padding="50 8" FontWeight="Bold">Save Text File</TextBlock>
+            Save Text File
         </Button>
     </StackPanel>
 </UserControl>

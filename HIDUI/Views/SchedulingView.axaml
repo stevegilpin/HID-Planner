@@ -12,14 +12,16 @@
              x:DataType="vm:SchedulingViewModel"
              mc:Ignorable="d">
     
+    <Control.Styles>
+        <StyleInclude Source="/ButtonStyles.axaml" />
+    </Control.Styles>
+    
     <Grid ColumnDefinitions=".6*, 2, .4*">
-        <StackPanel>
-            <TextBlock HorizontalAlignment="Center" Padding="12" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap">Select Input Files for Courses, Schedule, Students, and Student Choices</TextBlock>
-            
-            <Button HorizontalAlignment="Center" Padding="12" Click="ImportFilesOnClick">
-                <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">Choose Files</TextBlock>
+        <StackPanel Margin="5">
+            <Button HorizontalAlignment="Center" Click="ImportFilesOnClick">
+                Choose Input Files
             </Button>
-            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
                 <views:FileSelectionControl
                     Grid.Row="0" Grid.Column="0"
                     Name="CoursesFileSelector"
@@ -54,20 +56,14 @@
                     DisplayName="Scheduling Results (optional)"
                     FilePath="{Binding SchedulingResultsFilePath }"
                     RemoveFileCommand="{Binding RemoveSchedulingResultsFile }"/>
+                
+                <Button Grid.Row="3" Grid.Column="0" Width="NaN" HorizontalAlignment="Stretch" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
+                    Run Scheduling
+                </Button>
+                <Button Grid.Row="3" Grid.Column="1" Width="NaN" HorizontalAlignment="Stretch" Command="{ Binding SaveManualScheduling }" IsEnabled="{ Binding ManualInputsAreReady }">
+                    Save Manual Scheduling
+                </Button>
             </Grid>
-            
-            <DockPanel>
-                <Button HorizontalAlignment="Center" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
-                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
-                        Run Scheduling
-                    </TextBlock>
-                </Button>
-                <Button HorizontalAlignment="Center" Command="{ Binding SaveManualScheduling }" IsEnabled="{ Binding ManualInputsAreReady }">
-                    <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
-                        Save Manual Scheduling
-                    </TextBlock>
-                </Button>
-            </DockPanel>
             
             <ScrollViewer Height="400">
                 <DataGrid Margin="20" 
@@ -84,15 +80,6 @@
                         <DataGridTextColumn Header="Name" Width="*" Binding="{ Binding Name }" />
                         <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
                         <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                        <DataGridTemplateColumn Width="*" Header="Save Data">
-                            <DataTemplate DataType="analytics:SchedulingRunAnalyticData">
-                                <Button Click="TableRowSaveData" 
-                                        x:Name="Check" 
-                                        Name="{ Binding RunId }">
-                                    Save
-                                </Button>
-                            </DataTemplate>
-                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </ScrollViewer>
@@ -102,13 +89,16 @@
         <StackPanel Grid.Column="2">
             <DockPanel>
                 <TextBlock Padding="10">Run Name:</TextBlock>
-                <TextBox Name="RunNameTextBox"></TextBox>
+                <TextBox HorizontalAlignment="Stretch" Margin="5" Name="RunNameTextBox"></TextBox>
             </DockPanel>
             <DockPanel>
                 <TextBlock Padding="10">Run Notes:</TextBlock>
-                <TextBox HorizontalAlignment="Stretch" Name="RunNotesTextBox"></TextBox>
+                <TextBox HorizontalAlignment="Stretch" Margin="5" Name="RunNotesTextBox"></TextBox>
             </DockPanel>
-            <Button Click="SaveRunNotesButton_OnClick">Save</Button>
+            <Grid ColumnDefinitions="*,*">
+                <Button Grid.Column="0" IsEnabled="False" Width="NaN" HorizontalAlignment="Stretch" Name="UpdateRunInfoButton" Click="UpdateRunInfoButton_OnClick">Update</Button>
+                <Button Grid.Column="1" IsEnabled="False" Width="NaN" HorizontalAlignment="Stretch" Name="SaveFilesButton" Click="SaveFilesButton_OnClick">Save Files</Button>
+            </Grid>
             <GridSplitter IsEnabled="False" Background="Gray" ResizeDirection="Rows"/>
 
             <DataGrid Margin="20" 

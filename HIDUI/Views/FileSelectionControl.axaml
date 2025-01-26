@@ -5,6 +5,18 @@
                             xmlns:views="clr-namespace:HIDUI.Views"
                             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                             x:Class="HIDUI.Views.FileSelectionControl">
+    <Control.Styles>
+        <Style Selector="Button">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="20"/>
+        </Style>
+        <Style Selector="Image">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="20"/>
+        </Style>
+    </Control.Styles>
+
+    
     <Border
         Name="Border"
         BorderBrush="Gray" 
@@ -22,12 +34,12 @@
                             <TextBlock Padding="5" Text="{Binding $parent[views:FileSelectionControl].InfoText}"/>
                         </StackPanel>
                     </ToolTip.Tip>
-                    <Image Width="20" Height="20" Source="/Assets/info.png"/>
+                    <Image Source="/Assets/info.png"/>
                 </Button>
             </DockPanel>
             <StackPanel Name="FileChoicePanel" Orientation="Horizontal" IsVisible="False">
                 <Button Name="DeleteButton" Classes="delete" Background="Transparent" Click="RemoveButton_Click">
-                    <Image Width="20" Height="20" Source="/Assets/delete.webp"/>
+                    <Image Source="/Assets/delete.webp"/>
                 </Button>
                 <TextBlock Name="FileNameTextBlock" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>

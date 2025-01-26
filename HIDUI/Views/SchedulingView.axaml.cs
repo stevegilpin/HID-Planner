@@ -40,15 +40,15 @@ public partial class SchedulingView : ContentControl
         ViewModel.TrySetFilePaths(filePaths);
     }
 
-    public async void TableRowSaveData(object sender, RoutedEventArgs args) {
-        string runId = string.Empty;
-        await Dispatcher.UIThread.InvokeAsync(() => { runId = ((Button)sender).Name; }, DispatcherPriority.Background);
+    public void SaveFilesButton_OnClick(object sender, RoutedEventArgs args) {
+        if (SelectedRunInfo == null)
+            return;
 
         // todo store this data behind the scenes in Runs so we don't load it repeatedly
-        var data = DataManager.LoadDataSet(Int32.Parse(runId));
+        var data = DataManager.LoadDataSet(SelectedRunInfo.RunId);
         var docs = GetHtmlDocs(data);
 
-        var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {runId}");
+        var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {SelectedRunInfo.RunId}");
         CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
         foreach (var doc in docs)
             doc.WriteToFile(outputFolder);
@@ -77,15 +77,19 @@ public partial class SchedulingView : ContentControl
             ViewModel.RunDetails.Clear();
             RunNameTextBox.Text = string.Empty;
             RunNotesTextBox.Text = string.Empty;
+            SaveFilesButton.IsEnabled = false;
+            UpdateRunInfoButton.IsEnabled = false;
             return;
         }
 
         ViewModel.ViewRunDetails(SelectedRunInfo.RunId);
         RunNameTextBox.Text = SelectedRunInfo.Name;
         RunNotesTextBox.Text = SelectedRunInfo.Notes;
+        SaveFilesButton.IsEnabled = true;
+        UpdateRunInfoButton.IsEnabled = true;
     }
 
-    private void SaveRunNotesButton_OnClick(object sender, RoutedEventArgs e)
+    private void UpdateRunInfoButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (SelectedRunInfo == null)
             return;
