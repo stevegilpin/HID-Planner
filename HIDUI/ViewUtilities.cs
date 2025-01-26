@@ -10,7 +10,7 @@ namespace HIDUI;
 
 internal static class ViewUtilities
 {
-    public static async Task<string[]> ChooseMultipleFilePaths(this Visual sender, string title) {
+    public static async Task<string[]> ChooseMultipleFilePathsAsync(this Visual sender, string title) {
         var files = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = true,
@@ -18,8 +18,7 @@ internal static class ViewUtilities
         return files.Select(file => file.Path.LocalPath).ToArray();
     }
     
-    
-    public static async Task<string> ChooseOneFilePath(this Visual sender, string title) {
+    public static async Task<string> ChooseOneFilePathAsync(this Visual sender, string title) {
         var files = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = false,
@@ -31,7 +30,7 @@ internal static class ViewUtilities
             return filesArray[0];
     }
 
-    public static async Task<string> ChooseFolderPath(this Visual sender, string title) {
+    public static async Task<string> ChooseFolderPathAsync(this Visual sender, string title) {
         var folder = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
             Title = title,
             AllowMultiple = false,

@@ -26,20 +26,11 @@ namespace HIDUI.Views
         
         private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
         {
-            var filePaths = await ChooseFilePath("Select Import Files");
-            if (filePaths.Length == 0)
+            var filePath = await this.ChooseMultipleFilePathsAsync("Select Import Files");
+            if (filePath.Length == 0)
                 return;
 
-            ViewModel.SetFilePaths(filePaths);
-        }
-        
-        // TODO create a UI utility. Some of these methods were directly copied from scheduling view.
-        public async Task<string[]> ChooseFilePath(string title) {
-            var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-                Title = title,
-                AllowMultiple = true,
-            });
-            return files.Select(file => file.Path.LocalPath).ToArray();
+            ViewModel.SetFilePaths(filePath);
         }
 
         private void SaveSchedulingInputOnClick(object sender, RoutedEventArgs e)

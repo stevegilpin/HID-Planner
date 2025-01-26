@@ -19,23 +19,14 @@ public partial class CourseOptionsView : UserControl
         InitializeComponent();
         CoursesFileSelector.InfoText = ViewModelUtilities.GetCoursesCsvInfoText();
     }
-    
-    // TODO create a UI utility. Some of these methods were directly copied from scheduling view.
-    public async Task<string[]> ChooseFilePath(string title) {
-        var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = title,
-            AllowMultiple = false,
-        });
-        return files.Select(file => file.Path.LocalPath).ToArray();
-    }
 
     private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
     {
-        var filePaths = await ChooseFilePath("Select Import Files");
-        if (filePaths.Length == 0)
+        var filePaths = await this.ChooseOneFilePathAsync("Select Import Files");
+        if (string.IsNullOrEmpty(filePaths))
             return;
 
-        ViewModel.SetCoursesFile(filePaths.Single());
+        ViewModel.SetCoursesFile(filePaths);
     }
 
     private void SaveHtmlFileOnClick(object sender, RoutedEventArgs e)

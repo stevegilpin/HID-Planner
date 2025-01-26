@@ -36,7 +36,7 @@ public partial class SchedulingView : ContentControl
     }
 
     public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
-        var filePaths = await ChooseMultipleFilePaths("Select Import Files");
+        var filePaths = await this.ChooseMultipleFilePathsAsync("Select Import Files");
         ViewModel.TrySetFilePaths(filePaths);
     }
 
@@ -68,14 +68,6 @@ public partial class SchedulingView : ContentControl
         };
 
         return generators.Select(x => x.CreateDoc()).ToList();
-    }
-
-    public async Task<string[]> ChooseMultipleFilePaths(string title) {
-        var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = title,
-            AllowMultiple = true,
-        });
-        return files.Select(file => file.Path.LocalPath).ToArray();
     }
 
     private SchedulingRunAnalyticData SelectedRunInfo => RunGrid.SelectedItem as SchedulingRunAnalyticData;
