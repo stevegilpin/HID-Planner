@@ -137,7 +137,7 @@ public class SchedulingViewModel : ViewModelBase
 
         await Task.Run(() => {
                 var mgr = new SchedulingManager {
-                    RunName = "Manual test run", // todo set from UI
+                    RunName = string.Empty,
                     CourseInfoFilePath = CoursesFilePath,
                     CourseScheduleFilePath = ScheduleFilePath,
                     StudentInfoFilePath = StudentsFilePath,
@@ -160,7 +160,7 @@ public class SchedulingViewModel : ViewModelBase
         
         await Task.Run(() => {
                 var mgr = new SchedulingManager {
-                    RunName = "Manual scheduling test run", // todo set from UI
+                    RunName = string.Empty,
                     CourseInfoFilePath = CoursesFilePath,
                     CourseScheduleFilePath = ScheduleFilePath,
                     StudentInfoFilePath = StudentsFilePath,
