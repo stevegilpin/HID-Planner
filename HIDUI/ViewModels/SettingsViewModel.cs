@@ -1,7 +1,11 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using Data;
 using HIDLib;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace HIDUI.ViewModels;
 
@@ -67,9 +71,8 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public void ClearDatabase()
+    public string ClearDatabase()
     {
-        DataManager.ClearApplicationData();
-        Environment.Exit(0);
+        return DataManager.ClearApplicationData();
     }
 }

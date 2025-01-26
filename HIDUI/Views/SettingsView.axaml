@@ -67,7 +67,7 @@
             </StackPanel>
         </Expander>
         
-        <Button HorizontalAlignment="Center" Padding="12" Command="{ Binding ClearDatabase }">
+        <Button HorizontalAlignment="Center" Padding="12" Click="Button_OnClick">
             <TextBlock HorizontalAlignment="Center" Padding="50 8" FontWeight="Bold">
                 Clear Database
             </TextBlock>

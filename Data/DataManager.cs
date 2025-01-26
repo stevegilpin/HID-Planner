@@ -88,11 +88,13 @@ public static class DataManager
         db.SaveChanges();
     }
 
-    public static void ClearApplicationData()
+    public static string ClearApplicationData()
     {
         if (DbProvider.TryDeleteDatabase(true, out var backupLocation))
             Console.WriteLine($"Database deleted. A backup was saved at {backupLocation}.");
         else
             Console.WriteLine("Database delete failed.");
+        
+        return backupLocation;
     }
 }
