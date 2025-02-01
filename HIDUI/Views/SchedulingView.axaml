@@ -17,11 +17,11 @@
     </Control.Styles>
     
     <Grid ColumnDefinitions=".6*, 2, .4*">
-        <StackPanel Margin="5">
-            <Button HorizontalAlignment="Center" Click="ImportFilesOnClick">
+        <Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,*">
+            <Button  Grid.Row="0" HorizontalAlignment="Center" Click="ImportFilesOnClick">
                 Choose Input Files
             </Button>
-            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
                 <views:FileSelectionControl
                     Grid.Row="0" Grid.Column="0"
                     Name="CoursesFileSelector"
@@ -65,45 +65,43 @@
                 </Button>
             </Grid>
             
-            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Scheduling Runs</TextBlock>
-            <ScrollViewer Height="400">
-                <DataGrid Margin="20" 
-                        ItemsSource="{ Binding Runs }"
-                        IsReadOnly="True"
-                        CanUserResizeColumns="True"
-                        GridLinesVisibility="All"
-                        BorderThickness="1"
-                        Name="RunGrid"
-                        SelectionChanged="DataGrid_OnSelectionChanged">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
-                        <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
-                        <DataGridTextColumn Header="Name" Width="*" Binding="{ Binding Name }" />
-                        <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
-                        <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </ScrollViewer>
-        </StackPanel>
+            <TextBlock Grid.Row="2" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Scheduling Runs</TextBlock>
+            <DataGrid Grid.Row="3" Margin="20" 
+                      ItemsSource="{ Binding Runs }"
+                      IsReadOnly="True"
+                      CanUserResizeColumns="True"
+                      GridLinesVisibility="All"
+                      BorderThickness="1"
+                      Name="RunGrid"
+                      SelectionChanged="DataGrid_OnSelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Run ID" Width="*" Binding="{ Binding RunId }"/>
+                    <DataGridTextColumn Header="Time" Width="*" Binding="{ Binding TimeStamp }" />
+                    <DataGridTextColumn Header="Name" Width="*" Binding="{ Binding Name }" />
+                    <DataGridTextColumn Header="Score" Width="*" Binding="{ Binding TotalObjectiveScore }" />
+                    <DataGridTextColumn Header="# Bad Results" Width="*" Binding="{ Binding BadAssignmentsCount }" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
 
         <GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns"/>
-        <StackPanel Grid.Column="2">
-            <DockPanel>
+        <Grid Grid.Column="2" ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+            <DockPanel Grid.Row="0">
                 <TextBlock Padding="10">Run Name:</TextBlock>
                 <TextBox HorizontalAlignment="Stretch" Margin="5" Name="RunNameTextBox"></TextBox>
             </DockPanel>
-            <DockPanel>
+            <DockPanel Grid.Row="1">
                 <TextBlock Padding="10">Run Notes:</TextBlock>
                 <TextBox HorizontalAlignment="Stretch" Margin="5" Name="RunNotesTextBox"></TextBox>
             </DockPanel>
-            <Grid ColumnDefinitions="*,*">
+            <Grid Grid.Row="2" ColumnDefinitions="*,*">
                 <Button Grid.Column="0" IsEnabled="False" Width="NaN" HorizontalAlignment="Stretch" Name="UpdateRunInfoButton" Click="UpdateRunInfoButton_OnClick">Update</Button>
                 <Button Grid.Column="1" IsEnabled="False" Width="NaN" HorizontalAlignment="Stretch" Name="SaveFilesButton" Click="SaveFilesButton_OnClick">Save Files</Button>
             </Grid>
-            <GridSplitter IsEnabled="False" Background="Gray" ResizeDirection="Rows"/>
+            <GridSplitter Grid.Row="3" IsEnabled="False" Background="Gray" ResizeDirection="Rows"/>
 
-            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Problematic Course Assignments</TextBlock>
-            <DataGrid Margin="20" 
+            <TextBlock Grid.Row="4" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Problematic Course Assignments</TextBlock>
+            <DataGrid Grid.Row="5" Margin="20" 
                       ItemsSource="{ Binding RunDetails }"
                       IsReadOnly="True"
                       CanUserResizeColumns="True"
@@ -116,6 +114,6 @@
                     <DataGridTextColumn Header="Course Code" Width="*" Binding="{ Binding CourseCode }" />
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
