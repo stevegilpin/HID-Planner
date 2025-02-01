@@ -65,6 +65,7 @@
                 </Button>
             </Grid>
             
+            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Scheduling Runs</TextBlock>
             <ScrollViewer Height="400">
                 <DataGrid Margin="20" 
                         ItemsSource="{ Binding Runs }"
@@ -101,6 +102,7 @@
             </Grid>
             <GridSplitter IsEnabled="False" Background="Gray" ResizeDirection="Rows"/>
 
+            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" Margin="10" FontSize="18">Problematic Course Assignments</TextBlock>
             <DataGrid Margin="20" 
                       ItemsSource="{ Binding RunDetails }"
                       IsReadOnly="True"
