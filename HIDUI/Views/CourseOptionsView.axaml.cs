@@ -31,9 +31,14 @@ public partial class CourseOptionsView : UserControl
 
     private void SaveHtmlFileOnClick(object sender, RoutedEventArgs e)
     {
-        var folder = SettingsManager.GetDefaultOutputFolder();
-        ViewModel.SaveHtmlFile(folder);
-        ViewUtilities.OpenFolderInExplorer(folder);
+        try {
+            var folder = SettingsManager.GetDefaultOutputFolder();
+            ViewModel.SaveHtmlFile(folder);
+            ViewUtilities.OpenFolderInExplorer(folder);
+        }
+        catch (Exception exception) {
+            this.NotifyException(exception, true);
+        }
     }
 
     private void SaveTextFileOnClick(object sender, RoutedEventArgs e)

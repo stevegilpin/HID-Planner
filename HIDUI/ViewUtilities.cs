@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace HIDUI;
 
@@ -49,5 +52,20 @@ internal static class ViewUtilities
             Process.Start("explorer.exe", folderPath);
         else if (OperatingSystem.IsMacOS())
             Process.Start("open", $"-R \"{folderPath}\"");
+    }
+
+    public static void NotifyException(this UserControl control, Exception exception, bool requireClose)
+    {
+        var nl = Environment.NewLine;
+        var msg = requireClose ?
+            $"The application hit an unexpected error and will exit now.{nl}{nl}Error details:{nl}{exception}" :
+            $"The application hit an unexpected error. It is recommended to restart the application.{nl}{nl}Error details:{nl}{exception}";
+        
+        var box = MessageBoxManager.GetMessageBoxStandard("Error!", msg);
+        box.ShowWindowDialogAsync((Window)control.GetVisualRoot())
+            .ContinueWith(_ => {
+                if (requireClose)
+                    Environment.Exit(-1);
+            });
     }
 }
