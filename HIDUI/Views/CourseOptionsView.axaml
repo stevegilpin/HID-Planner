@@ -26,7 +26,7 @@
 
         <DockPanel>
             <TextBlock Padding="10">Document Header</TextBlock>
-            <TextBox Margin="5" Name="DocumentHeaderBox" TextChanged="SetDocumentHeader"></TextBox>
+            <TextBox Margin="5" Name="DocumentHeaderBox" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="SetDocumentHeader"></TextBox>
         </DockPanel>
         <DockPanel>
             <TextBlock Padding="10">Event Description</TextBlock>

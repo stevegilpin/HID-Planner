@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,8 +24,22 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
                                   padding: 5px;
                               }
                               """);
-        doc.Add(new HtmlHeader(DocumentHeader));
-        doc.Add(new HtmlParagraph(EventDescription));
+        var headerLines = DocumentHeader.Split(Environment.NewLine).ToList();
+        var header = doc.Add(new HtmlHeader(string.Empty));
+        foreach (var line in headerLines) {
+            header.Add(line);
+            header.Add(new HtmlBreak());
+        }
+        // var header = doc.Add(new HtmlHeader(string.Join("<br/>", headerLines)));
+        header.AddStyle("text-align: center");
+
+        var descriptionLines = EventDescription.Split(Environment.NewLine).ToList();
+        var desc = doc.Add(new HtmlParagraph(string.Empty));
+        foreach (var line in descriptionLines) {
+            desc.Add(line);
+            desc.Add(new HtmlBreak());
+        }
+        // doc.Add(new HtmlParagraph(string.Join("<br/>", descriptionLines)));
 
         var grades = GetGrades();
         foreach (var grade in grades) {
