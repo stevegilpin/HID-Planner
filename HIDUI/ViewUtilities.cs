@@ -54,7 +54,7 @@ internal static class ViewUtilities
             Process.Start("open", $"-R \"{folderPath}\"");
     }
 
-    public static void NotifyException(this UserControl control, Exception exception, bool requireClose)
+    public static void NotifyException(this Control control, Exception exception, bool requireClose)
     {
         var nl = Environment.NewLine;
         var msg = requireClose ?

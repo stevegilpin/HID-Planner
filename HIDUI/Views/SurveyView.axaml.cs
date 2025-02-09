@@ -26,71 +26,76 @@ namespace HIDUI.Views
         
         private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
         {
-            var filePath = await this.ChooseMultipleFilePathsAsync("Select Import Files");
-            if (filePath.Length == 0)
-                return;
+            try {
+                var filePath = await this.ChooseMultipleFilePathsAsync("Select Import Files");
+                if (filePath.Length == 0)
+                    return;
 
-            ViewModel.SetFilePaths(filePath);
+                ViewModel.SetFilePaths(filePath);
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, true);
+            }
         }
 
         private void SaveSchedulingInputOnClick(object sender, RoutedEventArgs e)
         {
-            var folder = SettingsManager.GetDefaultOutputFolder();
-            ViewModel.SaveSchedulingInput(folder);
-            ViewUtilities.OpenFolderInExplorer(folder);
+            try {
+                var folder = SettingsManager.GetDefaultOutputFolder();
+                ViewModel.SaveSchedulingInput(folder);
+                ViewUtilities.OpenFolderInExplorer(folder);
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, false);
+            }
         }
 
-        private void ReconcileFilesOnClick(object sender, RoutedEventArgs e) => ViewModel.ReconcileFiles();
-
-        private void ViewMissingResponses_OnClick(object sender, RoutedEventArgs e)
+        private void ReconcileFilesOnClick(object sender, RoutedEventArgs e)
         {
-            NoResponseGrid.IsVisible = true;
-            UnexpectedResponseGrid.IsVisible = false;
-            DuplicateResponseGrid.IsVisible = false;
-            InvalidCourseChoiceGrid.IsVisible = false;
-            IncompleteResponseGrid.IsVisible = false;
+            try {
+                ViewModel.ReconcileFiles();
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, true);
+            }
         }
 
-        private void ViewUnexpectedResponses_OnClick(object sender, RoutedEventArgs e)
+        private enum DataGrids
         {
-            NoResponseGrid.IsVisible = false;
-            UnexpectedResponseGrid.IsVisible = true;
-            DuplicateResponseGrid.IsVisible = false;
-            InvalidCourseChoiceGrid.IsVisible = false;
-            IncompleteResponseGrid.IsVisible = false;
+            NoResponse,
+            UnexpectedResponse,
+            DuplicateResponse,
+            InvalidCourseChoice,
+            IncompleteResponse,
         }
-        private void ViewDuplicateResponses_OnClick(object sender, RoutedEventArgs e)
+
+        private void UpdateDataGridVisibility(DataGrids visibleGrid)
         {
-            NoResponseGrid.IsVisible = false;
-            UnexpectedResponseGrid.IsVisible = false;
-            DuplicateResponseGrid.IsVisible = true;
-            InvalidCourseChoiceGrid.IsVisible = false;
-            IncompleteResponseGrid.IsVisible = false;
+            NoResponseGrid.IsVisible = visibleGrid == DataGrids.NoResponse;
+            UnexpectedResponseGrid.IsVisible = visibleGrid == DataGrids.UnexpectedResponse;
+            DuplicateResponseGrid.IsVisible = visibleGrid == DataGrids.DuplicateResponse;
+            InvalidCourseChoiceGrid.IsVisible = visibleGrid == DataGrids.InvalidCourseChoice;
+            IncompleteResponseGrid.IsVisible = visibleGrid == DataGrids.IncompleteResponse;
         }
-        private void ViewInvalidCourseChoices_OnClick(object sender, RoutedEventArgs e)
-        {
-            NoResponseGrid.IsVisible = false;
-            UnexpectedResponseGrid.IsVisible = false;
-            DuplicateResponseGrid.IsVisible = false;
-            InvalidCourseChoiceGrid.IsVisible = true;
-            IncompleteResponseGrid.IsVisible = false;
-        }
-        private void ViewIncompleteResponses_OnClick(object sender, RoutedEventArgs e)
-        {
-            NoResponseGrid.IsVisible = false;
-            UnexpectedResponseGrid.IsVisible = false;
-            DuplicateResponseGrid.IsVisible = false;
-            InvalidCourseChoiceGrid.IsVisible = false;
-            IncompleteResponseGrid.IsVisible = true;
-        }
+
+        private void ViewMissingResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.UnexpectedResponse);
+        private void ViewUnexpectedResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.UnexpectedResponse);
+        private void ViewDuplicateResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.DuplicateResponse);
+        private void ViewInvalidCourseChoices_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.InvalidCourseChoice);
+        private void ViewIncompleteResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.IncompleteResponse);
 
         private void NoResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0)
                 return;
-            
-            var item = e.AddedItems[0];
-            ViewModel.UpdateNoResponseCandidates((NoResponseFailure)item);
+
+            try {
+                var item = e.AddedItems[0];
+                ViewModel.UpdateNoResponseCandidates((NoResponseFailure)item);
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, false);
+            }
         }
 
         private void UnexpectedResponseGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -98,8 +103,13 @@ namespace HIDUI.Views
             if (e.AddedItems.Count == 0)
                 return;
 
-            var item = e.AddedItems[0];
-            ViewModel.UpdateUnexpectedResponseCandidates((UnexpectedRespondentFailure)item);
+            try {
+                var item = e.AddedItems[0];
+                ViewModel.UpdateUnexpectedResponseCandidates((UnexpectedRespondentFailure)item);
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, false);
+            }
         }
     }
 }

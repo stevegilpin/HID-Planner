@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Data;
 using DynamicData;
 using HIDLib;
 using HIDLib.Analytics;
+using HIDLib.HTML;
 using HIDLib.IO;
 using HIDLib.ReportGenerators;
 using HIDUI.BusinessLogic;
@@ -130,47 +131,38 @@ public class SchedulingViewModel : ViewModelBase
         SchedulingResultsFilePath = null;
     }
 
-    public async void RunScheduling()
+    public async Task RunSchedulingAsync()
     {
         if (!InputsAreReady)
             return;
 
         await Task.Run(() => {
-                var mgr = new SchedulingManager {
-                    RunName = string.Empty,
-                    CourseInfoFilePath = CoursesFilePath,
-                    CourseScheduleFilePath = ScheduleFilePath,
-                    StudentInfoFilePath = StudentsFilePath,
-                    StudentCourseRankingsFilePath = StudentChoicesFilePath,
-                };
-                var msg = mgr.RunScheduling();
-                mgr.Logger.Information(msg);
-
-            }
-        );
+            new SchedulingManager {
+                RunName = string.Empty,
+                CourseInfoFilePath = CoursesFilePath,
+                CourseScheduleFilePath = ScheduleFilePath,
+                StudentInfoFilePath = StudentsFilePath,
+                StudentCourseRankingsFilePath = StudentChoicesFilePath,
+            }.RunScheduling();
+        });
 
         Runs.Clear();
         Runs.AddRange(LoadRunData());
     }
 
-    public async void SaveManualScheduling()
+    public async Task SaveManualSchedulingAsync()
     {
         if (!InputsAreReady || string.IsNullOrEmpty(SchedulingResultsFilePath))
             return;
-        
-        await Task.Run(() => {
-                var mgr = new SchedulingManager {
-                    RunName = string.Empty,
-                    CourseInfoFilePath = CoursesFilePath,
-                    CourseScheduleFilePath = ScheduleFilePath,
-                    StudentInfoFilePath = StudentsFilePath,
-                    StudentCourseRankingsFilePath = StudentChoicesFilePath,
-                    ManualSchedulingResultsFilePath = SchedulingResultsFilePath,
-                };
-                var msg = mgr.SaveManualSchedulingResults();
-                mgr.Logger.Information(msg);
 
-            }
+        await Task.Run(() => new SchedulingManager {
+                RunName = string.Empty,
+                CourseInfoFilePath = CoursesFilePath,
+                CourseScheduleFilePath = ScheduleFilePath,
+                StudentInfoFilePath = StudentsFilePath,
+                StudentCourseRankingsFilePath = StudentChoicesFilePath,
+                ManualSchedulingResultsFilePath = SchedulingResultsFilePath,
+            }.SaveManualSchedulingResults()
         );
 
         Runs.Clear();
@@ -195,5 +187,25 @@ public class SchedulingViewModel : ViewModelBase
         DataManager.UpdateRunNotes(runId, notes);
         Runs.Clear();
         Runs.AddRange(LoadRunData());
+    }
+
+    public string WriteOutputFiles(int runId)
+    {
+        var data = DataManager.LoadDataSet(runId);
+        var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {runId}");
+        CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
+
+        var docs = new IHtmlGenerator[] {
+            new ProblematicAssignmentsReport(data),
+            new ClassRosterReport(data),
+            new StudentScheduleGridReport(data),
+            new AssignmentAnalysisReport(data),
+            new StudentScheduleOverviewReport(data),
+        };
+
+        foreach (var doc in docs)
+            doc.CreateDoc().WriteToFile(outputFolder);
+
+        return outputFolder;
     }
 }

@@ -1,11 +1,6 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia.Controls;
 using Data;
 using HIDLib;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 
 namespace HIDUI.ViewModels;
 
@@ -25,54 +20,35 @@ public class SettingsViewModel : ViewModelBase
         BadCourseRankCutoff = SettingsManager.GetBadCourseRankCutoff().ToString();
     }
     
-    public bool TrySetDefaultInputFolderLocation(string path, out string errorMessage) {
-        if (string.IsNullOrEmpty(path)) {
-            errorMessage = "Cannot set default input folder path to empty string.";
-            return false;
-        } else {
-            DefaultInputsFolder = path;
-            SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
-            errorMessage = null;
-            return true;
-        }            
+    public void SetDefaultInputFolderLocation(string path) {
+        if (string.IsNullOrEmpty(path))
+            throw new Exception("Cannot set default input folder path to empty string.");
+
+        DefaultInputsFolder = path;
+        SettingsManager.UpdateSetting("INPUTS_FOLDER", path);
     }
 
-    public bool TrySetDefaultOutputFolderLocation(string path, out string errorMessage) {
-        if (string.IsNullOrEmpty(path)) {
-            errorMessage = "Cannot set default output folder path to empty string.";
-            return false;
-        } else {
-            DefaultOutputsFolder = path;
-            SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
-            errorMessage = null;
-            return true;
-        }            
+    public void SetDefaultOutputFolderLocation(string path) {
+        if (string.IsNullOrEmpty(path))
+            throw new Exception("Cannot set default output folder path to empty string.");
+
+        DefaultOutputsFolder = path;
+        SettingsManager.UpdateSetting("OUTPUT_FOLDER", path);
     }
 
     public void SaveCostFunctionExponent() {
-        if (CostFunctionExponent != "" && CostFunctionExponent.All(char.IsDigit)) {
-            // int parseResult;
-            if (int.TryParse(CostFunctionExponent, out _)) {
-                SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
-            } else {
-                // TODO
-            }
-        }
+        if (int.TryParse(CostFunctionExponent, out _))
+            SettingsManager.UpdateSetting("COST_EXPONENT", CostFunctionExponent);
+        else
+            throw new Exception($"Cannot parse {CostFunctionExponent} as an integer.");
     }
 
     public void SaveBadCourseRankCutoff() {
-        if (BadCourseRankCutoff != "" && BadCourseRankCutoff.All(char.IsDigit)) {
-            // int parseResult;
-            if (int.TryParse(BadCourseRankCutoff, out _)) {
-                SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
-            } else{
-                // TODO
-            }
-        }
+        if (int.TryParse(BadCourseRankCutoff, out _))
+            SettingsManager.UpdateSetting("BAD_RANK_CUTOFF", BadCourseRankCutoff);
+        else
+            throw new Exception($"Cannot parse {BadCourseRankCutoff} as an integer.");
     }
 
-    public string ClearDatabase()
-    {
-        return DataManager.ClearApplicationData();
-    }
+    public string ClearDatabase() => DataManager.ClearApplicationData();
 }

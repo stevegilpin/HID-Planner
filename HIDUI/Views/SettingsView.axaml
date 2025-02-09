@@ -49,7 +49,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Padding="12" FontSize="12">Cost Function Exponent: </TextBlock>
                 <TextBox Text="{ Binding CostFunctionExponent }" Watermark="Enter a number" Margin="0 5"/>
-                <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveCostFunctionExponent }">
+                <Button Name="SaveCostExponentButton" HorizontalAlignment="Center" Padding="5" Click="SaveCostExponentButton_OnClick">
                     <TextBlock Text="Save" HorizontalAlignment="Center"/>
                 </Button>
             </StackPanel>
@@ -61,7 +61,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Padding="12" FontSize="12">Course Rank Cutoff for ‘Problematic Assignments’ Report: </TextBlock>
                 <TextBox Text="{ Binding BadCourseRankCutoff }" Watermark="Enter a number" Margin="0 5"/>
-                <Button HorizontalAlignment="Center" Padding="5" Command="{ Binding SaveBadCourseRankCutoff }">
+                <Button Name="SaveRankCutoffButton" HorizontalAlignment="Center" Padding="5" Click="SaveRankCutoffButton_OnClick">
                     <TextBlock Text="Save" HorizontalAlignment="Center"/>
                 </Button>
             </StackPanel>

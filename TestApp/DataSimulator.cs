@@ -5,6 +5,7 @@ using HIDLib;
 using HIDLib.HTML;
 using HIDLib.IO;
 using HIDLib.ReportGenerators;
+using HIDUI.BusinessLogic;
 using HIDUI.ViewModels;
 
 namespace TestApp;
@@ -28,8 +29,7 @@ public static class DataSimulator
             StudentInfoFilePath = studentInfoFilePath,
             StudentCourseRankingsFilePath = rankingFilePath,
         };
-        var msg = mgr.RunScheduling();
-        mgr.Logger.Information(msg);
+        mgr.RunScheduling();
     }
 
     public static void CreateReports()

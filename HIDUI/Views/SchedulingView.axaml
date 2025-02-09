@@ -18,7 +18,7 @@
     
     <Grid ColumnDefinitions=".6*, 2, .4*">
         <Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,*">
-            <Button  Grid.Row="0" HorizontalAlignment="Center" Click="ImportFilesOnClick">
+            <Button  Grid.Row="0" HorizontalAlignment="Center" Click="ChooseInputFilesOnClick">
                 Choose Input Files
             </Button>
             <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
@@ -57,10 +57,10 @@
                     FilePath="{Binding SchedulingResultsFilePath }"
                     RemoveFileCommand="{Binding RemoveSchedulingResultsFile }"/>
                 
-                <Button Grid.Row="3" Grid.Column="0" Width="NaN" HorizontalAlignment="Stretch" Command="{ Binding RunScheduling }" IsEnabled="{ Binding InputsAreReady }">
+                <Button Grid.Row="3" Grid.Column="0" Width="NaN" HorizontalAlignment="Stretch" Name="RunSchedulingButton" Click="RunSchedulingButton_OnClick" IsEnabled="{ Binding InputsAreReady }">
                     Run Scheduling
                 </Button>
-                <Button Grid.Row="3" Grid.Column="1" Width="NaN" HorizontalAlignment="Stretch" Command="{ Binding SaveManualScheduling }" IsEnabled="{ Binding ManualInputsAreReady }">
+                <Button Grid.Row="3" Grid.Column="1" Width="NaN" HorizontalAlignment="Stretch" Name="SaveManualSchedulingButton" Click="SaveManualSchedulingButton_OnClick" IsEnabled="{ Binding ManualInputsAreReady }">
                     Save Manual Scheduling
                 </Button>
             </Grid>

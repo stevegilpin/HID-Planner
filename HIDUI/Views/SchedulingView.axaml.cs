@@ -35,39 +35,28 @@ public partial class SchedulingView : ContentControl
         SchedulingResultsFileSelector.InfoText = ViewModelUtilities.GetSchedulingResultsCsvInfoText();
     }
 
-    public async void ImportFilesOnClick(object sender, RoutedEventArgs args) {
-        var filePaths = await this.ChooseMultipleFilePathsAsync("Select Import Files");
-        ViewModel.TrySetFilePaths(filePaths);
+    public async void ChooseInputFilesOnClick(object sender, RoutedEventArgs args) {
+        try {
+            var filePaths = await this.ChooseMultipleFilePathsAsync("Choose Input Files");
+            ViewModel.TrySetFilePaths(filePaths);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, true);
+        }
     }
 
     public void SaveFilesButton_OnClick(object sender, RoutedEventArgs args) {
         if (SelectedRunInfo == null)
             return;
 
-        // todo store this data behind the scenes in Runs so we don't load it repeatedly
-        var data = DataManager.LoadDataSet(SelectedRunInfo.RunId);
-        var docs = GetHtmlDocs(data);
-
-        var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {SelectedRunInfo.RunId}");
-        CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
-        foreach (var doc in docs)
-            doc.WriteToFile(outputFolder);
-        Console.WriteLine($"Reports written to: {outputFolder}");
-        ViewUtilities.OpenFolderInExplorer(outputFolder);
-    }
-    
-    // TODO: These static functions could be moved to a service
-    public static List<HtmlDoc> GetHtmlDocs(AssignmentDataSet data)
-    {
-        var generators = new IHtmlGenerator[] {
-            new ProblematicAssignmentsReport(data),
-            new ClassRosterReport(data),
-            new StudentScheduleGridReport(data),
-            new AssignmentAnalysisReport(data),
-            new StudentScheduleOverviewReport(data),
-        };
-
-        return generators.Select(x => x.CreateDoc()).ToList();
+        try {
+            var outputFolder = ViewModel.WriteOutputFiles(SelectedRunInfo.RunId);
+            Console.WriteLine($"Reports written to: {outputFolder}");
+            ViewUtilities.OpenFolderInExplorer(outputFolder);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, false);
+        }
     }
 
     private SchedulingRunAnalyticData SelectedRunInfo => RunGrid.SelectedItem as SchedulingRunAnalyticData;
@@ -82,11 +71,16 @@ public partial class SchedulingView : ContentControl
             return;
         }
 
-        ViewModel.ViewRunDetails(SelectedRunInfo.RunId);
-        RunNameTextBox.Text = SelectedRunInfo.Name;
-        RunNotesTextBox.Text = SelectedRunInfo.Notes;
-        SaveFilesButton.IsEnabled = true;
-        UpdateRunInfoButton.IsEnabled = true;
+        try {
+            ViewModel.ViewRunDetails(SelectedRunInfo.RunId);
+            RunNameTextBox.Text = SelectedRunInfo.Name;
+            RunNotesTextBox.Text = SelectedRunInfo.Notes;
+            SaveFilesButton.IsEnabled = true;
+            UpdateRunInfoButton.IsEnabled = true;
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, false);
+        }
     }
 
     private void UpdateRunInfoButton_OnClick(object sender, RoutedEventArgs e)
@@ -94,6 +88,31 @@ public partial class SchedulingView : ContentControl
         if (SelectedRunInfo == null)
             return;
 
-        ViewModel.UpdateRunNameAndNotes(SelectedRunInfo.RunId, RunNameTextBox.Text, RunNotesTextBox.Text);
+        try {
+            ViewModel.UpdateRunNameAndNotes(SelectedRunInfo.RunId, RunNameTextBox.Text, RunNotesTextBox.Text);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, true);
+        }
+    }
+
+    private async void RunSchedulingButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        try {
+            await ViewModel.RunSchedulingAsync();
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, true);
+        }
+    }
+
+    private async void SaveManualSchedulingButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        try {
+            await ViewModel.SaveManualSchedulingAsync();
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, true);
+        }
     }
 }

@@ -24,7 +24,7 @@ public class CourseOptionsModel
     public void SaveHtmlFile(string folder)
     {
         if (IsInputReady() == false)
-            return;
+            throw new Exception("Input is not ready");
         
         var courseData = CsvReadUtil.ReadCourseInfo(CourseInfoFilePath);
         var courseOptionsReport = new CourseOptionsReport(courseData, DocumentHeader, EventDescription);
@@ -34,7 +34,7 @@ public class CourseOptionsModel
     public void SaveTextFile(string folder)
     {
         if (IsInputReady() == false)
-            return;
+            throw new Exception("Input is not ready");
 
         var courseData = CsvReadUtil.ReadCourseInfo(CourseInfoFilePath);
         var courseOptionsReport = new CourseOptionsReport(courseData, DocumentHeader, EventDescription);

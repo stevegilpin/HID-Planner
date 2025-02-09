@@ -22,11 +22,16 @@ public partial class CourseOptionsView : UserControl
 
     private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
     {
-        var filePaths = await this.ChooseOneFilePathAsync("Select Import Files");
-        if (string.IsNullOrEmpty(filePaths))
-            return;
+        try {
+            var filePaths = await this.ChooseOneFilePathAsync("Select Import Files");
+            if (string.IsNullOrEmpty(filePaths))
+                return;
 
-        ViewModel.SetCoursesFile(filePaths);
+            ViewModel.SetCoursesFile(filePaths);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, true);
+        }
     }
 
     private void SaveHtmlFileOnClick(object sender, RoutedEventArgs e)
@@ -37,15 +42,20 @@ public partial class CourseOptionsView : UserControl
             ViewUtilities.OpenFolderInExplorer(folder);
         }
         catch (Exception exception) {
-            this.NotifyException(exception, true);
+            this.NotifyException(exception, false);
         }
     }
 
     private void SaveTextFileOnClick(object sender, RoutedEventArgs e)
     {
-        var folder = SettingsManager.GetDefaultOutputFolder();
-        ViewModel.SaveTextFile(folder);
-        ViewUtilities.OpenFolderInExplorer(folder);
+        try {
+            var folder = SettingsManager.GetDefaultOutputFolder();
+            ViewModel.SaveTextFile(folder);
+            ViewUtilities.OpenFolderInExplorer(folder);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, false);
+        }
     }
 
     private void SetEventDescription(object sender, TextChangedEventArgs textChangedEventArgs) => ViewModel.SetEventDescription(EventDescriptionBox.Text);
