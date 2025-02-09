@@ -26,7 +26,7 @@ public partial class SettingsView : UserControl
     
     public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {
         try {
-            var defaultInputsFolder = await this.ChooseFolderPathAsync("Change Default Input Folder Location");
+            var defaultInputsFolder = await this.ChooseFolderPathAsync("Change Default Input Folder Location", true);
             ViewModel.SetDefaultInputFolderLocation(defaultInputsFolder);
         }
         catch (Exception ex) {
@@ -36,7 +36,7 @@ public partial class SettingsView : UserControl
     
     public async void ChangeDefaultOutputFolderOnClick(object sender, RoutedEventArgs args) {
         try {
-            var defaultOutputsFolder = await this.ChooseFolderPathAsync("Change Default Output Folder Location");
+            var defaultOutputsFolder = await this.ChooseFolderPathAsync("Change Default Output Folder Location", false);
             ViewModel.SetDefaultOutputFolderLocation(defaultOutputsFolder);
         }
         catch (Exception ex) {

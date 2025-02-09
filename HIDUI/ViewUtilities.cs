@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
+using HIDLib;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 
@@ -13,36 +15,42 @@ namespace HIDUI;
 
 internal static class ViewUtilities
 {
-    public static async Task<string[]> ChooseMultipleFilePathsAsync(this Visual sender, string title) {
-        var files = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+    public static async Task<string[]> ChooseMultipleFilePathsAsync(this Control sender, string title) {
+        var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
+        var start = SettingsManager.GetDefaultInputsFolder();
+        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = true,
+            SuggestedStartLocation = startPath,
         });
         return files.Select(file => file.Path.LocalPath).ToArray();
     }
     
-    public static async Task<string> ChooseOneFilePathAsync(this Visual sender, string title) {
-        var files = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+    public static async Task<string> ChooseOneFilePathAsync(this Control sender, string title) {
+        var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
+        var start = SettingsManager.GetDefaultInputsFolder();
+        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = false,
+            SuggestedStartLocation = startPath,
         });
         var filesArray = files.Select(file => file.Path.LocalPath).ToArray();
-        if (filesArray.Length == 0)
-            return null;
-        else
-            return filesArray[0];
+        return filesArray.Length == 0 ? null : filesArray[0];
     }
 
-    public static async Task<string> ChooseFolderPathAsync(this Visual sender, string title) {
-        var folder = await TopLevel.GetTopLevel(sender).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+    public static async Task<string> ChooseFolderPathAsync(this Control sender, string title, bool chooseInput) {
+        var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
+        var start = chooseInput ? SettingsManager.GetDefaultInputsFolder() : SettingsManager.GetDefaultOutputFolder();
+        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        var folder = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
             Title = title,
             AllowMultiple = false,
+            SuggestedStartLocation = startPath,
         });
         var folderPaths = folder.Select(folder => folder.Path.LocalPath).ToArray();
-        if (folderPaths.Length == 0)
-            return null;
-        else
-            return folderPaths[0];
+        return folderPaths.Length == 0 ? null : folderPaths[0];
     }
 
     public static void OpenFolderInExplorer(string folderPath)
