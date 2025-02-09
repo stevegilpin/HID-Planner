@@ -25,12 +25,6 @@ public static class SettingsManager
     public static string GetDefaultOutputFolder() => GetSettingValue(SettingNames.OutputFolder);
     public static int GetBadCourseRankCutoff() => int.Parse(GetSettingValue(SettingNames.BadCourseRankCutoff));
     public static int GetCostFunctionExponent() => int.Parse(GetSettingValue(SettingNames.CostFunctionExponent));
-    
-    public static List<Settings> GetSettings()
-    {
-        using var db = DbProvider.GetDbContext();
-        return db.Settings.ToList();
-    }
 
     public static string GetSettingValue(string name)
     {
