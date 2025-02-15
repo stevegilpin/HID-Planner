@@ -99,7 +99,9 @@ public partial class SchedulingView : ContentControl
     private async void RunSchedulingButton_OnClick(object sender, RoutedEventArgs e)
     {
         try {
-            await ViewModel.RunSchedulingAsync();
+            IsEnabled = false;
+            await ViewModel.RunSchedulingAsync()
+                .ContinueWith(_ => Dispatcher.UIThread.Invoke(() => IsEnabled = true));
         }
         catch (Exception ex) {
             this.NotifyException(ex, true);
@@ -109,7 +111,9 @@ public partial class SchedulingView : ContentControl
     private async void SaveManualSchedulingButton_OnClick(object sender, RoutedEventArgs e)
     {
         try {
-            await ViewModel.SaveManualSchedulingAsync();
+            IsEnabled = false;
+            await ViewModel.SaveManualSchedulingAsync()
+                .ContinueWith(_ => Dispatcher.UIThread.Invoke(() => IsEnabled = true));
         }
         catch (Exception ex) {
             this.NotifyException(ex, true);
