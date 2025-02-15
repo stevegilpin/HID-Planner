@@ -15,10 +15,19 @@ namespace HIDUI;
 
 internal static class ViewUtilities
 {
+    private static async Task<IStorageFolder> GetStartLocation(IStorageProvider storageProvider, bool inputFolder)
+    {
+        var start = inputFolder ? SettingsManager.GetDefaultInputsFolder() : SettingsManager.GetDefaultOutputFolder();
+        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        if (Directory.Exists(start) == false)
+            startPath = null;
+
+        return startPath;
+    }
+    
     public static async Task<string[]> ChooseMultipleFilePathsAsync(this Control sender, string title) {
         var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
-        var start = SettingsManager.GetDefaultInputsFolder();
-        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        var startPath = await GetStartLocation(storageProvider, true);
         var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = true,
@@ -29,8 +38,7 @@ internal static class ViewUtilities
     
     public static async Task<string> ChooseOneFilePathAsync(this Control sender, string title) {
         var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
-        var start = SettingsManager.GetDefaultInputsFolder();
-        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
+        var startPath = await GetStartLocation(storageProvider, true);
         var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = title,
             AllowMultiple = false,
@@ -42,14 +50,13 @@ internal static class ViewUtilities
 
     public static async Task<string> ChooseFolderPathAsync(this Control sender, string title, bool chooseInput) {
         var storageProvider = TopLevel.GetTopLevel(sender)!.StorageProvider;
-        var start = chooseInput ? SettingsManager.GetDefaultInputsFolder() : SettingsManager.GetDefaultOutputFolder();
-        var startPath = await storageProvider.TryGetFolderFromPathAsync(start);
-        var folder = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+        var startPath = await GetStartLocation(storageProvider, chooseInput);
+        var folders = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
             Title = title,
             AllowMultiple = false,
             SuggestedStartLocation = startPath,
         });
-        var folderPaths = folder.Select(folder => folder.Path.LocalPath).ToArray();
+        var folderPaths = folders.Select(x => x.Path.LocalPath).ToArray();
         return folderPaths.Length == 0 ? null : folderPaths[0];
     }
 
