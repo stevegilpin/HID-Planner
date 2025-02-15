@@ -256,6 +256,7 @@
 						<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding Response.LastName }"/>
 						<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Response.Grade }"/>
 						<DataGridTextColumn Header="Invalid Course" Width="*" Binding="{ Binding InvalidCourseChoice }"/>
+						<DataGridTextColumn Header="Selection Problem" Width="*" Binding="{ Binding ProblemDescription }"/>
 					</DataGrid.Columns>
 				</DataGrid>
 			</Grid>

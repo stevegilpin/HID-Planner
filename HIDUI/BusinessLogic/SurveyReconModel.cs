@@ -93,6 +93,7 @@ public class SurveyReconModel
     private static List<InvalidCourseChoiceFailure> LoadInvalidCourseChoiceFailures(List<SurveyResponse> surveyData, List<CourseInfo> courseData)
     {
         var failures = new List<InvalidCourseChoiceFailure>();
+        var allCourses = courseData.Select(x => x.CourseName).ToHashSet();
         foreach (var response in surveyData) {
             var eligibleCourses = courseData
                 .Where(x => x.MinGrade <= response.Grade && x.MaxGrade >= response.Grade)
@@ -100,8 +101,11 @@ public class SurveyReconModel
                 .ToHashSet();
 
             foreach (var course in response.ClassRankings) {
-                if (eligibleCourses.Contains(course) == false)
-                    failures.Add(new InvalidCourseChoiceFailure(response, course));
+                if (eligibleCourses.Contains(course))
+                    continue;
+
+                var problem = allCourses.Contains(course) ? $"Not available for grade {response.Grade}" : "No matching course";
+                failures.Add(new InvalidCourseChoiceFailure(response, course, problem));
             }
         }
 
@@ -164,6 +168,6 @@ public record UnexpectedRespondentFailure(SurveyResponse Response, List<StudentI
 /// <summary> Multiple responses for the same student </summary>
 public record DuplicateResponseFailure(string FirstName, string LastName, int Grade, List<SurveyResponse> Responses);
 /// <summary> Responses ranking a course which is not available to the student </summary>
-public record InvalidCourseChoiceFailure(SurveyResponse Response, string InvalidCourseChoice);
+public record InvalidCourseChoiceFailure(SurveyResponse Response, string InvalidCourseChoice, string ProblemDescription);
 /// <summary> Responses with fewer course rankings than other students in the same grade </summary>
 public record IncompleteResponseFailure(SurveyResponse Response, int ExpectedRankingsCount);
