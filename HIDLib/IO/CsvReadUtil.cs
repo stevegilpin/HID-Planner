@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,7 +5,6 @@ using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Data.Objects;
-using Google.Protobuf.Collections;
 
 namespace HIDLib.IO;
 
@@ -73,7 +71,7 @@ public static class CsvReadUtil
     public static List<CourseInfo> ReadCourseInfo(string filePath)
     {
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, GetCsvReaderConfig());
         csv.Context.RegisterClassMap<CsvMappers.CourseInfoMapper>();
 
         csv.Read();
@@ -138,12 +136,20 @@ public static class CsvReadUtil
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, GetCsvReaderConfig());
         csv.Context.RegisterClassMap<TMapper>();
 
         var records = csv.GetRecords<TData>().ToList();
 
         return records;
+    }
+
+    private static CsvConfiguration GetCsvReaderConfig()
+    {
+        return new CsvConfiguration(CultureInfo.InvariantCulture) {
+            IgnoreBlankLines = true,
+            ShouldSkipRecord = args => string.IsNullOrWhiteSpace(args.Row.Parser.RawRecord.Replace(args.Row.Parser.Delimiter, string.Empty))
+        };
     }
 
     public static int GradeToInt(string gradeCode)
