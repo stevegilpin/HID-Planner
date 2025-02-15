@@ -105,6 +105,9 @@
 				HorizontalAlignment="Stretch"
 				Click="ViewMissingResponses_OnClick">
 				View Missing Responses
+				<ToolTip.Tip>
+					<TextBlock FontSize="14" TextWrapping="Wrap">Expected responses based on the student roster which were not found in the survey responses</TextBlock>
+				</ToolTip.Tip>
 			</Button>
 			<Button
 				Grid.Column = "1"
@@ -112,6 +115,9 @@
 				HorizontalAlignment="Stretch"
 				Click="ViewUnexpectedResponses_OnClick">
 				View Unexpected Responses
+				<ToolTip.Tip>
+					<TextBlock FontSize="14" TextWrapping="Wrap">Survey responses which were not expected based on the student roster</TextBlock>
+				</ToolTip.Tip>
 			</Button>
 			<Button 
 				Grid.Column = "2"
@@ -119,6 +125,9 @@
 				HorizontalAlignment="Stretch"
 				Click="ViewDuplicateResponses_OnClick">
 				View Duplicate Responses
+				<ToolTip.Tip>
+					<TextBlock FontSize="14" TextWrapping="Wrap">Survey responses which appeared multiple times for one student</TextBlock>
+				</ToolTip.Tip>
 			</Button>
 			<Button 
 				Grid.Column = "3"
@@ -126,14 +135,20 @@
 				HorizontalAlignment="Stretch"
 				Click="ViewInvalidCourseChoices_OnClick">
 				View Invalid Course Choices
-				</Button>
+				<ToolTip.Tip>
+					<TextBlock FontSize="14" TextWrapping="Wrap">Survey responses which selected a course that does not match any courses available to that student's grade</TextBlock>
+				</ToolTip.Tip>
+			</Button>
 			<Button 
 				Grid.Column = "4"
 				Margin="5 0"
 				HorizontalAlignment="Stretch"
 				Click="ViewIncompleteResponses_OnClick">
 				View Incomplete Responses
-				</Button>
+				<ToolTip.Tip>
+					<TextBlock FontSize="14" TextWrapping="Wrap">Survey responses which did not rank as many courses as other students in the same grade</TextBlock>
+				</ToolTip.Tip>
+			</Button>
         </Grid>
 
 		<!-- diff data grids -->
