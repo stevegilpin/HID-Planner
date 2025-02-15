@@ -14,6 +14,9 @@ public static class CsvMappers
         {
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
+            Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
+            Map(x => x.CourseName).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
+            Map(x => x.Description).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
             Map(x => x.MinCapacity).Optional();
             Map(x => x.MaxCapacity).Optional();
             Map(x => x.MinGrade).Convert(ParseMinGrade);
@@ -55,6 +58,10 @@ public static class CsvMappers
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
             Map(x => x.StudentId).Optional(); // todo should be ignored or required
+            Map(x => x.FirstName).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
+            Map(x => x.LastName).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
+            Map(x => x.Grade).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
+            Map(x => x.Gender).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
         }
     }
 
@@ -64,6 +71,7 @@ public static class CsvMappers
         {
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
+            Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
         }
     }
         
@@ -73,6 +81,7 @@ public static class CsvMappers
         {
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
+            Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
             Map(x => x.RoomCode).Optional();
             Map(x => x.Instructor).Optional();
             Map(x => x.Supervisor).Optional();
@@ -85,6 +94,7 @@ public static class CsvMappers
         {
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
+            Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
         }
     }
 }

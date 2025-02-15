@@ -148,7 +148,8 @@ public static class CsvReadUtil
     {
         return new CsvConfiguration(CultureInfo.InvariantCulture) {
             IgnoreBlankLines = true,
-            ShouldSkipRecord = args => string.IsNullOrWhiteSpace(args.Row.Parser.RawRecord.Replace(args.Row.Parser.Delimiter, string.Empty))
+            ExceptionMessagesContainRawData = true,
+            ShouldSkipRecord = args => string.IsNullOrWhiteSpace(args.Row.Parser.RawRecord.Replace(args.Row.Parser.Delimiter, string.Empty)),
         };
     }
 
