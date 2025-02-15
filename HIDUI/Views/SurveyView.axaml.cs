@@ -78,7 +78,7 @@ namespace HIDUI.Views
             IncompleteResponseGrid.IsVisible = visibleGrid == DataGrids.IncompleteResponse;
         }
 
-        private void ViewMissingResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.UnexpectedResponse);
+        private void ViewMissingResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.NoResponse);
         private void ViewUnexpectedResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.UnexpectedResponse);
         private void ViewDuplicateResponses_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.DuplicateResponse);
         private void ViewInvalidCourseChoices_OnClick(object sender, RoutedEventArgs e) => UpdateDataGridVisibility(DataGrids.InvalidCourseChoice);
