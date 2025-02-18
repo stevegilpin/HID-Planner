@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -78,8 +79,12 @@ public static class CsvReadUtil
         csv.ReadHeader();
 
         var data = new List<CourseInfo>();
-        while (csv.Read())
-            data.Add(csv.GetRecord<CourseInfo>());
+        while (csv.Read()) {
+            var record = csv.GetRecord<CourseInfo>();
+            data.Add(record);
+            if (record.MinGrade > record.MaxGrade)
+                throw new Exception($"Error parsing course info on line {csv.Parser.Row}. Min grade is greater than max grade.{Environment.NewLine}{Environment.NewLine}{csv.Parser.RawRecord}");
+        }
 
         return data;
     }
