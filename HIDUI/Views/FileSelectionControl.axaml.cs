@@ -71,11 +71,13 @@ public partial class FileSelectionControl : UserControl
         Border.BorderBrush = new SolidColorBrush(Colors.Green);
         FileChoicePanel.IsVisible = true;
         FileNameTextBlock.Text = Path.GetFileName(filePath);
+        ToolTip.SetTip(this, filePath);
     }
     private void OnFileDeselected()
     {
         Border.BorderBrush = new SolidColorBrush(Colors.Gray);
         FileChoicePanel.IsVisible = false;
         FileNameTextBlock.Text = string.Empty;
+        ClearValue(ToolTip.TipProperty);
     }
 }
