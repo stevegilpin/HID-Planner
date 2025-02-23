@@ -40,8 +40,8 @@ public static class CsvReadUtil
     public static bool HeaderMatchesSurveyResponses(string filePath)
     {
         var requiredHeaders = new[] {
-            "Last Name",
-            "First Name",
+            "Student Last Name",
+            "Student First Name",
             "Grade",
             "Email Address",
         };
@@ -110,8 +110,8 @@ public static class CsvReadUtil
     {
         var lines = File.ReadAllLines(filePath);
         var header = lines[0].Split(',').ToList();
-        var lastNameIndex = header.IndexOf("Last Name");
-        var firstNameIndex = header.IndexOf("First Name");
+        var lastNameIndex = header.IndexOf("Student Last Name");
+        var firstNameIndex = header.IndexOf("Student First Name");
         var gradeIndex = header.IndexOf("Grade");
         var emailIndex = header.IndexOf("Email Address");
 
