@@ -58,9 +58,9 @@ public static class CsvReadUtil
 
         bool headerOk = true;
         using var reader = new StreamReader(filePath);
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture) {
-            HeaderValidated = args => headerOk = args.InvalidHeaders.Length == 0
-        };
+        var config = GetCsvReaderConfig();
+        config.HeaderValidated = args => headerOk = args.InvalidHeaders.Length == 0;
+
         using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<TMapper>();
         csv.Read();
@@ -155,6 +155,7 @@ public static class CsvReadUtil
             IgnoreBlankLines = true,
             ExceptionMessagesContainRawData = true,
             ShouldSkipRecord = args => string.IsNullOrWhiteSpace(args.Row.Parser.RawRecord.Replace(args.Row.Parser.Delimiter, string.Empty)),
+            PrepareHeaderForMatch = args => args.Header?.Replace(" ", string.Empty).ToLower(),
         };
     }
 
