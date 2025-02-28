@@ -121,7 +121,7 @@ public static class CsvReadUtil
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            var data = line.Split(',').ToList();
+            var data = line.Split(',').Select(x => x.Trim()).ToList();
             var rankings = data
                 .Where((_, i) => i >= rowDataStart)
                 .Where(x => string.IsNullOrWhiteSpace(x) == false)
