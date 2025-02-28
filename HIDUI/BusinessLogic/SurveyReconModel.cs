@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data.Objects;
+using HIDLib.HTML;
 using HIDLib.IO;
+using HIDLib.ReportGenerators;
 
 namespace HIDUI.BusinessLogic;
 
@@ -147,6 +149,12 @@ public class SurveyReconModel
 
         CsvWriteUtil.WriteCourseRankings(rankings, folder);
         CsvWriteUtil.WriteStudentInfo(StudentData, folder);
+    }
+
+    public void SaveMissingResponsesList(string folder)
+    {
+        var missingStudents = NoResponseFailures.Select(x => x.Student).ToList();
+        new MissingSurveyResponseReport(missingStudents).CreateDoc().WriteToFile(folder);
     }
     
     private bool SurveyResponsesInputReady() => string.IsNullOrEmpty(SurveyResponsesFilePath) == false;

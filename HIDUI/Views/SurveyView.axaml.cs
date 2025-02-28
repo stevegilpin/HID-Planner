@@ -43,8 +43,20 @@ namespace HIDUI.Views
         private void SaveSchedulingInputOnClick(object sender, RoutedEventArgs e)
         {
             try {
-                var folder = System.IO.Path.Combine(SettingsManager.GetDefaultOutputFolder(), "Scheduling Inputs");
+                var folder = System.IO.Path.Combine(SettingsManager.GetDefaultOutputFolder(), "Survey Validation");
                 ViewModel.SaveSchedulingInput(folder);
+                ViewUtilities.OpenFolderInExplorer(folder);
+            }
+            catch (Exception ex) {
+                this.NotifyException(ex, false);
+            }
+        }
+        
+        private void SaveMissingResponsesOnClick(object sender, RoutedEventArgs e)
+        {
+            try {
+                var folder = System.IO.Path.Combine(SettingsManager.GetDefaultOutputFolder(), "Survey Validation");
+                ViewModel.SaveMissingResponsesList(folder);
                 ViewUtilities.OpenFolderInExplorer(folder);
             }
             catch (Exception ex) {

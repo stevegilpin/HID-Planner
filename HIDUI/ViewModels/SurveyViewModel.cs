@@ -128,6 +128,8 @@ namespace HIDUI.ViewModels
         }
 
         public void SaveSchedulingInput(string folder) => Model.SaveAsSchedulingInput(folder);
+        
+        public void SaveMissingResponsesList(string folder) => Model.SaveMissingResponsesList(folder);
 
         public void ResolveUnexpectedResponse(UnexpectedRespondentFailure failure, StudentInfo match, bool useSurveyResponse)
         {
