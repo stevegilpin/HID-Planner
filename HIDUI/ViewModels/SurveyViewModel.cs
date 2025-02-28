@@ -42,18 +42,19 @@ namespace HIDUI.ViewModels
         private void OnFileInputChanged()
         {
             OnPropertyChanged(nameof(IsSurveyResponseFilePathSet));
-            OnPropertyChanged(nameof(AllFilePathsSet));
             OnPropertyChanged(nameof(SurveyFilePath));
             OnPropertyChanged(nameof(StudentsFilePath));
             OnPropertyChanged(nameof(CoursesFilePath));
+            OnPropertyChanged(nameof(CanSaveSchedulingInputs));
             ClearFailures();
         }
 
         public bool IsSurveyResponseFilePathSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false;
-        public bool AllFilePathsSet => string.IsNullOrEmpty(Model.SurveyResponsesFilePath) == false &&
-                                       string.IsNullOrEmpty(Model.StudentInfoFilePath) == false &&
-                                       string.IsNullOrEmpty(Model.CourseInfoFilePath) == false;
         public bool FailuresLoaded { get; set; }
+        public bool CanSaveSchedulingInputs => FailuresLoaded &&
+                                               !string.IsNullOrEmpty(SurveyFilePath) &&
+                                               !string.IsNullOrEmpty(StudentsFilePath) &&
+                                               !string.IsNullOrEmpty(CoursesFilePath);
         public string FailureSummary { get; set; } = string.Empty;
         public string FailureSummaryColor { get; set; } = string.Empty;
 
@@ -65,10 +66,10 @@ namespace HIDUI.ViewModels
         public ObservableCollection<InvalidCourseChoiceFailure> InvalidCourseChoiceFailures { get; } = [];
         public ObservableCollection<IncompleteResponseFailure> IncompleteResponseFailures { get; } = [];
 
-        public void ReconcileFiles()
+        public void ReconcileFiles(bool loadFiles = true)
         {
             ClearFailures();
-            Model.LoadAllFailures();
+            Model.LoadAllFailures(loadFiles);
 
             Model.NoResponseFailures.ForEach(x => NoResponseFailures.Add(x));
             Model.UnexpectedRespondentFailures.ForEach(x => UnexpectedRespondentFailures.Add(x));
@@ -78,6 +79,7 @@ namespace HIDUI.ViewModels
 
             FailuresLoaded = true;
             OnPropertyChanged(nameof(FailuresLoaded));
+            OnPropertyChanged(nameof(CanSaveSchedulingInputs));
 
             int failureCount = Model.NoResponseFailures.Count +
                                Model.UnexpectedRespondentFailures.Count +
@@ -103,6 +105,7 @@ namespace HIDUI.ViewModels
 
             FailuresLoaded = false;
             OnPropertyChanged(nameof(FailuresLoaded));
+            OnPropertyChanged(nameof(CanSaveSchedulingInputs));
             
             FailureSummary = string.Empty;
             FailureSummaryColor = string.Empty;
@@ -125,5 +128,19 @@ namespace HIDUI.ViewModels
         }
 
         public void SaveSchedulingInput(string folder) => Model.SaveAsSchedulingInput(folder);
+
+        public void ResolveUnexpectedResponse(UnexpectedRespondentFailure failure, StudentInfo match, bool useSurveyResponse)
+        {
+            Model.UnexpectedRespondentFailures.Remove(failure);
+            if (useSurveyResponse) {
+                match.FirstName = failure.Response.FirstName;
+                match.LastName = failure.Response.LastName;
+            } else {
+                failure.Response.FirstName = match.FirstName;
+                failure.Response.LastName = match.LastName;
+            }
+
+            ReconcileFiles(false);
+        }
     }
 }

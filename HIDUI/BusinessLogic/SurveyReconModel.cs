@@ -29,12 +29,14 @@ public class SurveyReconModel
         StudentInfoFilePath = ControllerUtils.GetMatchingPath(paths, StudentInfoFilePath, CsvReadUtil.HeaderMatchesStudentInfo);
     }
 
-    public void LoadAllFailures()
+    public void LoadAllFailures(bool reloadFiles)
     {
-        SurveyData = SurveyResponsesInputReady() ? CsvReadUtil.ReadSurveyResponses(SurveyResponsesFilePath) : null;
-        StudentData = StudentInfoInputReady() ? CsvReadUtil.ReadStudentInfo(StudentInfoFilePath) : null;
-        CourseData = CourseInfoInputReady() ? CsvReadUtil.ReadCourseInfo(CourseInfoFilePath) : null;
-        
+        if (reloadFiles) {
+            SurveyData = SurveyResponsesInputReady() ? CsvReadUtil.ReadSurveyResponses(SurveyResponsesFilePath) : null;
+            StudentData = StudentInfoInputReady() ? CsvReadUtil.ReadStudentInfo(StudentInfoFilePath) : null;
+            CourseData = CourseInfoInputReady() ? CsvReadUtil.ReadCourseInfo(CourseInfoFilePath) : null;
+        }
+
         NoResponseFailures = CanLoadNoResponseFailures() ? LoadNoResponseFailures(SurveyData, StudentData) : [];
         UnexpectedRespondentFailures = CanLoadUnexpectedRespondentFailures() ? LoadUnexpectedRespondentFailures(SurveyData, StudentData) : [];
         DuplicateResponseFailures = CanLoadDuplicateResponseFailures() ? LoadDuplicateResponseFailures(SurveyData) : [];
@@ -127,20 +129,15 @@ public class SurveyReconModel
 
         return failures;
     }
-    
-    public bool CanSaveAsSchedulingInput() => SurveyResponsesInputReady() && StudentInfoInputReady() && CourseInfoInputReady();
+
     public void SaveAsSchedulingInput(string folder)
     {
-        var surveyData = CsvReadUtil.ReadSurveyResponses(SurveyResponsesFilePath);
-        var studentData = CsvReadUtil.ReadStudentInfo(StudentInfoFilePath);
-        var courseData = CsvReadUtil.ReadCourseInfo(CourseInfoFilePath);
-
         var rankings = new List<StudentCourseRanking>();
-        var studentInfoMap = studentData.ToDictionary(x => (x.LastName, x.FirstName));
-        foreach (var response in surveyData) {
+        var studentInfoMap = StudentData.ToDictionary(x => (x.LastName, x.FirstName));
+        foreach (var response in SurveyData) {
             var studentInfo = studentInfoMap[(response.LastName, response.FirstName)];
             var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
-            var eligibleCourses = courseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
+            var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
             rankings.AddRange(response.ClassRankings.Select((x, i) => new StudentCourseRanking {
                 CourseCode = eligibleCourses[x].CourseCode,
                 Rank = i + 1,
@@ -149,6 +146,7 @@ public class SurveyReconModel
         }
 
         CsvWriteUtil.WriteCourseRankings(rankings, folder);
+        CsvWriteUtil.WriteStudentInfo(StudentData, folder);
     }
     
     private bool SurveyResponsesInputReady() => string.IsNullOrEmpty(SurveyResponsesFilePath) == false;
@@ -162,12 +160,39 @@ public class SurveyReconModel
 }
 
 /// <summary> Students for whom a matching response was not found </summary>
-public record NoResponseFailure(StudentInfo Student, List<SurveyResponse> PossibleMatches);
+public class NoResponseFailure(StudentInfo student, List<SurveyResponse> possibleMatches)
+{
+    public StudentInfo Student { get; set; } = student;
+    public List<SurveyResponse> PossibleMatches { get; set; } = possibleMatches;
+};
+
 /// <summary> Responses for which a matching student was not found </summary>
-public record UnexpectedRespondentFailure(SurveyResponse Response, List<StudentInfo> PossibleMatches);
+public class UnexpectedRespondentFailure(SurveyResponse response, List<StudentInfo> possibleMatches)
+{
+    public SurveyResponse Response { get; set; } = response;
+    public List<StudentInfo> PossibleMatches { get; set; } = possibleMatches;
+}
+
 /// <summary> Multiple responses for the same student </summary>
-public record DuplicateResponseFailure(string FirstName, string LastName, int Grade, List<SurveyResponse> Responses);
+public class DuplicateResponseFailure(string firstName, string lastName, int grade, List<SurveyResponse> responses)
+{
+    public string FirstName { get; set; } = firstName;
+    public string LastName { get; set; } = lastName;
+    public int Grade { get; set; } = grade;
+    public List<SurveyResponse> Responses { get; set; } = responses;
+}
+
 /// <summary> Responses ranking a course which is not available to the student </summary>
-public record InvalidCourseChoiceFailure(SurveyResponse Response, string InvalidCourseChoice, string ProblemDescription);
+public class InvalidCourseChoiceFailure(SurveyResponse response, string course, string problem)
+{
+    public SurveyResponse Response { get; set; } = response;
+    public string InvalidCourseChoice { get; set; } = course;
+    public string ProblemDescription { get; set; } = problem;
+}
+
 /// <summary> Responses with fewer course rankings than other students in the same grade </summary>
-public record IncompleteResponseFailure(SurveyResponse Response, int ExpectedRankingsCount);
+public class IncompleteResponseFailure(SurveyResponse response, int expectedRankingsCount)
+{
+    public SurveyResponse Response { get; set; } = response;
+    public int ExpectedRankingsCount { get; set; } = expectedRankingsCount;
+}

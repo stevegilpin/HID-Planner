@@ -1,14 +1,16 @@
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Data.Objects;
 using HIDLib;
 using HIDUI.BusinessLogic;
 using HIDUI.ViewModels;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace HIDUI.Views
 {
@@ -41,7 +43,7 @@ namespace HIDUI.Views
         private void SaveSchedulingInputOnClick(object sender, RoutedEventArgs e)
         {
             try {
-                var folder = SettingsManager.GetDefaultOutputFolder();
+                var folder = System.IO.Path.Combine(SettingsManager.GetDefaultOutputFolder(), "Scheduling Inputs");
                 ViewModel.SaveSchedulingInput(folder);
                 ViewUtilities.OpenFolderInExplorer(folder);
             }
@@ -110,6 +112,41 @@ namespace HIDUI.Views
             catch (Exception ex) {
                 this.NotifyException(ex, false);
             }
+        }
+
+        private void KeepMatchOnClick(object sender, RoutedEventArgs e)
+        {
+            var btn = (Button)sender;
+            var surveyResponse = (UnexpectedRespondentFailure)UnexpectedResponseGridData.SelectedItem;
+            var surveyName = $"{surveyResponse.Response.FirstName} {surveyResponse.Response.LastName}";
+            var studentInfo = (StudentInfo)btn.DataContext!;
+            var studentInfoName = $"{studentInfo.FirstName} {studentInfo.LastName}";
+            var box = MessageBoxManager.GetMessageBoxCustom(
+                new MessageBoxCustomParams {
+                    ButtonDefinitions = new List<ButtonDefinition> {
+                        new() { Name = surveyName, IsDefault = true},
+                        new() { Name = studentInfoName },
+                        new() { Name = "Cancel", IsCancel = true, }
+                    },
+                    ContentTitle = "Select Student Name",
+                    ContentMessage = "Which name do you want to use for this student?",
+                    Icon = MsBox.Avalonia.Enums.Icon.Question,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    MaxWidth = 500,
+                    MaxHeight = 800,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    ShowInCenter = true,
+                    Topmost = false,
+                });
+
+            box.ShowWindowDialogAsync((Window)this.GetVisualRoot())
+                .ContinueWith(x => {
+                    if (x.Result == surveyName)
+                        Dispatcher.UIThread.Invoke(() => ViewModel.ResolveUnexpectedResponse(surveyResponse, studentInfo, true));
+                    else if (x.Result == studentInfoName)
+                        Dispatcher.UIThread.Invoke(() => ViewModel.ResolveUnexpectedResponse(surveyResponse, studentInfo, false));
+                });
         }
     }
 }

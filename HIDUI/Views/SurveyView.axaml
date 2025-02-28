@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:HIDUI.ViewModels"
              xmlns:views="clr-namespace:HIDUI.Views"
+             xmlns:objects="clr-namespace:Data.Objects;assembly=Data"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="True"
@@ -72,7 +73,7 @@
 			<Button
 				Grid.Column="1"
 				Width="NaN"
-				IsEnabled="{Binding AllFilePathsSet}"
+				IsEnabled="{Binding CanSaveSchedulingInputs}"
 				HorizontalAlignment="Stretch"
 				Margin="5"
 				Padding="0 10"
@@ -201,6 +202,7 @@
 						Margin="10 0"
 						SelectionMode="Single"
 						SelectionChanged="UnexpectedResponseGrid_OnSelectionChanged"
+						Name="UnexpectedResponseGridData"
 						ItemsSource="{ Binding UnexpectedRespondentFailures }">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding Response.FirstName }"/>
@@ -224,6 +226,16 @@
 							<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
 							<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
 							<DataGridTextColumn Header="Homeroom" Width="*" Binding="{ Binding Homeroom }"/>
+							<DataGridTemplateColumn Width="*" Header="Save Data">
+								<DataTemplate DataType="objects:StudentInfo">
+									<Button 
+										Click="KeepMatchOnClick"
+										Width="NaN"
+										Height="NaN"
+										FontSize="12"
+										Content="Keep Match"/>
+								</DataTemplate>
+							</DataGridTemplateColumn>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Grid>
