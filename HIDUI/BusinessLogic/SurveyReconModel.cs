@@ -50,7 +50,7 @@ public class SurveyReconModel
     private static List<NoResponseFailure> LoadNoResponseFailures(List<SurveyResponse> surveyData, List<StudentInfo> studentData)
     {
         var failures = new List<NoResponseFailure>();
-        var respondents = surveyData.Select(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), x.Grade)).ToHashSet();
+        var respondents = surveyData.Select(x => (x.FirstName, x.LastName, x.Grade)).ToHashSet();
         var responsesByGrade = surveyData.GroupBy(x => x.Grade).ToDictionary(g => g.Key, g => g.ToList());
         foreach (var student in studentData) {
             var grade = CsvReadUtil.GradeToInt(student.Grade);
@@ -69,7 +69,7 @@ public class SurveyReconModel
     private static List<UnexpectedRespondentFailure> LoadUnexpectedRespondentFailures(List<SurveyResponse> surveyData, List<StudentInfo> studentData)
     {
         var failures = new List<UnexpectedRespondentFailure>();
-        var students = studentData.Select(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), CsvReadUtil.GradeToInt(x.Grade))).ToHashSet();
+        var students = studentData.Select(x => (x.FirstName, x.LastName, CsvReadUtil.GradeToInt(x.Grade))).ToHashSet();
         var studentsByGrade = studentData.GroupBy(x => x.Grade).ToDictionary(g => CsvReadUtil.GradeToInt(g.Key), g => g.ToList());
         foreach (var response in surveyData) {
             var key = (response.FirstName.ToUpper(), response.LastName.ToUpper(), response.Grade);
@@ -87,7 +87,7 @@ public class SurveyReconModel
     private static List<DuplicateResponseFailure> LoadDuplicateResponseFailures(List<SurveyResponse> surveyData)
     {
         return surveyData
-            .GroupBy(x => (x.FirstName.ToUpper(), x.LastName.ToUpper(), x.Grade))
+            .GroupBy(x => (x.FirstName, x.LastName, x.Grade))
             .Where(g => g.Count() > 1)
             .Select(g => new DuplicateResponseFailure(g.First().FirstName, g.First().LastName, g.First().Grade, g.ToList()))
             .ToList();
