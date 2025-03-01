@@ -136,8 +136,10 @@ public class SurveyReconModel
     {
         var rankings = new List<StudentCourseRanking>();
         var studentInfoMap = StudentData.ToDictionary(x => (x.LastName, x.FirstName));
+        var registeredStudents = new List<StudentInfo>();
         foreach (var response in SurveyData) {
             var studentInfo = studentInfoMap[(response.LastName, response.FirstName)];
+            registeredStudents.Add(studentInfo);
             var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
             var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
             rankings.AddRange(response.ClassRankings.Select((x, i) => new StudentCourseRanking {
@@ -148,7 +150,7 @@ public class SurveyReconModel
         }
 
         CsvWriteUtil.WriteCourseRankings(rankings, folder);
-        CsvWriteUtil.WriteStudentInfo(StudentData, folder);
+        CsvWriteUtil.WriteStudentInfo(registeredStudents, folder);
     }
 
     public void SaveMissingResponsesList(string folder)
