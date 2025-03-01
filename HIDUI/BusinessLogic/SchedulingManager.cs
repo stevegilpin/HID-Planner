@@ -22,10 +22,6 @@ public class SchedulingManager
     public void RunScheduling()
     {
         var inputData = LoadInputs();
-        var inputError = ValidateInputs(inputData);
-        if (inputError != null)
-            throw inputError;
-
         var output = CourseScheduler.RunCourseScheduling(inputData);
         var outputError = ValidateOutputs(output);
         if (outputError != null)
@@ -38,10 +34,6 @@ public class SchedulingManager
     public void SaveManualSchedulingResults()
     {
         var inputData = LoadInputs();
-        var inputError = ValidateInputs(inputData);
-        if (inputError != null)
-            throw inputError;
-
         var results = CsvReadUtil.ReadAssignmentResults(ManualSchedulingResultsFilePath);
         var output = new AssignmentDataSet {
             InputData = inputData,
@@ -75,35 +67,49 @@ public class SchedulingManager
         var scheduleRows = CsvReadUtil.ReadCourseSchedule(CourseScheduleFilePath);
         Logger.Information($"Read {scheduleRows.Count} {nameof(CourseSchedule)} rows");
         
-        const string unassigned = "UNASSIGNED";
-        bool hasUnassigned = courseInfoRows.Any(x => x.CourseCode == unassigned) ||
-                             scheduleRows.Any(x => x.CourseCode == unassigned) ||
-                             rankingRows.Any(x => x.CourseCode == unassigned);
-        if (hasUnassigned == false) {
-            foreach (var student in infoRows)
-                rankingRows.Add(new StudentCourseRanking {
-                    StudentId = student.StudentId,
-                    CourseCode = unassigned,
-                    Rank = (int)10e3,
-                });
+        var inputData = new InputDataSet(courseInfoRows, scheduleRows, infoRows, rankingRows);
+        var inputError = ValidateInputs(inputData);
+        if (inputError != null)
+            throw inputError;
 
-            courseInfoRows.Add(new CourseInfo {
+        AddUnassignedCoursePlaceholder(inputData, Logger);
+
+        return inputData;
+    }
+
+    private static void AddUnassignedCoursePlaceholder(InputDataSet inputData, ILogger logger)
+    {
+        const string unassigned = "UNASSIGNED";
+        bool hasUnassigned = inputData.CourseInfo.ContainsKey(unassigned) ||
+                             inputData.CourseSchedule.ContainsKey(unassigned) ||
+                             inputData.StudentCourseRanking.Any(x => x.Value.Any(y => y.CourseCode == unassigned));
+        if (hasUnassigned)
+            return;
+        
+        foreach (var student in inputData.StudentInfo.Keys)
+            inputData.StudentCourseRanking[student].Add(new StudentCourseRanking {
+                StudentId = student,
                 CourseCode = unassigned,
-                CourseName = unassigned,
-                Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
-                MinGrade = int.MinValue,
-                MaxGrade = int.MaxValue,
+                Rank = (int)10e3,
             });
 
-            var sessions = scheduleRows.Select(x => x.SessionId).Distinct().ToList();
-            scheduleRows.AddRange(sessions.Select(x => new CourseSchedule {
+        inputData.CourseInfo.Add(unassigned, new CourseInfo {
+            CourseCode = unassigned,
+            CourseName = unassigned,
+            Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
+            MinGrade = int.MinValue,
+            MaxGrade = int.MaxValue,
+        });
+
+        var sessions = inputData.CourseSchedule.Values
+            .SelectMany(g => g.Select(x => x.SessionId))
+            .Distinct()
+            .Select(x => new CourseSchedule {
                 CourseCode = unassigned,
                 SessionId = x,
-            }));
-            Logger.Information($"Added {unassigned} rows");
-        }
-
-        return new InputDataSet(courseInfoRows, scheduleRows, infoRows, rankingRows);
+            }).ToList();
+        inputData.CourseSchedule.Add(unassigned, sessions);
+        logger.Information($"Added {unassigned} rows");
     }
     
     private static Exception ValidateInputs(InputDataSet inputData)
