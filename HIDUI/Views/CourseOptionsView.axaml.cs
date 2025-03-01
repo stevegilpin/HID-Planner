@@ -23,7 +23,7 @@ public partial class CourseOptionsView : UserControl
     private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
     {
         try {
-            var filePaths = await this.ChooseOneFilePathAsync("Select Import Files");
+            var filePaths = await this.ChooseOneFilePathAsync("Select Import Files").ContinueWith(x => this.CheckTaskException(x, true));
             if (string.IsNullOrEmpty(filePaths))
                 return;
 

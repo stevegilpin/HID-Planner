@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using HIDLib;
 using MsBox.Avalonia;
@@ -82,5 +83,18 @@ internal static class ViewUtilities
                 if (requireClose)
                     Environment.Exit(-1);
             });
+    }
+
+    public static T CheckTaskException<T>(this Control control, Task<T> task, bool requireClose)
+    {
+        if (task.Exception != null)
+            Dispatcher.UIThread.Invoke(() => control.NotifyException(task.Exception, requireClose));
+        return task.Result;
+    }
+
+    public static void CheckTaskException(this Control control, Task task, bool requireClose)
+    {
+        if (task.Exception != null)
+            Dispatcher.UIThread.Invoke(() => control.NotifyException(task.Exception, requireClose));
     }
 }

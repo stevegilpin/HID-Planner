@@ -37,7 +37,8 @@ public partial class SchedulingView : ContentControl
 
     public async void ChooseInputFilesOnClick(object sender, RoutedEventArgs args) {
         try {
-            var filePaths = await this.ChooseMultipleFilePathsAsync("Choose Input Files");
+            var filePaths = await this.ChooseMultipleFilePathsAsync("Choose Input Files")
+                .ContinueWith(x => this.CheckTaskException(x, true));
             ViewModel.TrySetFilePaths(filePaths);
         }
         catch (Exception ex) {
@@ -101,6 +102,7 @@ public partial class SchedulingView : ContentControl
         try {
             IsEnabled = false;
             await ViewModel.RunSchedulingAsync()
+                .ContinueWith(x => this.CheckTaskException(x, true))
                 .ContinueWith(_ => Dispatcher.UIThread.Invoke(() => IsEnabled = true));
         }
         catch (Exception ex) {
@@ -113,6 +115,7 @@ public partial class SchedulingView : ContentControl
         try {
             IsEnabled = false;
             await ViewModel.SaveManualSchedulingAsync()
+                .ContinueWith(x => this.CheckTaskException(x, true))
                 .ContinueWith(_ => Dispatcher.UIThread.Invoke(() => IsEnabled = true));
         }
         catch (Exception ex) {

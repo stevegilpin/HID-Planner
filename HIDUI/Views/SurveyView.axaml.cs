@@ -29,7 +29,8 @@ namespace HIDUI.Views
         private async void ChooseFileOnClick(object sender, RoutedEventArgs e)
         {
             try {
-                var filePath = await this.ChooseMultipleFilePathsAsync("Choose Input Files");
+                var filePath = await this.ChooseMultipleFilePathsAsync("Choose Input Files")
+                    .ContinueWith(x => this.CheckTaskException(x, true));
                 if (filePath.Length == 0)
                     return;
 
