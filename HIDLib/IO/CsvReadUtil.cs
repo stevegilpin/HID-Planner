@@ -43,7 +43,7 @@ public static class CsvReadUtil
             "Student Last Name",
             "Student First Name",
             "Grade",
-            "Email Address",
+            "Username",
         };
         
         var lines = File.ReadAllLines(filePath);
@@ -113,7 +113,7 @@ public static class CsvReadUtil
         var lastNameIndex = header.IndexOf("Student Last Name");
         var firstNameIndex = header.IndexOf("Student First Name");
         var gradeIndex = header.IndexOf("Grade");
-        var emailIndex = header.IndexOf("Email Address");
+        var emailIndex = header.IndexOf("Username");
 
         var rowDataStart = new[] { lastNameIndex, firstNameIndex, gradeIndex, emailIndex }.Max() + 1;
         var responses = new List<SurveyResponse>();
