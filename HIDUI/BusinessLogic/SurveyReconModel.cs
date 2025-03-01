@@ -54,7 +54,7 @@ public class SurveyReconModel
         var responsesByGrade = surveyData.GroupBy(x => x.Grade).ToDictionary(g => g.Key, g => g.ToList());
         foreach (var student in studentData) {
             var grade = CsvReadUtil.GradeToInt(student.Grade);
-            var key = (student.FirstName.ToUpper(), student.LastName.ToUpper(), grade);
+            var key = (student.FirstName, student.LastName, grade);
             if (respondents.Contains(key))
                 continue;
 
@@ -72,7 +72,7 @@ public class SurveyReconModel
         var students = studentData.Select(x => (x.FirstName, x.LastName, CsvReadUtil.GradeToInt(x.Grade))).ToHashSet();
         var studentsByGrade = studentData.GroupBy(x => x.Grade).ToDictionary(g => CsvReadUtil.GradeToInt(g.Key), g => g.ToList());
         foreach (var response in surveyData) {
-            var key = (response.FirstName.ToUpper(), response.LastName.ToUpper(), response.Grade);
+            var key = (response.FirstName, response.LastName, response.Grade);
             if (students.Contains(key))
                 continue;
 
