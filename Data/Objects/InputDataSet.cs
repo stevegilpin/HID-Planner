@@ -22,4 +22,11 @@ public class InputDataSet
         StudentInfo = studentInfo.ToDictionary(x => x.StudentId);
         StudentCourseRanking = studentCourseRanking.GroupBy(x => x.StudentId).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Rank).ToList());
     }
+
+    public int GetCourseRank(int studentId, string courseCode)
+    {
+        var rankings = StudentCourseRanking[studentId];
+        var courseRanking = rankings.SingleOrDefault(x => x.CourseCode == courseCode);
+        return courseRanking?.Rank ?? (rankings.Count + 1);
+    }
 }

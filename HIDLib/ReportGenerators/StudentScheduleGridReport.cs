@@ -100,18 +100,22 @@ public class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGene
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var courseRankings = ReportData.InputData.StudentCourseRanking[studentId].ToDictionary(x => x.CourseCode);
-        var objectiveScore = assigned.Sum(x => SchedulingSolver.GetCourseCost(courseRankings[x.CourseCode].Rank));
+        double objectiveScore = 0;
+        foreach (var course in assigned) {
+            var rank = ReportData.InputData.GetCourseRank(course.StudentId, course.CourseCode);
+            objectiveScore += SchedulingSolver.GetCourseCost(rank);
+        }
 
+        var courseRankings = ReportData.InputData.StudentCourseRanking[studentId].ToDictionary(x => x.CourseCode);
         var table = new HtmlTable(["Session", "Course", "Course Ranking"]);
         table.AddCaption($"Objective score: {objectiveScore:N0}", HtmlCaption.TextAlign.Right);
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
-            var ranking = courseRankings[course.CourseCode];
-            var row = table.AddRowData([i + 1, course.CourseCode, ranking.Rank]);
-            if (ranking.Rank >= 7 && ranking.Rank < 10)
+            var rank = ReportData.InputData.GetCourseRank(course.StudentId, course.CourseCode);
+            var row = table.AddRowData([i + 1, course.CourseCode, rank]);
+            if (rank >= 7 && rank < 10)
                 row.AddStyle("background-color: yellow");
-            else if (ranking.Rank >= 10)
+            else if (rank >= 10)
                 row.AddStyle("background-color: red");
         }
 

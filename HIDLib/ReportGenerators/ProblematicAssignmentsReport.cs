@@ -44,10 +44,9 @@ public class ProblematicAssignmentsReport(
     public static List<BadAssignment> FindProblematicAssignments(AssignmentDataSet reportData, int? courseRankCutoff = null)
     {
         var cutoff = courseRankCutoff ?? SettingsManager.GetBadCourseRankCutoff();
-        var rankings = reportData.InputData.StudentCourseRanking.ToDictionary(x => x.Key, x => x.Value.ToDictionary(y => y.CourseCode, y => y.Rank));
         var assignments = new List<BadAssignment>();
         foreach (var course in reportData.AssignmentResults) {
-            var rank = rankings[course.StudentId][course.CourseCode];
+            var rank = reportData.InputData.GetCourseRank(course.StudentId, course.CourseCode);
             if (rank < cutoff)
                 continue;
 

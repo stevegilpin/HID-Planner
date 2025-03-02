@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Data;
 using Data.Objects;
 using HIDLib.Scheduling;
@@ -27,10 +28,8 @@ public static class SchedulingRunSelector
         double total = 0;
         int badAssignments = 0;
         try {
-            var allRankings = data.InputData.StudentCourseRanking.SelectMany(x => x.Value).ToList();
-            var rankingMap = allRankings.ToDictionary(x => (x.StudentId, x.CourseCode));
             foreach (var assignment in data.AssignmentResults) {
-                var rank = rankingMap[(assignment.StudentId, assignment.CourseCode)].Rank;
+                var rank = data.InputData.GetCourseRank(assignment.StudentId, assignment.CourseCode);
                 total += SchedulingSolver.GetCourseCost(rank);
                 if (rank >= rankCutoff)
                     badAssignments++;
