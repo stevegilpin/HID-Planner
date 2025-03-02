@@ -22,17 +22,23 @@ public static class SchedulingRunSelector
         return data;
     }
     
-    public static SchedulingRunAnalyticData GetAnalyticData(AssignmentDataSet data, int rankCutoff)
+    private static SchedulingRunAnalyticData GetAnalyticData(AssignmentDataSet data, int rankCutoff)
     {
-        var allRankings = data.InputData.StudentCourseRanking.SelectMany(x => x.Value).ToList();
-        var rankingMap = allRankings.ToDictionary(x => (x.StudentId, x.CourseCode));
         double total = 0;
         int badAssignments = 0;
-        foreach (var assignment in data.AssignmentResults) {
-            var rank = rankingMap[(assignment.StudentId, assignment.CourseCode)].Rank;
-            total += SchedulingSolver.GetCourseCost(rank);
-            if (rank >= rankCutoff)
-                badAssignments++;
+        try {
+            var allRankings = data.InputData.StudentCourseRanking.SelectMany(x => x.Value).ToList();
+            var rankingMap = allRankings.ToDictionary(x => (x.StudentId, x.CourseCode));
+            foreach (var assignment in data.AssignmentResults) {
+                var rank = rankingMap[(assignment.StudentId, assignment.CourseCode)].Rank;
+                total += SchedulingSolver.GetCourseCost(rank);
+                if (rank >= rankCutoff)
+                    badAssignments++;
+            }
+        }
+        catch {
+            total = -1;
+            badAssignments = -1;
         }
 
         return new SchedulingRunAnalyticData {
