@@ -1,0 +1,3 @@
+﻿using Data;
+
+DataManager.ClearApplicationData();
