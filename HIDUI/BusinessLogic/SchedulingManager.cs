@@ -80,35 +80,47 @@ public class SchedulingManager
     private static void AddUnassignedCoursePlaceholder(InputDataSet inputData, ILogger logger)
     {
         const string unassigned = "UNASSIGNED";
-        bool hasUnassigned = inputData.CourseInfo.ContainsKey(unassigned) ||
-                             inputData.CourseSchedule.ContainsKey(unassigned) ||
-                             inputData.StudentCourseRanking.Any(x => x.Value.Any(y => y.CourseCode == unassigned));
+        bool hasUnassigned = inputData.CourseInfo.Values.Any(x => x.CourseName == unassigned);
         if (hasUnassigned)
             return;
         
-        foreach (var student in inputData.StudentInfo.Keys)
-            inputData.StudentCourseRanking[student].Add(new StudentCourseRanking {
-                StudentId = student,
-                CourseCode = unassigned,
-                Rank = (int)10e3,
-            });
+        var grades = inputData.StudentInfo.Values.GroupBy(x => x.Grade).ToList();
+        foreach (var gradeGroup in grades) {
+            var gradeNum = CsvReadUtil.GradeToInt(gradeGroup.Key);
+            var sessions = inputData.CourseInfo.Values
+                .Where(x => x.MinGrade <= gradeNum &&
+                            x.MaxGrade >= gradeNum)
+                .SelectMany(x => inputData.CourseSchedule[x.CourseCode].Select(s => s.SessionId))
+                .Distinct()
+                .ToList();
 
-        inputData.CourseInfo.Add(unassigned, new CourseInfo {
-            CourseCode = unassigned,
-            CourseName = unassigned,
-            Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
-            MinGrade = int.MinValue,
-            MaxGrade = int.MaxValue,
-        });
+            foreach (var session in sessions) {
+                var courseCode = $"{unassigned}_{gradeGroup.Key}_{session}";
+                inputData.CourseInfo.Add(courseCode, new CourseInfo {
+                    CourseCode = courseCode,
+                    CourseName = unassigned,
+                    Description = "Placeholder value in case the scheduling algorithm cannot find a solution",
+                    MinGrade = gradeNum,
+                    MaxGrade = gradeNum,
+                });
 
-        var sessions = inputData.CourseSchedule.Values
-            .SelectMany(g => g.Select(x => x.SessionId))
-            .Distinct()
-            .Select(x => new CourseSchedule {
-                CourseCode = unassigned,
-                SessionId = x,
-            }).ToList();
-        inputData.CourseSchedule.Add(unassigned, sessions);
+                inputData.CourseSchedule.Add(courseCode, [
+                    new CourseSchedule {
+                        CourseCode = courseCode,
+                        SessionId = session,
+                    }
+                ]);
+
+                foreach (var student in gradeGroup) {
+                    inputData.StudentCourseRanking[student.StudentId].Add(new StudentCourseRanking {
+                        StudentId = student.StudentId,
+                        CourseCode = courseCode,
+                        Rank = (int)10e3,
+                    });
+                }
+            }
+        }
+
         logger.Information($"Added {unassigned} rows");
     }
     
