@@ -27,6 +27,6 @@ public class InputDataSet
     {
         var rankings = StudentCourseRanking[studentId];
         var courseRanking = rankings.SingleOrDefault(x => x.CourseCode == courseCode);
-        return courseRanking?.Rank ?? (rankings.Count + 1);
+        return courseRanking?.Rank ?? (rankings.Count(x => x.Rank < 1e3) + 1);
     }
 }
