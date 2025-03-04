@@ -19,6 +19,8 @@ public static class CsvMappers
             Map(x => x.Description).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
             Map(x => x.MinCapacity).Optional();
             Map(x => x.MaxCapacity).Optional();
+            Map(x => x.RoomCode).Optional();
+
             Map(x => x.MinGrade).Convert(ParseMinGrade);
             Map(x => x.MaxGrade).Convert(ParseMaxGrade);
             Map(x => x.MinGrade).Convert(WriteMinGradeNumber);
@@ -81,7 +83,6 @@ public static class CsvMappers
             AutoMap(CultureInfo.InvariantCulture);
             Map(x => x.RunId).Ignore();
             Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
-            Map(x => x.RoomCode).Optional();
             Map(x => x.Instructor).Optional();
             Map(x => x.Supervisor).Optional();
         }

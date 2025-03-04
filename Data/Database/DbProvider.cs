@@ -94,6 +94,7 @@ CREATE TABLE [CourseInfo] (
     [Description] varchar(1024),
     [MinGrade] int NOT NULL,
     [MaxGrade] int  NOT NULL,
+    [RoomCode] varchar(20),
     PRIMARY KEY ([RunId], [CourseCode])
 );
 
@@ -101,7 +102,6 @@ CREATE TABLE [CourseSchedule] (
     [RunId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     [SessionId] int NOT NULL,
-    [RoomCode] varchar(20),
     [Instructor] varchar(200),
     [Supervisor] varchar(200),
     PRIMARY KEY ([RunId], [CourseCode], [SessionId])

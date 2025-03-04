@@ -10,4 +10,5 @@ public class CourseInfo
     public string Description { get; set; }
     public int MinGrade { get; set; }
     public int MaxGrade { get; set; }
+    public string RoomCode { get; set; }
 }

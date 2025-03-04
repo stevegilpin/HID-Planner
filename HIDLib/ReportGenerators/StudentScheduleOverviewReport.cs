@@ -52,9 +52,10 @@ public class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHtml
 
         var table = new HtmlTable(["Session", "Class", "Room"]);
         foreach (var course in assigned) {
-            var courseName = ReportData.InputData.CourseInfo[course.CourseCode].CourseName;
-            var room = ReportData.InputData.CourseSchedule[course.CourseCode].Single(x => x.SessionId == course.SessionId).RoomCode;
-            table.AddRowData([course.SessionId, courseName, room ?? "TBD"]);
+            var courseInfo = ReportData.InputData.CourseInfo[course.CourseCode];
+            var courseName = courseInfo.CourseName;
+            var room = courseInfo.RoomCode ?? "TBD";
+            table.AddRowData([course.SessionId, courseName, room]);
         }
 
         return table;
