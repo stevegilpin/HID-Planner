@@ -80,10 +80,6 @@ public class SchedulingManager
     private static void AddUnassignedCoursePlaceholder(InputDataSet inputData, ILogger logger)
     {
         const string unassigned = "UNASSIGNED";
-        bool hasUnassigned = inputData.CourseInfo.Values.Any(x => x.CourseName == unassigned);
-        if (hasUnassigned)
-            return;
-        
         var grades = inputData.StudentInfo.Values.GroupBy(x => x.Grade).ToList();
         foreach (var gradeGroup in grades) {
             var gradeNum = CsvReadUtil.GradeToInt(gradeGroup.Key);
@@ -96,6 +92,9 @@ public class SchedulingManager
 
             foreach (var session in sessions) {
                 var courseCode = $"{unassigned}_{gradeGroup.Key}_{session}";
+                if (inputData.CourseInfo.ContainsKey(courseCode))
+                    continue;
+
                 inputData.CourseInfo.Add(courseCode, new CourseInfo {
                     CourseCode = courseCode,
                     CourseName = unassigned,
