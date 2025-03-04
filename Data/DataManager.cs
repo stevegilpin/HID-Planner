@@ -53,6 +53,12 @@ public static class DataManager
         return db.RunInfo.ToList();
     }
 
+    public static List<Rooms> AllRooms()
+    {
+        using var db = DbProvider.GetDbContext();
+        return db.Rooms.ToList();
+    }
+
     public static AssignmentDataSet LoadDataSet(int id)
     {
         using var db = DbProvider.GetDbContext();

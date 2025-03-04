@@ -195,12 +195,15 @@ public class SchedulingViewModel : ViewModelBase
         var outputFolder = Path.Combine(SettingsManager.GetDefaultOutputFolder(), $"Run {runId}");
         CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
 
+        var rooms = DataManager.AllRooms();
+
         var docs = new IHtmlGenerator[] {
             new ProblematicAssignmentsReport(data),
             new ClassRosterReport(data),
             new StudentScheduleGridReport(data),
             new AssignmentAnalysisReport(data),
             new StudentScheduleOverviewReport(data),
+            new RoomAssignmentReport(data, rooms),
         };
 
         foreach (var doc in docs)
