@@ -45,7 +45,7 @@ public static class SchedulingRunSelector
             TimeStamp = data.RunInfo.RunTimeStamp,
             Name = data.RunInfo.Name,
             Notes = data.RunInfo.Notes,
-            TotalObjectiveScore = total,
+            AverageObjectiveScore = total / data.InputData.StudentInfo.Count,
             BadAssignmentsCount = badAssignments,
         };
     }
@@ -57,6 +57,6 @@ public class SchedulingRunAnalyticData
     public required DateTime TimeStamp { get; init; }
     public required string Name { get; init; }
     public required string Notes { get; init; }
-    public required double TotalObjectiveScore { get; init; }
+    public required double AverageObjectiveScore { get; init; }
     public required int BadAssignmentsCount { get; init; }
 }
