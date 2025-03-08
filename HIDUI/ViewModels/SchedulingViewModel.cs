@@ -196,6 +196,7 @@ public class SchedulingViewModel : ViewModelBase
         CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
 
         var rooms = DataManager.AllRooms();
+        CsvWriteUtil.WriteRooms(rooms, outputFolder);
 
         var docs = new IHtmlGenerator[] {
             new ProblematicAssignmentsReport(data),

@@ -14,6 +14,7 @@ public static class ViewModelUtilities
     public static string GetCourseScheduleCsvInfoText() => GetCsvInfoText<CourseSchedule, CsvMappers.CourseScheduleMapper>("the schedule of courses");
     public static string GetStudentsCsvInfoText() => GetCsvInfoText<StudentInfo, CsvMappers.StudentInfoMapper>("the students");
     public static string GetStudentChoicesCsvInfoText() => GetCsvInfoText<StudentCourseRanking, CsvMappers.StudentCourseRankingMapper>("the students' course rankings");
+    public static string GetRoomsDescriptionCsvInfoText() => GetCsvInfoText<Rooms, CsvMappers.RoomDescriptionsMapper>("the course descriptions");
 
     public static string GetSurveyResponsesCsvInfoText()
     {

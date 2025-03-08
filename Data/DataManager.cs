@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Database;
 using Data.Objects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data;
 
@@ -99,5 +100,13 @@ public static class DataManager
         var backupLocation = DbProvider.DeleteDatabase();
         Console.WriteLine($"Database deleted. A backup was saved at {backupLocation}.");
         return backupLocation;
+    }
+
+    public static void UpdateRooms(List<Rooms> rooms)
+    {
+        using var db = DbProvider.GetDbContext();
+        db.Rooms.ExecuteDelete();
+        db.Rooms.AddRange(rooms);
+        db.SaveChanges();
     }
 }

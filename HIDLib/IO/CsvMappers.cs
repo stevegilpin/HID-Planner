@@ -97,4 +97,12 @@ public static class CsvMappers
             Map(x => x.CourseCode).Validate(x => !string.IsNullOrWhiteSpace(x.Field));
         }
     }
+
+    public sealed class RoomDescriptionsMapper : ClassMap<Rooms>
+    {
+        public RoomDescriptionsMapper()
+        {
+            AutoMap(CultureInfo.InvariantCulture);
+        }
+    }
 }

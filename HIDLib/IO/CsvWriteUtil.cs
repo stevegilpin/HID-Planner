@@ -28,6 +28,11 @@ public static class CsvWriteUtil
         WriteCsv<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(assignments, Path.Combine(folder, "CourseAssignments.csv"));
     }
 
+    public static void WriteRooms(List<Rooms> rooms, string folder)
+    {
+        WriteCsv<Rooms, CsvMappers.RoomDescriptionsMapper>(rooms, Path.Combine(folder, "Inputs", "Rooms.csv"));
+    }
+
     public static void WriteCourseRankings(List<StudentCourseRanking> courseRankings, string folder)
     {
         courseRankings = courseRankings.OrderBy(c => c.StudentId).ThenBy(x => x.Rank).ToList();

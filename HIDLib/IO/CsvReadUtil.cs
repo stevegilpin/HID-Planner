@@ -51,6 +51,11 @@ public static class CsvReadUtil
         return requiredHeaders.All(x => header.Contains(x));
     }
 
+    public static bool HeaderMatchesRooms(string filePath)
+    {
+        return HeaderMatches<Rooms, CsvMappers.RoomDescriptionsMapper>(filePath);
+    }
+
     private static bool HeaderMatches<TTable, TMapper>(string filePath) where TMapper : ClassMap<TTable>
     {
         if (File.Exists(filePath) == false)
@@ -137,6 +142,8 @@ public static class CsvReadUtil
 
         return responses;
     }
+    
+    public static List<Rooms> ReadRoomDescriptions(string filePath) => ReadFile<Rooms, CsvMappers.RoomDescriptionsMapper>(filePath);
     
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
