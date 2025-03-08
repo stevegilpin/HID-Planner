@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using Avalonia.Collections;
+using Avalonia.Media;
 using Data.Objects;
 using HIDUI.BusinessLogic;
 
@@ -56,7 +57,7 @@ namespace HIDUI.ViewModels
                                                !string.IsNullOrEmpty(StudentsFilePath) &&
                                                !string.IsNullOrEmpty(CoursesFilePath);
         public string FailureSummary { get; set; } = string.Empty;
-        public string FailureSummaryColor { get; set; } = string.Empty;
+        public IBrush FailureSummaryColor { get; set; } = new SolidColorBrush(Colors.Transparent);
 
         public ObservableCollection<NoResponseFailure> NoResponseFailures { get; } = [];
         public ObservableCollection<SurveyResponse> NoResponseMatchCandidates { get; } = [];
@@ -88,7 +89,7 @@ namespace HIDUI.ViewModels
                                Model.IncompleteResponseFailures.Count;
 
             FailureSummary = failureCount == 0 ? "No failures found" : $"{failureCount} failure(s) found";
-            FailureSummaryColor = failureCount == 0 ? "Green" : "Red";
+            FailureSummaryColor = new SolidColorBrush(failureCount == 0 ? Colors.Green : Colors.Red);
             OnPropertyChanged(nameof(FailureSummary));
             OnPropertyChanged(nameof(FailureSummaryColor));
         }
@@ -108,7 +109,7 @@ namespace HIDUI.ViewModels
             OnPropertyChanged(nameof(CanSaveSchedulingInputs));
             
             FailureSummary = string.Empty;
-            FailureSummaryColor = string.Empty;
+            FailureSummaryColor = new SolidColorBrush(Colors.Transparent);
             OnPropertyChanged(nameof(FailureSummary));
             OnPropertyChanged(nameof(FailureSummaryColor));
         }
