@@ -36,8 +36,8 @@ public class StudentChoiceAnalysisReport(AssignmentDataSet reportData) : IHtmlGe
         return allRankings
             .GroupBy(x => x.CourseCode)
             .Select(g => new FrequencyData(courseInfo[g.Key], g.Count(x => x.Rank <= 5), g.Count(x => x.Rank > 5 && x.Rank <= 10)))
-            .OrderBy(x => x.CourseInfo.CourseName)
-            .ThenBy(x => x.CourseInfo.CourseCode)
+            .Where(x => x.CourseInfo.CourseName != "UNASSIGNED")
+            .OrderBy(x => x.CourseInfo.CourseCode)
             .ToList();
     }
 
