@@ -181,9 +181,7 @@ public class SchedulingManager
 
         var missingSessions = OutputValidator.MissingSessions(outputData);
         if (missingSessions.Any()) {
-            var minSession = outputData.AssignmentResults.Min(x => x.SessionId);
-            var maxSession = outputData.AssignmentResults.Max(x => x.SessionId);
-            var errorMessage = $"Expected sessions ({minSession} - {maxSession}) not found for the following student IDs:{Environment.NewLine}{string.Join(", ", missingSessions.Take(10))}";
+            var errorMessage = $"Expected sessions not found for the following student IDs:{Environment.NewLine}{string.Join(", ", missingSessions.Take(10))}";
             if (missingSessions.Count > 10)
                 errorMessage += $"{Environment.NewLine}{Environment.NewLine}First 10 of {missingSessions.Count} shown.";
             return new Exception(errorMessage);
