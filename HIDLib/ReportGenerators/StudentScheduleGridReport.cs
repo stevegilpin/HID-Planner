@@ -104,13 +104,12 @@ public class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGene
             objectiveScore += SchedulingSolver.GetCourseCost(rank);
         }
 
-        var courseRankings = ReportData.InputData.StudentCourseRanking[studentId].ToDictionary(x => x.CourseCode);
         var table = new HtmlTable(["Session", "Course", "Course Ranking"]);
         table.AddCaption($"Objective score: {objectiveScore:N0}", HtmlCaption.TextAlign.Right);
         for (int i = 0; i < assigned.Count; i++) {
             var course = assigned[i];
             var rank = ReportData.InputData.GetCourseRank(course.StudentId, course.CourseCode);
-            var row = table.AddRowData([i + 1, course.CourseCode, rank]);
+            var row = table.AddRowData([course.SessionId, course.CourseCode, rank]);
             if (rank >= 7 && rank < 10)
                 row.AddStyle("background-color: yellow");
             else if (rank >= 10)
