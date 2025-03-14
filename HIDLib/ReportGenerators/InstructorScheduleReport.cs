@@ -19,8 +19,8 @@ public class InstructorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
             .GroupBy(x => x.Instructor)
             .OrderBy(g => g.Key)
             .ToList();
-        
-        var sessions = reportData.AssignmentResults.Select(x => x.SessionId).Distinct().OrderBy(x => x).ToList();
+
+        var sessions = reportData.AllSessions();
         var tableHeader = new List<object> { "Instructor" };
         tableHeader.AddRange(sessions.Select(x => $"Session {x}"));
         var table = doc.Add(new HtmlTable(tableHeader));

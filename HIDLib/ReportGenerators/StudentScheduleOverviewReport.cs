@@ -45,8 +45,7 @@ public class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHtml
 
     private HtmlTable GetStudentTable(int studentId)
     {
-        var assigned = ReportData.AssignmentResults
-            .Where(x => x.StudentId == studentId)
+        var assigned = ReportData.GetStudentsAssignments(studentId)
             .OrderBy(x => x.SessionId)
             .ToList();
 

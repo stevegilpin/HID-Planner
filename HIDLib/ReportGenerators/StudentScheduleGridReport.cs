@@ -72,8 +72,7 @@ public class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGene
         table.AddCaption($"Top {numChoicesShown} choices shown", HtmlCaption.TextAlign.Right);
         table.AddColGroup(colHeaders.Count - 1, ("style", "border-right: 1px solid black;"));
 
-        var assignedCourses = ReportData.AssignmentResults
-            .Where(x => x.StudentId == studentId)
+        var assignedCourses = ReportData.GetStudentsAssignments(studentId)
             .Select(x => (x.CourseCode, x.SessionId))
             .ToHashSet();
 
@@ -95,8 +94,7 @@ public class StudentScheduleGridReport(AssignmentDataSet reportData) : IHtmlGene
 
     private HtmlTable GetAssignedClassesTable(int studentId)
     {
-        var assigned = ReportData.AssignmentResults
-            .Where(x => x.StudentId == studentId)
+        var assigned = ReportData.GetStudentsAssignments(studentId)
             .OrderBy(x => x.SessionId)
             .ToList();
 

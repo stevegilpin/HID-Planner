@@ -24,7 +24,7 @@ public class SupervisorStudentSchedulesReport(AssignmentDataSet reportData, List
             .GroupBy(x => x.StudentId)
             .ToDictionary(g => g.Key, g => g.ToDictionary(x => x.SessionId));
 
-        var sessions = reportData.AssignmentResults.Select(x => x.SessionId).Distinct().OrderBy(x => x).ToList();
+        var sessions = reportData.AllSessions();
         var tableHeader = new List<object> { "Supervisor", "Student" };
         tableHeader.AddRange(sessions.Select(x => $"Session {x}"));
         var table = doc.Add(new HtmlTable(tableHeader));
