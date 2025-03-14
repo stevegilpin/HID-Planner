@@ -16,6 +16,9 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Padding="12" FontSize="12">File Path: </TextBlock>
                 <SelectableTextBlock Padding="12" FontSize="12" Text="{ Binding DbFileLocation }"/>
+                <Button HorizontalAlignment="Center" Padding="5" Click="OpenDbFolderOnClick">
+                    <TextBlock Text="Open Folder" HorizontalAlignment="Center"/>
+                </Button>
             </StackPanel>
         </Expander>
         <Expander VerticalAlignment="Top" HorizontalAlignment="Stretch">

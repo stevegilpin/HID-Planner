@@ -24,6 +24,15 @@ public partial class SettingsView : UserControl
         };
     }
     
+    public async void OpenDbFolderOnClick(object sender, RoutedEventArgs args) {
+        try {
+            ViewUtilities.OpenFolderInExplorer(ViewModel.DbFileLocation);
+        }
+        catch (Exception ex) {
+            this.NotifyException(ex, false);
+        }
+    }
+        
     public async void ChangeDefaultInputFolderOnClick(object sender, RoutedEventArgs args) {
         try {
             var defaultInputsFolder = await this.ChooseFolderPathAsync("Change Default Input Folder Location", true);
