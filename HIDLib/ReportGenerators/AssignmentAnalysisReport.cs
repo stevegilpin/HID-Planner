@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Data.Objects;
 using HIDLib.HTML;
+using HIDLib.IO;
 
 namespace HIDLib.ReportGenerators;
 
@@ -62,8 +63,24 @@ public class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGener
         table.AddColGroup(1, ("style", "width: 5%;"));
         table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
 
+        // special formatting to separate K5 and younger
+        int k = 0;
+        while (k < grades.Count) {
+            if (k+1 < grades.Count && grades[k+1].StartsWith("K") == false) {
+                table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
+                break;
+            }
+
+            table.AddColGroup(1, ("style", "width: 5%;"));
+            if (k == grades.Count)
+                table.AddColGroup(1, ("style", "width: 5%;"));
+
+            k++;
+        }
+
         // special formatting to separate middle school
-        if (grades.Last() == "8") {
+        var gradeInts = grades.Where((_, i) => i > k).Select(CsvReadUtil.GradeToInt).OrderBy(x => x).ToList();
+        if (gradeInts.SequenceEqual(Enumerable.Range(1, 8))) {
             // 1 and 2
             table.AddColGroup(1, ("style", "width: 5%;"));
             table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
@@ -83,7 +100,6 @@ public class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGener
                     table.AddColGroup(1, ("style", "width: 5%; border-right: 1px solid black;"));
             }
         }
-
     }
 
     private List<HtmlCell> GetRowData(CourseSchedule session)
@@ -141,7 +157,7 @@ public class AssignmentAnalysisReport(AssignmentDataSet reportData) : IHtmlGener
         return ReportData.InputData.StudentInfo.Values
             .Select(x => x.Grade)
             .Distinct()
-            .OrderBy(x => x)
+            .OrderBy(CsvReadUtil.GradeToInt)
             .ToList();
     }
 }
