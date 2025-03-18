@@ -26,12 +26,18 @@ public class InstructorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         var table = doc.Add(new HtmlTable(tableHeader));
 
         foreach (var instructorCourses in instructorCourseGroups) {
-            var rowData = new List<object> { instructorCourses.Key };
+            var rowData = new List<HtmlCell> { new(instructorCourses.Key) };
             foreach (var session in sessions) {
                 var course = instructorCourses.SingleOrDefault(x => x.SessionId == session);
-                rowData.Add(course?.CourseCode ?? string.Empty);
+                var cell = new HtmlCell(course?.CourseCode ?? string.Empty);
+                rowData.Add(cell);
+                if (course != null) {
+                    var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
+                    cell.Add(new HtmlBreak());
+                    cell.Add(string.IsNullOrEmpty(courseInfo.RoomCode) ? "Room TBD" : courseInfo.RoomCode);
+                }
             }
-            table.AddRowData(rowData);
+            table.AddRow(rowData);
         }
 
         return doc;

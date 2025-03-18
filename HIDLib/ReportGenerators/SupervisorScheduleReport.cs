@@ -26,12 +26,18 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         var table = doc.Add(new HtmlTable(tableHeader));
 
         foreach (var supervisorCourses in supervisorCourseGroups) {
-            var rowData = new List<object> { supervisorCourses.Key };
+            var rowData = new List<HtmlCell> { new(supervisorCourses.Key) };
             foreach (var session in sessions) {
                 var course = supervisorCourses.SingleOrDefault(x => x.SessionId == session);
-                rowData.Add(course?.CourseCode ?? string.Empty);
+                var cell = new HtmlCell(course?.CourseCode ?? string.Empty);
+                rowData.Add(cell);
+                if (course != null) {
+                    var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
+                    cell.Add(new HtmlBreak());
+                    cell.Add(string.IsNullOrEmpty(courseInfo.RoomCode) ? "Room TBD" : courseInfo.RoomCode);
+                }
             }
-            table.AddRowData(rowData);
+            table.AddRow(rowData);
         }
 
         return doc;
