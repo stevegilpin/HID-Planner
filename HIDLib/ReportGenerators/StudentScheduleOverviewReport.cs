@@ -8,7 +8,10 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class StudentScheduleOverviewReport(AssignmentDataSet reportData) : IHtmlGenerator
+public class StudentScheduleOverviewReport(
+    AssignmentDataSet reportData,
+    bool orderByHomeroom = false
+    ) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
     public HtmlDoc CreateDoc()
