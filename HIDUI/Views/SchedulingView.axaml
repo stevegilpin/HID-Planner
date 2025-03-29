@@ -78,7 +78,7 @@
                     <DataGridTextColumn Header="Run ID" Width="Auto" Binding="{ Binding RunId }"/>
                     <DataGridTextColumn Header="Time" Width="Auto" Binding="{ Binding TimeStamp }" />
                     <DataGridTextColumn Header="Name" Width="*" Binding="{ Binding Name }" />
-                    <DataGridTextColumn Header="Avg Score" Width="Auto" Binding="{ Binding AverageObjectiveScore }" />
+                    <DataGridTextColumn Header="Avg Score" Width="Auto" Binding="{ Binding AverageObjectiveScore, StringFormat=N0 }" />
                     <DataGridTextColumn Header="# Bad Results" Width="Auto" Binding="{ Binding BadAssignmentsCount }" />
                 </DataGrid.Columns>
             </DataGrid>
