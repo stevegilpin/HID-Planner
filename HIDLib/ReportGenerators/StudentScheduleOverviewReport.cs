@@ -15,7 +15,7 @@ public class StudentScheduleOverviewReport(
     ) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
-    private readonly List<Rooms> Rooms = rooms;
+    private readonly Dictionary<string, Rooms> Rooms = rooms.ToDictionary(x => x.RoomCode);
     private readonly bool SortByHomeroom = orderByHomeroom;
     public HtmlDoc CreateDoc()
     {
@@ -71,6 +71,8 @@ public class StudentScheduleOverviewReport(
             var courseInfo = ReportData.InputData.CourseInfo[course.CourseCode];
             var courseName = courseInfo.CourseName;
             var room = courseInfo.RoomCode ?? "TBD";
+            if (Rooms.TryGetValue(room, out var roomDesc) && string.IsNullOrEmpty(roomDesc.Description) == false)
+                room += $" - {roomDesc.Description}";
             table.AddRowData([course.SessionId, courseName, room]);
         }
 
