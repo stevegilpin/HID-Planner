@@ -41,7 +41,7 @@ public static class DataSimulator
             new ClassRosterReport(data),
             new StudentScheduleGridReport(data),
             new AssignmentAnalysisReport(data),
-            new StudentScheduleOverviewReport(data),
+            // new StudentScheduleOverviewReport(data),
         };
 
         foreach (var g in generators)

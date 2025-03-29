@@ -10,23 +10,37 @@ namespace HIDLib.ReportGenerators;
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
 public class StudentScheduleOverviewReport(
     AssignmentDataSet reportData,
+    List<Rooms> rooms,
     bool orderByHomeroom = false
     ) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
+    private readonly List<Rooms> Rooms = rooms;
+    private readonly bool SortByHomeroom = orderByHomeroom;
     public HtmlDoc CreateDoc()
     {
-        var doc = new HtmlDoc("Student Schedule Overview");
+        var title = SortByHomeroom ? $"Student Schedule Overview - By Homeroom" : "Student Schedule Overview"; 
+        var doc = new HtmlDoc(title);
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlTableGrid.Css());
 
         doc.Add(new HtmlHeader("Student Schedules"));
 
-        var studentIds = ReportData.InputData.StudentInfo
-            .OrderBy(x => x.Value.LastName)
-            .ThenBy(x => x.Value.FirstName)
-            .Select(x => x.Key)
-            .ToList();
+        List<int> studentIds;
+        if (SortByHomeroom) {
+            studentIds = ReportData.InputData.StudentInfo
+                .OrderBy(x => x.Value.Homeroom)
+                .ThenBy(x => x.Value.LastName)
+                .ThenBy(x => x.Value.FirstName)
+                .Select(x => x.Key)
+                .ToList();
+        } else {
+            studentIds = ReportData.InputData.StudentInfo
+                .OrderBy(x => x.Value.LastName)
+                .ThenBy(x => x.Value.FirstName)
+                .Select(x => x.Key)
+                .ToList();
+        }
 
         var grid = doc.Add(new HtmlTableGrid());
         const int numColumns = 2;
