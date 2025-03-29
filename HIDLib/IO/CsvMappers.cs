@@ -106,6 +106,13 @@ public static class CsvMappers
             Map(x => x.AlternateLastName).Optional();
         }
     }
+    public sealed class InstructorInfoMapper : ClassMap<Instructor>
+    {
+        public InstructorInfoMapper()
+        {
+            AutoMap(CultureInfo.InvariantCulture);
+        }
+    }
 
     public sealed class RoomDescriptionsMapper : ClassMap<Rooms>
     {

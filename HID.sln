@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIDUI", "HIDUI\HIDUI.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearDb", "ClearDb\ClearDb.csproj", "{A6FF3810-ECEC-45E0-8535-4CAFD44A7122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateRooms", "UpdateRooms\UpdateRooms.csproj", "{A2751236-836E-44FE-A4DC-7BB77605D978}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateStaticData", "UpdateStaticData\UpdateStaticData.csproj", "{A2751236-836E-44FE-A4DC-7BB77605D978}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMatch", "SuperMatch\SuperMatch.csproj", "{B656B5A2-1010-40A1-BD8D-48E7683B22D5}"
 EndProject

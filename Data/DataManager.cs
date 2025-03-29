@@ -121,4 +121,20 @@ public static class DataManager
         db.Rooms.AddRange(rooms);
         db.SaveChanges();
     }
+
+    public static void UpdateSupervisors(List<Supervisor> supervisors)
+    {
+        using var db = DbProvider.GetDbContext();
+        db.Supervisor.ExecuteDelete();
+        db.Supervisor.AddRange(supervisors);
+        db.SaveChanges();
+    }
+
+    public static void UpdateInstructors(List<Instructor> instructors)
+    {
+        using var db = DbProvider.GetDbContext();
+        db.Instructor.ExecuteDelete();
+        db.Instructor.AddRange(instructors);
+        db.SaveChanges();
+    }
 }
