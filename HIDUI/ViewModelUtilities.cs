@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using CsvHelper.Configuration;
@@ -41,6 +43,8 @@ public static class ViewModelUtilities
         var required = new List<string>();
         foreach (var member in allMembers) {
             var memberMap = classMap.Map(typeof(TFile), member).Data;
+            if (member.GetCustomAttribute<NotMappedAttribute>() != null)
+                continue;
             if (memberMap.Ignore)
                 continue;
             if (memberMap.IsOptional)
@@ -54,6 +58,17 @@ public static class ViewModelUtilities
         if (optional.Any()) {
             infoText += $"{Environment.NewLine}{Environment.NewLine}These columns are optional: ";
             infoText += string.Join(", ", optional.OrderBy(x => x));
+        }
+
+        var columnDescriptions = allMembers.Select(x => new {
+                x.Name,
+                x.GetCustomAttribute<DescriptionAttribute>()?.Description,
+            })
+            .Where(x => string.IsNullOrWhiteSpace(x.Description) == false)
+            .ToList();
+        if (columnDescriptions.Any()) {
+            infoText += $"{Environment.NewLine}{Environment.NewLine}Column Descriptions:{Environment.NewLine}";
+            infoText += string.Join(Environment.NewLine, columnDescriptions.Select(x => $"{x.Name}: {x.Description}"));
         }
         
         return infoText;
