@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+
 namespace Data.Objects;
 
 public class CourseSchedule
@@ -5,6 +8,8 @@ public class CourseSchedule
     public int RunId { get; set; }
     public string CourseCode { get; set; }
     public int SessionId { get; set; }
-    public string Instructor { get; set; }
+    public int? Instructor { get; set; }
     public string Supervisor { get; set; }
+    [NotMapped]
+    public int[] SupervisorIds => string.IsNullOrWhiteSpace(Supervisor) ? [] : Supervisor.Split(';').Select(int.Parse).ToArray();
 }

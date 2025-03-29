@@ -98,12 +98,11 @@ public static class CsvMappers
         }
     }
 
-    public sealed class SupervisorInfoMapper : ClassMap<SupervisorInfo>
+    public sealed class SupervisorInfoMapper : ClassMap<Supervisor>
     {
         public SupervisorInfoMapper()
         {
             AutoMap(CultureInfo.InvariantCulture);
-            Map(x => x.RunId).Ignore();
             Map(x => x.AlternateLastName).Optional();
         }
     }

@@ -5,7 +5,7 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class SupervisorScheduleReport(AssignmentDataSet reportData) : IHtmlGenerator
+public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Supervisor> supervisors) : IHtmlGenerator
 {
     public HtmlDoc CreateDoc()
     {
@@ -13,11 +13,17 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         doc.StyleRuleSets.Add(CSS.TableStyles());
         doc.Add(new HtmlHeader("Supervisors' Schedules"));
 
+        var supervisorMap = supervisors.ToDictionary(x => x.SupervisorId);
         var supervisorCourseGroups = reportData.InputData.CourseSchedule
             .SelectMany(x => x.Value)
-            .Where(x => string.IsNullOrEmpty(x.Supervisor) == false)
-            .GroupBy(x => x.Supervisor)
-            .OrderBy(g => g.Key)
+            .Where(x => x.SupervisorIds.Length != 0)
+            .SelectMany(x => x.SupervisorIds.Select(i => new {
+                Supervisor = supervisorMap[i],
+                CourseSchedule = x,
+            }))
+            .GroupBy(x => x.Supervisor.SupervisorId)
+            .OrderBy(g => supervisorMap[g.Key].LastName)
+            .ThenBy(g => supervisorMap[g.Key].FirstName)
             .ToList();
         
         var sessions = reportData.AllSessions();
@@ -26,13 +32,14 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         var table = doc.Add(new HtmlTable(tableHeader));
 
         foreach (var supervisorCourses in supervisorCourseGroups) {
-            var rowData = new List<HtmlCell> { new(supervisorCourses.Key) };
+            var supervisor = supervisorMap[supervisorCourses.Key];
+            var rowData = new List<HtmlCell> { new($"{supervisor.FirstName} {supervisor.LastName}") };
             foreach (var session in sessions) {
-                var course = supervisorCourses.SingleOrDefault(x => x.SessionId == session);
-                var cell = new HtmlCell(course?.CourseCode ?? string.Empty);
+                var course = supervisorCourses.SingleOrDefault(x => x.CourseSchedule.SessionId == session);
+                var cell = new HtmlCell(course?.CourseSchedule.CourseCode ?? string.Empty);
                 rowData.Add(cell);
                 if (course != null) {
-                    var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
+                    var courseInfo = reportData.InputData.CourseInfo[course.CourseSchedule.CourseCode];
                     cell.Add(new HtmlBreak());
                     cell.Add(string.IsNullOrEmpty(courseInfo.RoomCode) ? "Room TBD" : courseInfo.RoomCode);
                 }

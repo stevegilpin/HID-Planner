@@ -60,6 +60,18 @@ public static class DataManager
         return db.Rooms.ToList();
     }
 
+    public static List<Instructor> AllInstructors()
+    {
+        using var db = DbProvider.GetDbContext();
+        return db.Instructor.ToList();
+    }
+
+    public static List<Supervisor> AllSupervisors()
+    {
+        using var db = DbProvider.GetDbContext();
+        return db.Supervisor.ToList();
+    }
+
     public static AssignmentDataSet LoadDataSet(int id)
     {
         using var db = DbProvider.GetDbContext();

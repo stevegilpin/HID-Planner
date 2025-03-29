@@ -6,7 +6,7 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class SupervisorStudentSchedulesReport(AssignmentDataSet reportData, List<SupervisorInfo> supervisors) : IHtmlGenerator
+public class SupervisorStudentSchedulesReport(AssignmentDataSet reportData, List<Supervisor> supervisors) : IHtmlGenerator
 {
     public HtmlDoc CreateDoc()
     {
@@ -45,9 +45,9 @@ public class SupervisorStudentSchedulesReport(AssignmentDataSet reportData, List
         return doc;
     }
 
-    private List<(SupervisorInfo Supervisor, StudentInfo Student)> GetSupervisorStudentMatches()
+    private List<(Supervisor Supervisor, StudentInfo Student)> GetSupervisorStudentMatches()
     {
-        var matches = new List<(SupervisorInfo Supervisor, StudentInfo Student)>();
+        var matches = new List<(Supervisor Supervisor, StudentInfo Student)>();
         var students = reportData.InputData.StudentInfo.Values.ToLookup(x => x.LastName.ToUpper());
         foreach (var supervisor in supervisors) {
             var matchedStudents = students[supervisor.LastName.ToUpper()].ToList();

@@ -66,6 +66,19 @@ CREATE TABLE [Rooms] (
     [Description] varchar(1024)
 );
 
+CREATE TABLE [Instructor] (
+    [InstructorId] int PRIMARY KEY NOT NULL,
+    [FirstName] varchar(200) NOT NULL,
+    [LastName] varchar(200) NOT NULL
+);
+
+CREATE TABLE [Supervisor] (
+    [SupervisorId] int PRIMARY KEY NOT NULL,
+    [FirstName] varchar(200) NOT NULL,
+    [LastName] varchar(200) NOT NULL,
+    [AlternateLastName] varchar(200) NULL
+);
+
 CREATE TABLE [StudentInfo] (
     [RunId] int NOT NULL,
     [StudentId] int NOT NULL,
@@ -102,7 +115,7 @@ CREATE TABLE [CourseSchedule] (
     [RunId] int NOT NULL,
     [CourseCode] varchar(20) NOT NULL,
     [SessionId] int NOT NULL,
-    [Instructor] varchar(200),
+    [Instructor] int,
     [Supervisor] varchar(200),
     PRIMARY KEY ([RunId], [CourseCode], [SessionId])
 );

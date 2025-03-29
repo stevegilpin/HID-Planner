@@ -196,6 +196,8 @@ public class SchedulingViewModel : ViewModelBase
         CsvWriteUtil.WriteResultsToCsv(data, outputFolder);
 
         var rooms = DataManager.AllRooms();
+        var instructors = DataManager.AllInstructors();
+        var supervisors = DataManager.AllSupervisors();
         CsvWriteUtil.WriteRooms(rooms, outputFolder);
 
         var docs = new IHtmlGenerator[] {
@@ -207,8 +209,8 @@ public class SchedulingViewModel : ViewModelBase
             new StudentScheduleOverviewReport(data, rooms, true),
             new RoomAssignmentReport(data, rooms),
             new StudentChoiceAnalysisReport(data),
-            new SupervisorScheduleReport(data),
-            new InstructorScheduleReport(data),
+            new SupervisorScheduleReport(data, supervisors),
+            new InstructorScheduleReport(data, instructors),
         };
 
         foreach (var doc in docs)

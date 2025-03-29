@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Data.Objects;
 
-public class SupervisorInfo
+public class Supervisor
 {
-    public int RunId { get; set; }
+    [Key]
     public int SupervisorId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

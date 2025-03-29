@@ -5,7 +5,7 @@ using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class InstructorScheduleReport(AssignmentDataSet reportData) : IHtmlGenerator
+public class InstructorScheduleReport(AssignmentDataSet reportData, List<Instructor> instructors) : IHtmlGenerator
 {
     public HtmlDoc CreateDoc()
     {
@@ -13,10 +13,11 @@ public class InstructorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         doc.StyleRuleSets.Add(CSS.TableStyles());
         doc.Add(new HtmlHeader("Instructor' Schedules"));
 
+        var instructorMap = instructors.ToDictionary(x => x.InstructorId);
         var instructorCourseGroups = reportData.InputData.CourseSchedule
             .SelectMany(x => x.Value)
-            .Where(x => string.IsNullOrEmpty(x.Instructor) == false)
-            .GroupBy(x => x.Instructor)
+            .Where(x => x.Instructor.HasValue)
+            .GroupBy(x => x.Instructor.Value)
             .OrderBy(g => g.Key)
             .ToList();
 
@@ -26,7 +27,7 @@ public class InstructorScheduleReport(AssignmentDataSet reportData) : IHtmlGener
         var table = doc.Add(new HtmlTable(tableHeader));
 
         foreach (var instructorCourses in instructorCourseGroups) {
-            var rowData = new List<HtmlCell> { new(instructorCourses.Key) };
+            var rowData = new List<HtmlCell> { new(instructorMap[instructorCourses.Key]) };
             foreach (var session in sessions) {
                 var course = instructorCourses.SingleOrDefault(x => x.SessionId == session);
                 var cell = new HtmlCell(course?.CourseCode ?? string.Empty);

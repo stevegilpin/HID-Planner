@@ -144,7 +144,7 @@ public static class CsvReadUtil
     }
     
     public static List<Rooms> ReadRoomDescriptions(string filePath) => ReadFile<Rooms, CsvMappers.RoomDescriptionsMapper>(filePath);
-    public static List<SupervisorInfo> ReadSupervisorInfo(string filePath) => ReadFile<SupervisorInfo, CsvMappers.SupervisorInfoMapper>(filePath);
+    public static List<Supervisor> ReadSupervisorInfo(string filePath) => ReadFile<Supervisor, CsvMappers.SupervisorInfoMapper>(filePath);
     
     private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
