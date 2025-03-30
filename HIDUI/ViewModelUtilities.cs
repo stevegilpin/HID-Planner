@@ -32,7 +32,7 @@ public static class ViewModelUtilities
         return $"{preamble}{Environment.NewLine}{Environment.NewLine}{defaultText}";
     }
     
-    private static string GetCsvInfoText<TFile, TMap>(string fileDataDescription)
+    public static string GetCsvInfoText<TFile, TMap>(string fileDataDescription)
         where TMap : ClassMap<TFile>, new()
     {
         var classMap = new TMap();

@@ -39,6 +39,12 @@ public static class CsvWriteUtil
         WriteCsv<StudentCourseRanking, CsvMappers.StudentCourseRankingMapper>(courseRankings, Path.Combine(folder, "StudentCourseRankings.csv"));
     }
 
+    public static void WriteCourseSchedule(List<CourseSchedule> courseSchedule, string folder)
+    {
+        courseSchedule = courseSchedule.OrderBy(c => c.CourseCode).ThenBy(x => x.SessionId).ToList();
+        WriteCsv<CourseSchedule, CsvMappers.CourseScheduleMapper>(courseSchedule, Path.Combine(folder, "CourseSchedule.csv"));
+    }
+
     public static void WriteStudentInfo(List<StudentInfo> studentInfo, string folder)
     {
         studentInfo = studentInfo.OrderBy(x => x.StudentId).ToList();

@@ -147,7 +147,7 @@ public static class CsvReadUtil
     public static List<Supervisor> ReadSupervisorInfo(string filePath) => ReadFile<Supervisor, CsvMappers.SupervisorInfoMapper>(filePath);
     public static List<Instructor> ReadInstructorInfo(string filePath) => ReadFile<Instructor, CsvMappers.InstructorInfoMapper>(filePath);
     
-    private static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
+    public static List<TData> ReadFile<TData, TMapper>(string filePath) where TMapper : ClassMap<TData>
     {
         using var reader = new StreamReader(filePath);
         using var csv = new CsvReader(reader, GetCsvReaderConfig());
