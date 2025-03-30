@@ -16,8 +16,8 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Instruc
         var instructorMap = instructors.ToDictionary(x => x.InstructorId);
         var instructorCourseGroups = reportData.InputData.CourseSchedule
             .SelectMany(x => x.Value)
-            .Where(x => x.Instructor.HasValue)
-            .GroupBy(x => x.Instructor.Value)
+            .Where(x => string.IsNullOrEmpty(x.Instructor) == false)
+            .GroupBy(x => x.Instructor)
             .OrderBy(g => g.Key)
             .ToList();
 

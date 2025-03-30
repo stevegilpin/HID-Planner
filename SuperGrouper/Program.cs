@@ -1,6 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using CsvHelper;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Data.Objects;
 using HIDLib;
 using HIDLib.IO;
@@ -17,8 +20,8 @@ var courseSchedule = new List<CourseSchedule>();
 
 var courseGroups = rawData.GroupBy(x => new { x.CourseCode, x.SessionId }).ToList();
 foreach (var group in courseGroups) {
-    var supervisors = group.Select(x => x.SupervisorId).Where(x => x.HasValue).Distinct().ToList();
-    var instructor = group.Select(x => x.InstructorId).Where(x => x.HasValue).Distinct().ToList();
+    var supervisors = group.Select(x => x.SupervisorId).Where(x => string.IsNullOrWhiteSpace(x) == false).Distinct().ToList();
+    var instructor = group.Select(x => x.InstructorId).Where(x => string.IsNullOrWhiteSpace(x) == false).Distinct().ToList();
     if (instructor.Count > 1)
         throw new Exception("Program requires no more than one instructor");
 
@@ -26,7 +29,7 @@ foreach (var group in courseGroups) {
         CourseCode = group.Key.CourseCode,
         SessionId = group.Key.SessionId,
         Instructor = instructor.Count == 0 ? null : instructor[0],
-        Supervisor = supervisors.Count == 0 ? null : string.Join(':', supervisors),
+        Supervisor = supervisors.Count == 0 ? null : string.Join(';', supervisors),
     });
 }
 
