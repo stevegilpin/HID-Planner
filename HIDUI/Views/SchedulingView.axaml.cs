@@ -127,8 +127,9 @@ public partial class SchedulingView : ContentControl
 
     private void RunGrid_OnLoadingRow(object sender, DataGridRowEventArgs e)
     {
-        if (e.Row.DataContext is not SchedulingRunAnalyticData runInfo || runInfo.IsManualRun == false)
+        if (e.Row.DataContext is not SchedulingRunAnalyticData runInfo)
             return;
-        e.Row.Background = Brushes.CornflowerBlue;
+
+        e.Row.Background = runInfo.IsManualRun ? Brushes.CornflowerBlue : null;
     }
 }
