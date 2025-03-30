@@ -47,6 +47,7 @@ public static class SchedulingRunSelector
             Notes = data.RunInfo.Notes,
             AverageObjectiveScore = total / data.InputData.StudentInfo.Count,
             BadAssignmentsCount = badAssignments,
+            IsManualRun = data.RunInfo.ManuallyCreatedResults,
         };
     }
 }
@@ -59,4 +60,5 @@ public class SchedulingRunAnalyticData
     public required string Notes { get; init; }
     public required double AverageObjectiveScore { get; init; }
     public required int BadAssignmentsCount { get; init; }
+    public required bool IsManualRun { get; init; }
 }

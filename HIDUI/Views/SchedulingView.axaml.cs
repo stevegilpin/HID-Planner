@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CsvHelper.Configuration;
@@ -121,5 +123,12 @@ public partial class SchedulingView : ContentControl
         catch (Exception ex) {
             this.NotifyException(ex, true);
         }
+    }
+
+    private void RunGrid_OnLoadingRow(object sender, DataGridRowEventArgs e)
+    {
+        if (e.Row.DataContext is not SchedulingRunAnalyticData runInfo || runInfo.IsManualRun == false)
+            return;
+        e.Row.Background = Brushes.CornflowerBlue;
     }
 }

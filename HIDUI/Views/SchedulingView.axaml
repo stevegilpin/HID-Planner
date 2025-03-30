@@ -73,7 +73,8 @@
                       GridLinesVisibility="All"
                       BorderThickness="1"
                       Name="RunGrid"
-                      SelectionChanged="DataGrid_OnSelectionChanged">
+                      SelectionChanged="DataGrid_OnSelectionChanged"
+                      LoadingRow="RunGrid_OnLoadingRow">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Run ID" Width="Auto" Binding="{ Binding RunId }"/>
                     <DataGridTextColumn Header="Time" Width="Auto" Binding="{ Binding TimeStamp }" />
