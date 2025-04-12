@@ -30,7 +30,17 @@ public static class CsvWriteUtil
 
     public static void WriteRooms(List<Rooms> rooms, string folder)
     {
-        WriteCsv<Rooms, CsvMappers.RoomDescriptionsMapper>(rooms, Path.Combine(folder, "Inputs", "Rooms.csv"));
+        WriteCsv<Rooms, CsvMappers.RoomDescriptionsMapper>(rooms, Path.Combine(folder, "StaticData", "Rooms.csv"));
+    }
+
+    public static void WriteInstructors(List<Instructor> instructors, string folder)
+    {
+        WriteCsv<Instructor, CsvMappers.InstructorInfoMapper>(instructors, Path.Combine(folder, "StaticData", "Instructors.csv"));
+    }
+
+    public static void WriteSupervisors(List<Supervisor> supervisors, string folder)
+    {
+        WriteCsv<Supervisor, CsvMappers.SupervisorInfoMapper>(supervisors, Path.Combine(folder, "StaticData", "Supervisors.csv"));
     }
 
     public static void WriteCourseRankings(List<StudentCourseRanking> courseRankings, string folder)

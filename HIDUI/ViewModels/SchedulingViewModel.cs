@@ -199,6 +199,8 @@ public class SchedulingViewModel : ViewModelBase
         var instructors = DataManager.AllInstructors();
         var supervisors = DataManager.AllSupervisors();
         CsvWriteUtil.WriteRooms(rooms, outputFolder);
+        CsvWriteUtil.WriteInstructors(instructors, outputFolder);
+        CsvWriteUtil.WriteSupervisors(supervisors, outputFolder);
 
         var docs = new IHtmlGenerator[] {
             new ProblematicAssignmentsReport(data),
