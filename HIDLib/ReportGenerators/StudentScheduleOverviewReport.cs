@@ -25,7 +25,10 @@ public class StudentScheduleOverviewReport(
         doc.StyleRuleSets.Add(HtmlTableGrid.Css());
         if (forStudentHandouts) {
             doc.StyleRuleSets.Add(@"* {
-              font-size: 10px;
+                font-size: 11px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
             }");
         }
 
