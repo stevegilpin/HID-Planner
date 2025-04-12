@@ -45,13 +45,14 @@ public class StudentScheduleOverviewReport(
         var grid = doc.Add(new HtmlTableGrid());
         const int numColumns = 2;
         var rowData = new List<XElement>();
-        foreach (var id in studentIds) {
+        for (var i = 0; i < studentIds.Count; i++) {
+            var id = studentIds[i];
             var student = ReportData.InputData.StudentInfo[id];
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
             var table = GetStudentTable(id);
             var cell = new XElement("div", header, table);
             rowData.Add(cell);
-            if (rowData.Count == numColumns) {
+            if (rowData.Count == numColumns || i == studentIds.Count - 1) {
                 grid.AddRow(rowData.ToList());
                 rowData.Clear();
             }

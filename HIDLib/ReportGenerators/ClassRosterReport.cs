@@ -19,7 +19,7 @@ public class ClassRosterReport(AssignmentDataSet reportData, List<Rooms> rooms) 
         var doc = new HtmlDoc("Class Roster");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(CSS.PageBreak());
-        doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(HtmlTableGrid.Css());
 
         var courseAssignments = ReportData.AssignmentResults
             .GroupBy(x => new {
@@ -50,10 +50,13 @@ public class ClassRosterReport(AssignmentDataSet reportData, List<Rooms> rooms) 
         var room = Rooms.GetValueOrDefault(roomCode);
         root.Add(new HtmlParagraph(room == null ? "Room TBD" : $"Room: {roomCode} - {room.Description}"));
 
-        var grid = new HtmlGridLayout(2);
+        var grid = new HtmlTableGrid();
         root.Add(grid);
 
-        foreach (var group in sessionGroups) {
+        const int numColumns = 2;
+        var rowData = new List<XElement>();
+        for (int i = 0; i < sessionGroups.Count; i++) {
+            var group = sessionGroups[i];
             var header = new HtmlHeader($"Session {group.Key}", 3);
             var table = new HtmlTable(["Student Name", "Grade", "Gender"]);
             table.AddCaption($"{group.Count()} students", HtmlCaption.TextAlign.Right);
@@ -68,7 +71,11 @@ public class ClassRosterReport(AssignmentDataSet reportData, List<Rooms> rooms) 
                 row.Data[2].AddStyle("text-align: center;");
             }
 
-            grid.AddCell(header, table);
+            rowData.Add(new XElement("div", header, table));
+            if (rowData.Count == numColumns || i == sessionGroups.Count - 1) {
+                grid.AddRow(rowData.ToList());
+                rowData.Clear();
+            }
         }
 
         root.Add(new HtmlBreak());
