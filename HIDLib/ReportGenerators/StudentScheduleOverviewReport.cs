@@ -58,7 +58,7 @@ public class StudentScheduleOverviewReport(
             if (forStudentHandouts)
                 header.AddStyle("font-size: 15px");
             var table = GetStudentTable(id);
-            table.AddColGroup(1, ("style", "width: 20%"));
+            table.AddColGroup(1, ("style", forStudentHandouts ? "width: 5%" : "width: 20%"));
             var cell = new XElement("div", header, table);
             rowData.Add(cell);
             if (rowData.Count == numColumns || i == studentIds.Count - 1) {
