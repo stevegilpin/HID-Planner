@@ -16,6 +16,11 @@ public class RoomAssignmentReport(AssignmentDataSet reportData, List<Rooms> room
         var roomInfo = GetSessionRooms();
         var doc = new HtmlDoc("Room Assignments");
         doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(@"
+        table, tr, td, th {
+           border: 1px solid black;
+           border-collapse: collapse;
+        }");
         doc.Add(new HtmlHeader("Room Assignments"));
 
         var table = doc.Add(new HtmlTable());
