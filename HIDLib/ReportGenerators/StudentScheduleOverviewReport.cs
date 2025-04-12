@@ -11,18 +11,23 @@ namespace HIDLib.ReportGenerators;
 public class StudentScheduleOverviewReport(
     AssignmentDataSet reportData,
     List<Rooms> rooms,
-    bool orderByHomeroom = false
+    bool forStudentHandouts = false
     ) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
     private readonly Dictionary<string, Rooms> Rooms = rooms.ToDictionary(x => x.RoomCode);
-    private readonly bool SortByHomeroom = orderByHomeroom;
+    private readonly bool SortByHomeroom = forStudentHandouts;
     public HtmlDoc CreateDoc()
     {
-        var title = SortByHomeroom ? $"Student Schedule Overview - By Homeroom" : "Student Schedule Overview"; 
+        var title = SortByHomeroom ? "Student Schedule Overview - By Homeroom" : "Student Schedule Overview"; 
         var doc = new HtmlDoc(title);
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlTableGrid.Css());
+        if (forStudentHandouts) {
+            doc.StyleRuleSets.Add(@"* {
+              font-size: 10px;
+            }");
+        }
 
         doc.Add(new HtmlHeader("Student Schedules"));
 
