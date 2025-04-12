@@ -38,7 +38,7 @@ public static class DataSimulator
         var data = DataManager.LoadDataSet(latest.RunId);
         var generators = new IHtmlGenerator[] {
             new ProblematicAssignmentsReport(data),
-            new ClassRosterReport(data),
+            // new ClassRosterReport(data),
             new StudentScheduleGridReport(data),
             new AssignmentAnalysisReport(data),
             // new StudentScheduleOverviewReport(data),

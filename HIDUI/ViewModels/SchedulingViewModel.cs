@@ -204,7 +204,7 @@ public class SchedulingViewModel : ViewModelBase
 
         var docs = new IHtmlGenerator[] {
             new ProblematicAssignmentsReport(data),
-            new ClassRosterReport(data),
+            new ClassRosterReport(data, rooms),
             new StudentScheduleGridReport(data),
             new AssignmentAnalysisReport(data),
             new StudentScheduleOverviewReport(data, rooms, false),

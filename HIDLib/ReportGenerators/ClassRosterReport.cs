@@ -9,9 +9,10 @@ using HIDLib.HTML;
 namespace HIDLib.ReportGenerators;
 
 [SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
-public class ClassRosterReport(AssignmentDataSet reportData) : IHtmlGenerator
+public class ClassRosterReport(AssignmentDataSet reportData, List<Rooms> rooms) : IHtmlGenerator
 {
     private readonly AssignmentDataSet ReportData = reportData;
+    private readonly Dictionary<string, Rooms> Rooms = rooms.ToDictionary(x => x.RoomCode);
 
     public HtmlDoc CreateDoc()
     {
@@ -44,6 +45,10 @@ public class ClassRosterReport(AssignmentDataSet reportData) : IHtmlGenerator
         var root = new XElement("div");
         root.Add(new HtmlHeader($"Class Roster: {courseName}", 2));
         root.Add(new HtmlParagraph($"Class code: {courseCode}"));
+
+        var roomCode = ReportData.InputData.CourseInfo[courseCode].RoomCode;
+        var room = Rooms.GetValueOrDefault(roomCode);
+        root.Add(new HtmlParagraph(room == null ? "Room TBD" : $"Room: {roomCode} - {room.Description}"));
 
         var grid = new HtmlGridLayout(2);
         root.Add(grid);
