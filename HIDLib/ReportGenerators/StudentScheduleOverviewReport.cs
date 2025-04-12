@@ -29,7 +29,8 @@ public class StudentScheduleOverviewReport(
             }");
         }
 
-        doc.Add(new HtmlHeader("Student Schedules"));
+        if (!forStudentHandouts)
+            doc.Add(new HtmlHeader("Student Schedules"));
 
         List<int> studentIds;
         if (SortByHomeroom) {
@@ -54,6 +55,8 @@ public class StudentScheduleOverviewReport(
             var id = studentIds[i];
             var student = ReportData.InputData.StudentInfo[id];
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
+            if (forStudentHandouts)
+                header.AddStyle("font-size: 15px");
             var table = GetStudentTable(id);
             table.AddColGroup(1, ("style", "width: 20%"));
             var cell = new XElement("div", header, table);
@@ -73,7 +76,7 @@ public class StudentScheduleOverviewReport(
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var table = new HtmlTable(["Session", "Class", "Room"]);
+        var table = new HtmlTable(forStudentHandouts ? null : ["Session", "Class", "Room"]);
         foreach (var course in assigned) {
             var courseInfo = ReportData.InputData.CourseInfo[course.CourseCode];
             var courseName = courseInfo.CourseName;
