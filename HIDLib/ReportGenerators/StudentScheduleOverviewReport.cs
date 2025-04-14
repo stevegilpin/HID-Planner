@@ -23,17 +23,12 @@ public class StudentScheduleOverviewReport(
         var doc = new HtmlDoc(title);
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlTableGrid.Css());
-        if (forStudentHandouts) {
-            doc.StyleRuleSets.Add(@"* {
-                font-size: 11px;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-            }");
-        }
-
-        if (!forStudentHandouts)
-            doc.Add(new HtmlHeader("Student Schedules"));
+        doc.StyleRuleSets.Add(@"* {
+            font-size: 11px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }");
 
         List<int> studentIds;
         if (SortByHomeroom) {
@@ -58,10 +53,9 @@ public class StudentScheduleOverviewReport(
             var id = studentIds[i];
             var student = ReportData.InputData.StudentInfo[id];
             var header = new HtmlHeader($"{student.LastName}, {student.FirstName} (HR: {student.Homeroom})", 3);
-            if (forStudentHandouts)
-                header.AddStyle("font-size: 15px");
+            header.AddStyle("font-size: 15px");
             var table = GetStudentTable(id);
-            table.AddColGroup(1, ("style", forStudentHandouts ? "width: 5%" : "width: 20%"));
+            table.AddColGroup(1, ("style", "width: 5%"));
             var cell = new XElement("div", header, table);
             rowData.Add(cell);
             if (rowData.Count == numColumns || i == studentIds.Count - 1) {
@@ -79,7 +73,7 @@ public class StudentScheduleOverviewReport(
             .OrderBy(x => x.SessionId)
             .ToList();
 
-        var table = new HtmlTable(forStudentHandouts ? null : ["Session", "Class", "Room"]);
+        var table = new HtmlTable();
         foreach (var course in assigned) {
             var courseInfo = ReportData.InputData.CourseInfo[course.CourseCode];
             var courseName = courseInfo.CourseName;
