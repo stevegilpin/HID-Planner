@@ -1,46 +1,72 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Data.Objects;
 using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class InstructorScheduleReport(AssignmentDataSet reportData, List<Instructor> instructors) : IHtmlGenerator
+public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> rooms, List<Instructor> instructors) : IHtmlGenerator
 {
+    private Dictionary<string, Rooms> Rooms = rooms.ToDictionary(x => x.RoomCode);
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Instructor Schedules");
-        doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(HtmlTableGrid.Css());
+        doc.StyleRuleSets.Add(@"* {
+            font-size: 11px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }");
+
         doc.Add(new HtmlHeader("Instructor' Schedules"));
 
         var instructorMap = instructors.ToDictionary(x => x.InstructorId);
         var instructorCourseGroups = reportData.InputData.CourseSchedule
             .SelectMany(x => x.Value)
             .Where(x => string.IsNullOrEmpty(x.Instructor) == false)
-            .GroupBy(x => x.Instructor)
-            .OrderBy(g => g.Key)
+            .Select(x => new {
+                Instructor = instructorMap[x.Instructor],
+                CourseSchedule = x,
+            })
+            .GroupBy(x => x.Instructor.InstructorId)
+            .OrderBy(g => instructorMap[g.Key].LastName)
+            .ThenBy(g => instructorMap[g.Key].FirstName)
             .ToList();
-
-        var sessions = reportData.AllSessions();
-        var tableHeader = new List<object> { "Instructor" };
-        tableHeader.AddRange(sessions.Select(x => $"Session {x}"));
-        var table = doc.Add(new HtmlTable(tableHeader));
-
-        foreach (var instructorCourses in instructorCourseGroups) {
-            var rowData = new List<HtmlCell> { new(instructorMap[instructorCourses.Key]) };
-            foreach (var session in sessions) {
-                var course = instructorCourses.SingleOrDefault(x => x.SessionId == session);
-                var cell = new HtmlCell(course?.CourseCode ?? string.Empty);
-                rowData.Add(cell);
-                if (course != null) {
-                    var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
-                    cell.Add(new HtmlBreak());
-                    cell.Add(string.IsNullOrEmpty(courseInfo.RoomCode) ? "Room TBD" : courseInfo.RoomCode);
-                }
+        
+        var grid = doc.Add(new HtmlTableGrid());
+        const int numColumns = 2;
+        var rowData = new List<XElement>();
+        for (var i = 0; i < instructorCourseGroups.Count; i++) {
+            var group = instructorCourseGroups[i];
+            var instructor = instructorMap[group.Key];
+            var header = new HtmlHeader($"{instructor.FirstName} {instructor.LastName}", 3);
+            var table = GetInstructorTable(group.Select(x => x.CourseSchedule).ToList());
+            table.AddColGroup(1, ("style", "width: 5%"));
+            rowData.Add(new XElement("div", header, table));
+            if (rowData.Count == numColumns || i == instructorCourseGroups.Count - 1) {
+                grid.AddRow(rowData.ToList());
+                rowData.Clear();
             }
-            table.AddRow(rowData);
         }
-
+        
         return doc;
     }
+    
+    private HtmlTable GetInstructorTable(List<CourseSchedule> courses)
+    {
+        var table = new HtmlTable();
+        foreach (var course in courses.OrderBy(x => x.SessionId)) {
+            var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
+            var courseName = courseInfo.CourseName;
+            var room = courseInfo.RoomCode ?? "TBD";
+            if (Rooms.TryGetValue(room, out var roomDesc) && string.IsNullOrEmpty(roomDesc.Description) == false)
+                room += $" - {roomDesc.Description}";
+            table.AddRowData([course.SessionId, courseName, room]);
+        }
+
+        return table;
+    } 
 }

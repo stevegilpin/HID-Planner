@@ -212,7 +212,7 @@ public class SchedulingViewModel : ViewModelBase
             new RoomAssignmentReport(data, rooms),
             new StudentChoiceAnalysisReport(data),
             new SupervisorScheduleReport(data, rooms, supervisors),
-            new InstructorScheduleReport(data, instructors),
+            new InstructorScheduleReport(data, rooms, instructors),
         };
 
         foreach (var doc in docs)
