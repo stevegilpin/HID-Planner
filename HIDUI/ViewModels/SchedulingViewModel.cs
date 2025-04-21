@@ -211,7 +211,7 @@ public class SchedulingViewModel : ViewModelBase
             new StudentScheduleOverviewReport(data, rooms, true),
             new RoomAssignmentReport(data, rooms),
             new StudentChoiceAnalysisReport(data),
-            new SupervisorScheduleReport(data, supervisors),
+            new SupervisorScheduleReport(data, rooms, supervisors),
             new InstructorScheduleReport(data, instructors),
         };
 

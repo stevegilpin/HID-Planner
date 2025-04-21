@@ -1,16 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Data.Objects;
 using HIDLib.HTML;
 
 namespace HIDLib.ReportGenerators;
 
-public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Supervisor> supervisors) : IHtmlGenerator
+public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Rooms> rooms, List<Supervisor> supervisors) : IHtmlGenerator
 {
+    private Dictionary<string, Rooms> Rooms = rooms.ToDictionary(x => x.RoomCode);
     public HtmlDoc CreateDoc()
     {
         var doc = new HtmlDoc("Supervisor Schedules");
-        doc.StyleRuleSets.Add(CSS.TableStyles());
+        doc.StyleRuleSets.Add(CSS.BodyPadding());
+        doc.StyleRuleSets.Add(HtmlTableGrid.Css());
+        doc.StyleRuleSets.Add(@"* {
+            font-size: 11px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }");
+
         doc.Add(new HtmlHeader("Supervisors' Schedules"));
 
         var supervisorMap = supervisors.ToDictionary(x => x.SupervisorId);
@@ -26,27 +36,37 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Supervi
             .ThenBy(g => supervisorMap[g.Key].FirstName)
             .ToList();
         
-        var sessions = reportData.AllSessions();
-        var tableHeader = new List<object> { "Supervisor" };
-        tableHeader.AddRange(sessions.Select(x => $"Session {x}"));
-        var table = doc.Add(new HtmlTable(tableHeader));
-
-        foreach (var supervisorCourses in supervisorCourseGroups) {
-            var supervisor = supervisorMap[supervisorCourses.Key];
-            var rowData = new List<HtmlCell> { new($"{supervisor.FirstName} {supervisor.LastName}") };
-            foreach (var session in sessions) {
-                var course = supervisorCourses.SingleOrDefault(x => x.CourseSchedule.SessionId == session);
-                var cell = new HtmlCell(course?.CourseSchedule.CourseCode ?? string.Empty);
-                rowData.Add(cell);
-                if (course != null) {
-                    var courseInfo = reportData.InputData.CourseInfo[course.CourseSchedule.CourseCode];
-                    cell.Add(new HtmlBreak());
-                    cell.Add(string.IsNullOrEmpty(courseInfo.RoomCode) ? "Room TBD" : courseInfo.RoomCode);
-                }
+        var grid = doc.Add(new HtmlTableGrid());
+        const int numColumns = 2;
+        var rowData = new List<XElement>();
+        for (var i = 0; i < supervisorCourseGroups.Count; i++) {
+            var group = supervisorCourseGroups[i];
+            var supervisor = supervisorMap[group.Key];
+            var header = new HtmlHeader($"{supervisor.FirstName} {supervisor.LastName}", 3);
+            var table = GetSupervisorTable(group.Select(x => x.CourseSchedule).ToList());
+            table.AddColGroup(1, ("style", "width: 5%"));
+            rowData.Add(new XElement("div", header, table));
+            if (rowData.Count == numColumns || i == supervisorCourseGroups.Count - 1) {
+                grid.AddRow(rowData.ToList());
+                rowData.Clear();
             }
-            table.AddRow(rowData);
         }
-
+        
         return doc;
     }
+    
+    private HtmlTable GetSupervisorTable(List<CourseSchedule> courses)
+    {
+        var table = new HtmlTable();
+        foreach (var course in courses.OrderBy(x => x.SessionId)) {
+            var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
+            var courseName = courseInfo.CourseName;
+            var room = courseInfo.RoomCode ?? "TBD";
+            if (Rooms.TryGetValue(room, out var roomDesc) && string.IsNullOrEmpty(roomDesc.Description) == false)
+                room += $" - {roomDesc.Description}";
+            table.AddRowData([course.SessionId, courseName, room]);
+        }
+
+        return table;
+    } 
 }
