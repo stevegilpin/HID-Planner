@@ -62,7 +62,7 @@ internal static class CSS
                """;
     }
 
-    public static string TableStyles(string textAlign = "left")
+    public static string TableStyles(string dataAlign = "left", string headerAlign = "left")
     {
         return
             @$"
@@ -74,9 +74,13 @@ internal static class CSS
            border-bottom: 1px solid black;
            border-collapse: collapse;
         }}
-        td, th {{
+        td {{
            padding: 4px;
-           text-align: {textAlign};
+           text-align: {dataAlign};
+        }}
+        th {{
+           padding: 4px;
+           text-align: {headerAlign};
         }}
         tr:hover {{
            background-color: lightgray;
@@ -93,5 +97,27 @@ internal static class CSS
               print-color-adjust:exact !important;
             }
             """;
+    }
+
+    public static string EllipsisOverflow()
+    {
+        return
+            """
+            * {
+                text-overflow: ellipsis;
+                overflow: scroll;
+                white-space: nowrap;
+            }
+            """;
+    }
+
+    public static string GlobalFontSize(int size)
+    {
+        return
+            @$"
+            * {{
+                font-size: {size}px;
+            }}
+            ";
     }
 }

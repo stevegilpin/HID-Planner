@@ -14,12 +14,8 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
         var doc = new HtmlDoc("Instructor Schedules");
         doc.StyleRuleSets.Add(CSS.BodyPadding());
         doc.StyleRuleSets.Add(HtmlTableGrid.Css());
-        doc.StyleRuleSets.Add(@"* {
-            font-size: 11px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }");
+        doc.StyleRuleSets.Add(CSS.GlobalFontSize(11));
+        doc.StyleRuleSets.Add(CSS.EllipsisOverflow());
 
         doc.Add(new HtmlHeader("Instructor' Schedules"));
 
