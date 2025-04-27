@@ -32,7 +32,7 @@ public class ClassListForEveryone(AssignmentDataSet reportData, List<Rooms> room
 
         var assignedCourses = reportData.AssignmentResults
             .GroupBy(x => x.CourseCode)
-            .OrderBy(g => reportData.InputData.CourseInfo[g.Key].Description)
+            .OrderBy(g => reportData.InputData.CourseInfo[g.Key].CourseName)
             .ToList();
 
         foreach (var group in assignedCourses) {
