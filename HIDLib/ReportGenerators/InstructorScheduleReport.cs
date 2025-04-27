@@ -17,8 +17,6 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
         doc.StyleRuleSets.Add(CSS.GlobalFontSize(11));
         doc.StyleRuleSets.Add(CSS.EllipsisOverflow());
 
-        doc.Add(new HtmlHeader("Instructor' Schedules"));
-
         var instructorMap = instructors.ToDictionary(x => x.InstructorId);
         var instructorCourseGroups = reportData.InputData.CourseSchedule
             .SelectMany(x => x.Value)
@@ -35,11 +33,12 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
         var grid = doc.Add(new HtmlTableGrid());
         const int numColumns = 2;
         var rowData = new List<XElement>();
+        var allSessions = reportData.AllSessions();
         for (var i = 0; i < instructorCourseGroups.Count; i++) {
             var group = instructorCourseGroups[i];
             var instructor = instructorMap[group.Key];
             var header = new HtmlHeader($"{instructor.FirstName} {instructor.LastName}", 3);
-            var table = GetInstructorTable(group.Select(x => x.CourseSchedule).ToList());
+            var table = GetInstructorTable(group.Select(x => x.CourseSchedule).ToList(), allSessions);
             table.AddColGroup(1, ("style", "width: 5%"));
             rowData.Add(new XElement("div", header, table));
             if (rowData.Count == numColumns || i == instructorCourseGroups.Count - 1) {
@@ -51,10 +50,16 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
         return doc;
     }
     
-    private HtmlTable GetInstructorTable(List<CourseSchedule> courses)
+    private HtmlTable GetInstructorTable(List<CourseSchedule> courses, List<int> allSessions)
     {
         var table = new HtmlTable();
-        foreach (var course in courses.OrderBy(x => x.SessionId)) {
+        var assigned = courses.ToDictionary(x => x.SessionId);
+        foreach (var session in allSessions) {
+            if (assigned.TryGetValue(session, out var course) == false) {
+                table.AddRowData([session, string.Empty, string.Empty]);
+                continue;
+            }
+
             var courseInfo = reportData.InputData.CourseInfo[course.CourseCode];
             var courseName = courseInfo.CourseName;
             var room = courseInfo.RoomCode ?? "TBD";

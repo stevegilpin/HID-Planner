@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Data.Objects;
 using HIDLib.HTML;
 
@@ -47,26 +48,32 @@ public class ClassListForEveryone(AssignmentDataSet reportData, List<Rooms> room
                 .Select(x => InstructorMap[x])
                 .ToList();
 
-            var instructorFirstName = instructors.Any() ?
-                string.Join("\n", instructorIds.Select(x => x.FirstName)) :
-                string.Empty;
-
-            var instructorLastName = instructors.Any() ?
-                string.Join("\n", instructorIds.Select(x => x.LastName)) :
-                string.Empty;
+            HtmlCell firstNameCell;
+            HtmlCell lastNameCell;
+            if (instructors.Count == 0) {
+                firstNameCell = new HtmlCell(string.Empty);
+                lastNameCell = new HtmlCell(string.Empty);
+            }
+            else {
+                var divFirst = new XElement("div");
+                var divLast = new XElement("div");
+                firstNameCell = new HtmlCell(divFirst);
+                lastNameCell = new HtmlCell(divLast);
+                for (int i = 0; i < instructorIds.Count; i++) {
+                    divFirst.Add(instructorIds[i].FirstName);
+                    divLast.Add(instructorIds[i].LastName);
+                    if (i < assignedSessions.Count - 1) {
+                        divFirst.Add(new HtmlBreak());
+                        divLast.Add(new HtmlBreak());
+                    }
+                }
+            }
 
             var room = courseInfo.RoomCode ?? "TBD";
             var roomDescription = RoomMap.GetValueOrDefault(courseInfo.RoomCode)?.Description ?? string.Empty;
-
-            var rowData = new List<object> { courseInfo.CourseName, instructorFirstName, instructorLastName, room, roomDescription };
-            foreach (var s in allSessions) {
-                if (assignedSessions.Contains(s))
-                    rowData.Add(s);
-                else
-                    rowData.Add(string.Empty);
-            }
-
-            table.AddRowData(rowData);
+            var rowData = new List<HtmlCell> { new(courseInfo.CourseName), firstNameCell, lastNameCell, new(room), new(roomDescription) };
+            rowData.AddRange(allSessions.Select(s => assignedSessions.Contains(s) ? new HtmlCell(s) : new HtmlCell(string.Empty)));
+            table.AddRow(rowData);
         }
 
         return doc;
