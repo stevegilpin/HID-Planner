@@ -28,6 +28,7 @@ public class ClassSupervisorsReport(AssignmentDataSet reportData, List<Superviso
                 x.SessionId
             })
             .GroupBy(x => x.CourseName)
+            .OrderBy(x => x.Key)
             .ToList();
 
         var allSessions = reportData.AllSessions();
