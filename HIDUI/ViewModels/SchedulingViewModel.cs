@@ -214,6 +214,7 @@ public class SchedulingViewModel : ViewModelBase
             new SupervisorScheduleReport(data, rooms, supervisors),
             new InstructorScheduleReport(data, rooms, instructors),
             new ClassListForEveryone(data, rooms, instructors),
+            new ClassSupervisorsReport(data, supervisors),
         };
 
         foreach (var doc in docs)
