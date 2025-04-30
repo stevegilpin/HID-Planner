@@ -54,10 +54,14 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
     private HtmlTable GetSupervisorTable(List<CourseSchedule> courses, List<int> allSessions)
     {
         var table = new HtmlTable();
+        table.AddStyle("border-bottom: 0px solid black");
         var assigned = courses.ToDictionary(x => x.SessionId);
         foreach (var session in allSessions) {
             if (assigned.TryGetValue(session, out var course) == false) {
-                table.AddRowData([session, string.Empty, string.Empty]);
+                var emptyRow = table.AddRowData([session, string.Empty, string.Empty]);
+                emptyRow.AddStyle("border-bottom: 0px solid black;");
+                foreach (var cell in emptyRow.Data)
+                    cell.AddStyle("border-bottom: 0px solid black;");
                 continue;
             }
             
@@ -66,7 +70,10 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
             var room = courseInfo.RoomCode ?? "TBD";
             if (Rooms.TryGetValue(room, out var roomDesc) && string.IsNullOrEmpty(roomDesc.Description) == false)
                 room += $" - {roomDesc.Description}";
-            table.AddRowData([course.SessionId, courseName, room]);
+            var row = table.AddRowData([course.SessionId, courseName, room]);
+            row.AddStyle("border-bottom: 0px solid black;");
+            foreach (var cell in row.Data)
+                cell.AddStyle("border-bottom: 0px solid black;");
         }
 
         return table;
