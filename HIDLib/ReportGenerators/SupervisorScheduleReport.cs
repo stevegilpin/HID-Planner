@@ -38,6 +38,7 @@ public class SupervisorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
             var group = supervisorCourseGroups[i];
             var supervisor = supervisorMap[group.Key];
             var header = new HtmlHeader($"{supervisor.FirstName} {supervisor.LastName}", 3);
+            header.AddStyle("font-size: 15px");
             var table = GetSupervisorTable(group.Select(x => x.CourseSchedule).ToList(), allSessions);
             table.AddColGroup(1, ("style", "width: 5%"));
             rowData.Add(new XElement("div", header, table));

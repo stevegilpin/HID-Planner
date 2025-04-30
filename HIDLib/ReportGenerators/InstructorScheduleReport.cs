@@ -38,6 +38,7 @@ public class InstructorScheduleReport(AssignmentDataSet reportData, List<Rooms> 
             var group = instructorCourseGroups[i];
             var instructor = instructorMap[group.Key];
             var header = new HtmlHeader($"{instructor.FirstName} {instructor.LastName}", 3);
+            header.AddStyle("font-size: 15px");
             var table = GetInstructorTable(group.Select(x => x.CourseSchedule).ToList(), allSessions);
             table.AddColGroup(1, ("style", "width: 5%"));
             rowData.Add(new XElement("div", header, table));
