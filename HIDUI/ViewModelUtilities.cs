@@ -22,7 +22,7 @@ public static class ViewModelUtilities
 
     public static string GetSurveyResponsesCsvInfoText()
     {
-        return $"This is a CSV file containing the survey responses.{Environment.NewLine}{Environment.NewLine}These columns are required: Student First Name, Student Last Name, Grade, Email Address";
+        return $"This is a CSV file containing the survey responses.{Environment.NewLine}{Environment.NewLine}These columns are required: {string.Join(", ", CsvReadUtil.SurveyResponseHeaders())}";
     }
 
     public static string GetSchedulingResultsCsvInfoText()

@@ -37,18 +37,17 @@ public static class CsvReadUtil
         return HeaderMatches<CourseAssignmentResult, CsvMappers.CourseAssignmentResultsMapper>(filePath);
     }
 
+    public static List<string> SurveyResponseHeaders() => [
+        "Student Last Name",
+        "Student First Name",
+        "Grade",
+        "Username",
+    ];
     public static bool HeaderMatchesSurveyResponses(string filePath)
     {
-        var requiredHeaders = new[] {
-            "Student Last Name",
-            "Student First Name",
-            "Grade",
-            "Username",
-        };
-        
         var lines = File.ReadAllLines(filePath);
         var header = lines[0].Split(',').ToList();
-        return requiredHeaders.All(x => header.Contains(x));
+        return SurveyResponseHeaders().All(x => header.Contains(x));
     }
 
     public static bool HeaderMatchesRooms(string filePath)
