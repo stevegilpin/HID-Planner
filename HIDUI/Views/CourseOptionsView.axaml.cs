@@ -34,11 +34,11 @@ public partial class CourseOptionsView : UserControl
         }
     }
 
-    private void SaveHtmlFileOnClick(object sender, RoutedEventArgs e)
+    private void SaveCourseDescrFileOnClick(object sender, RoutedEventArgs e)
     {
         try {
             var folder = SettingsManager.GetDefaultOutputFolder();
-            ViewModel.SaveHtmlFile(folder);
+            ViewModel.SaveCourseDescrFile(folder);
             ViewUtilities.OpenFolderInExplorer(folder);
         }
         catch (Exception exception) {
@@ -46,11 +46,11 @@ public partial class CourseOptionsView : UserControl
         }
     }
 
-    private void SaveTextFileOnClick(object sender, RoutedEventArgs e)
+    private void SaveCourseListFileOnClick(object sender, RoutedEventArgs e)
     {
         try {
             var folder = SettingsManager.GetDefaultOutputFolder();
-            ViewModel.SaveTextFile(folder);
+            ViewModel.SaveCourseListFile(folder);
             ViewUtilities.OpenFolderInExplorer(folder);
         }
         catch (Exception ex) {

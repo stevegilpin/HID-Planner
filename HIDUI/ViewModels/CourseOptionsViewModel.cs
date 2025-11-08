@@ -35,6 +35,6 @@ public class CourseOptionsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsInputReady));
     }
 
-    public void SaveHtmlFile(string folder) => Model.SaveHtmlFile(folder);
-    public void SaveTextFile(string folder) => Model.SaveTextFile(folder);
+    public void SaveCourseDescrFile(string folder) => Model.SaveCourseDescrFile(folder);
+    public void SaveCourseListFile(string folder) => Model.SaveCourseListFile(folder);
 }

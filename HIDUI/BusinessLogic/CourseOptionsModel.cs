@@ -21,7 +21,7 @@ public class CourseOptionsModel
                                   string.IsNullOrEmpty(DocumentHeader) == false &&
                                   string.IsNullOrEmpty(EventDescription) == false;
 
-    public void SaveHtmlFile(string folder)
+    public void SaveCourseDescrFile(string folder)
     {
         if (IsInputReady() == false)
             throw new Exception("Input is not ready");
@@ -31,14 +31,13 @@ public class CourseOptionsModel
         courseOptionsReport.CreateDoc().WriteToFile(folder);
     }
 
-    public void SaveTextFile(string folder)
+    public void SaveCourseListFile(string folder)
     {
         if (IsInputReady() == false)
             throw new Exception("Input is not ready");
 
         var courseData = CsvReadUtil.ReadCourseInfo(CourseInfoFilePath);
         var courseOptionsReport = new CourseOptionsReport(courseData, DocumentHeader, EventDescription);
-        var fileContent = courseOptionsReport.CreateTextFileContent();
-        File.WriteAllLines(Path.Combine(folder, "Course Options.txt"), [fileContent]);
+        courseOptionsReport.CreateListDoc().WriteToFile(folder);
     }
 }

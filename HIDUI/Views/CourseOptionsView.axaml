@@ -33,11 +33,11 @@
             <TextBox Margin="5" Name="EventDescriptionBox" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="SetEventDescription"></TextBox>
         </DockPanel>
         
-        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveHtmlFileOnClick">
-            Save HTML File
+        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveCourseDescrFileOnClick">
+            Save Course Descriptions
         </Button>
-        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveTextFileOnClick">
-            Save Text File
+        <Button IsEnabled="{ Binding IsInputReady }" HorizontalAlignment="Left" Padding="12" Click="SaveCourseListFileOnClick">
+            Save Course Topic List
         </Button>
     </StackPanel>
 </UserControl>

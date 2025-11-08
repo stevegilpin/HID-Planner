@@ -17,7 +17,18 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
 
     public HtmlDoc CreateDoc()
     {
-        var doc = new HtmlDoc("Course Options");
+        return CreateDoc(true);
+    }
+
+    public HtmlDoc CreateListDoc()
+    {
+        return CreateDoc(false);
+    }
+    
+    public HtmlDoc CreateDoc(bool prtdescr)
+    {
+        var filename = prtdescr ? "Course Options Descriptions" : "Course List";
+        var doc = new HtmlDoc(filename);
         doc.StyleRuleSets.Add(CSS.PageBreak());
         doc.StyleRuleSets.Add("""
                               li {
@@ -46,37 +57,13 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
             if (string.IsNullOrEmpty(GradeFilter) == false && GradeToString(grade) != GradeFilter)
                 continue;
 
-            doc.Add(GetGradeSection(grade));
+            doc.Add(GetGradeSection(grade, prtdescr));
             doc.Add(new HtmlPageBreak());
         }
 
         return doc;
     }
-
-    public string CreateTextFileContent()
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine(DocumentHeader);
-        sb.AppendLine();
-        sb.AppendLine(EventDescription);
-        sb.AppendLine();
-
-        var grades = GetGrades();
-        foreach (var grade in grades) {
-            var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToList();
-            if (eligibleCourses.Count == 0)
-                continue;
-
-            var gradeCode = GradeToString(grade);
-            sb.AppendLine($"Class Options for Grade {gradeCode}");
-
-            foreach (var course in eligibleCourses.OrderBy(x => x.CourseName))
-                sb.AppendLine($"{course.CourseName}: {course.Description}");
-        }
-
-        return sb.ToString();
-    }
-
+    
     private IEnumerable<int> GetGrades()
     {
         var minGrade = CourseData.Min(x => x.MinGrade);
@@ -84,7 +71,7 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
         return Enumerable.Range(minGrade, maxGrade - minGrade + 1);
     }
 
-    private XElement GetGradeSection(int grade)
+    private XElement GetGradeSection(int grade, bool prtdescr)
     {
         var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToList();
         if (eligibleCourses.Count == 0)
@@ -92,15 +79,21 @@ public class CourseOptionsReport(List<CourseInfo> courseData, string docHeader, 
 
         var section = new XElement("div");
         var gradeCode = GradeToString(grade);
-        section.Add(new HtmlHeader($"Class Options for Grade {gradeCode}", 2));
+        section.Add(new HtmlHeader($"Grade {gradeCode}", 2));
 
         var list = new HtmlList();
         section.Add(list);
 
         foreach (var course in eligibleCourses.OrderBy(x => x.CourseName)) {
             var itemContent = new XElement("div");
-            itemContent.Add(new XElement("span", new XAttribute("style", "font-weight: bold;"), $"{course.CourseName}: "));
-            itemContent.Add(new XElement("span", course.Description));
+            if (prtdescr) {
+                itemContent.Add(new XElement("span", new XAttribute("style", "font-weight: bold;"), $"{course.CourseName}: "));
+                itemContent.Add(new XElement("span", course.Description));
+            }
+            else
+            {
+                itemContent.Add(new XElement("span", $"{course.CourseName}"));
+            }
             list.Add(new HtmlListItem(itemContent));
         }
 
