@@ -46,7 +46,7 @@ public static class CsvReadUtil
     public static bool HeaderMatchesSurveyResponses(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
-        var header = lines[0].Split(',').ToList();
+        var header = lines[0].Split(',').Select(x => x.Trim(' ', '"')).ToList();
         return SurveyResponseHeaders().All(x => header.Contains(x));
     }
 
@@ -113,7 +113,7 @@ public static class CsvReadUtil
     public static List<SurveyResponse> ReadSurveyResponses(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
-        var header = lines[0].Split(',').ToList();
+        var header = lines[0].Split(',').Select(x => x.Trim(' ', '"')).ToList();
         var lastNameIndex = header.IndexOf("Student Last Name");
         var firstNameIndex = header.IndexOf("Student First Name");
         var gradeIndex = header.IndexOf("Grade");
@@ -125,7 +125,7 @@ public static class CsvReadUtil
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            var data = line.Split(',').Select(x => x.Trim()).ToList();
+            var data = line.Split(',').Select(x => x.Trim(' ', '"')).ToList();
             var rankings = data
                 .Where((_, i) => i >= rowDataStart)
                 .Where(x => string.IsNullOrWhiteSpace(x) == false)
