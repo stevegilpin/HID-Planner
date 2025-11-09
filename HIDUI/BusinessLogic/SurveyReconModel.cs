@@ -97,15 +97,15 @@ public class SurveyReconModel
     private static List<InvalidCourseChoiceFailure> LoadInvalidCourseChoiceFailures(List<SurveyResponse> surveyData, List<CourseInfo> courseData)
     {
         var failures = new List<InvalidCourseChoiceFailure>();
-        var allCourses = courseData.Select(x => x.CourseName).ToHashSet();
+        var allCourses = courseData.Select(x => x.CourseName.ToUpper()).ToHashSet();
         foreach (var response in surveyData) {
             var eligibleCourses = courseData
                 .Where(x => x.MinGrade <= response.Grade && x.MaxGrade >= response.Grade)
-                .Select(x => x.CourseName)
+                .Select(x => x.CourseName.ToUpper())
                 .ToHashSet();
 
             foreach (var course in response.ClassRankings) {
-                if (eligibleCourses.Contains(course))
+                if (eligibleCourses.Contains(course.ToUpper()))
                     continue;
 
                 var problem = allCourses.Contains(course) ? $"Not available for grade {response.Grade}" : "No matching course";
@@ -141,9 +141,9 @@ public class SurveyReconModel
             var studentInfo = studentInfoMap[(response.LastName, response.FirstName)];
             registeredStudents.Add(studentInfo);
             var grade = CsvReadUtil.GradeToInt(studentInfo.Grade);
-            var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName);
+            var eligibleCourses = CourseData.Where(x => x.MinGrade <= grade && x.MaxGrade >= grade).ToDictionary(x => x.CourseName.ToUpper());
             rankings.AddRange(response.ClassRankings.Select((x, i) => new StudentCourseRanking {
-                CourseCode = eligibleCourses[x].CourseCode,
+                CourseCode = eligibleCourses[x.ToUpper()].CourseCode,
                 Rank = i + 1,
                 StudentId = studentInfo.StudentId,
             }));
