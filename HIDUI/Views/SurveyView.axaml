@@ -232,10 +232,6 @@
 						Margin="10 0"
 						ItemsSource="{ Binding UnexpectedRespondentMatchCandidates }">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }"/>
-							<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
-							<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
-							<DataGridTextColumn Header="Homeroom" Width="*" Binding="{ Binding Homeroom }"/>
 							<DataGridTemplateColumn Width="*" Header="Save Data">
 								<DataTemplate DataType="objects:StudentInfo">
 									<Button 
@@ -246,6 +242,10 @@
 										Content="Keep Match"/>
 								</DataTemplate>
 							</DataGridTemplateColumn>
+							<DataGridTextColumn Header="First Name" Width="*" Binding="{ Binding FirstName }"/>
+							<DataGridTextColumn Header="Last Name" Width="*" Binding="{ Binding LastName }"/>
+							<DataGridTextColumn Header="Grade" Width="*" Binding="{ Binding Grade }"/>
+							<DataGridTextColumn Header="Homeroom" Width="*" Binding="{ Binding Homeroom }"/>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Grid>
