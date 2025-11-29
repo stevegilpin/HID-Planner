@@ -28,6 +28,7 @@ internal static class DbProvider
 
         var optionBuilder = new DbContextOptionsBuilder();
         optionBuilder.UseSqlite(GetConnectionString());
+        optionBuilder.EnableSensitiveDataLogging();
         return new HidDbContext(optionBuilder.Options);
     }
 
