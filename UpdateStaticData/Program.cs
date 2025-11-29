@@ -9,7 +9,7 @@ var supervisorsPath = Path.Combine(inputFolder, "Supervisors.csv");
 var instructorsPath = Path.Combine(inputFolder, "Instructors.csv");
 ConfirmInputIsReady(roomsPath, supervisorsPath, instructorsPath);
 
-if (File.Exists(supervisorsPath)) {
+if (File.Exists(roomsPath)) {
     var rooms = CsvReadUtil.ReadRoomDescriptions(roomsPath);
     DataManager.UpdateRooms(rooms);
     Console.WriteLine($"Inserted {rooms.Count} rooms");
